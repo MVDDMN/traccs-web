@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Juan Dela Cruz",
+    "date": "April 4, 2024",
+    "time": "8:55 pm",
+    "address": "158 Cabrera Rd, Taytay, 1920 Rizal",
+    "location": "14.5591613626185, 121.14011670582923",
+    "type": "Fire",
+    "status": "Pending",
+    "description": "A fire broke out at 158 Cabrera Rd. The flames were visible from a distance and were spreading rapidly.",
+    "image": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvCVNPEUuulOcvEqQFF4oABBsPgV9jlgIiXl16KvL3MA&s",
+      "https://www.nsta.org/sites/default/files/2022-11/burning_house_1024.jpg"
+    ]
+  },
+  {
+    "name": "Maria Santos",
+    "date": "April 15, 2024",
+    "time": "6:30 am",
+    "address": "45 Manila East Road, Taytay, 1920 Rizal",
+    "location": "14.562272, 121.135420",
+    "type": "Accident",
+    "status": "Pending",
+    "description": "A vehicular accident occurred on Manila East Road involving two cars. Injuries were reported on the scene.",
+    "image": [
+      "https://media.philstar.com/photos/2022/06/22/3_2022-06-22_22-25-48.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDVCQ0xJdaywDdnHxm0ABf5efBLmoN_3TR5KMlJNZqcg&s"
+    ]
+  },
+  {
+    "name": "Jose Bautista",
+    "date": "May 20, 2024",
+    "time": "2:45 pm",
+    "address": "10 Gomez Street, Taytay, 1920 Rizal",
+    "location": "14.562159, 121.134570",
+    "type": "Medical",
+    "status": "Pending",
+    "description": "A medical emergency was reported at 10 Gomez Street. Paramedics were needed urgently.",
+    "image": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt07kN8tGC0fXNEmrqDTveQRgoxRzdp-4tAaJbf8CH-A&s",
+      "https://pbs.twimg.com/media/Duv-E5kV4AA2Ur3.jpg:large"
+    ]
+  },
+  {
+    "name": "Ana Reyes",
+    "date": "June 1, 2024",
+    "time": "11:00 am",
+    "address": "23 Ortigas Avenue Extension, Taytay, 1920 Rizal",
+    "location": "14.575064, 121.123419",
+    "type": "Police",
+    "status": "Pending",
+    "description": "Police were dispatched to 23 Ortigas Avenue Extension due to a disturbance reported by residents.",
+    "image": [
+      "https://media.istockphoto.com/id/1179346199/photo/british-police-crowd-control.jpg?s=612x612&w=0&k=20&c=08F6oTtQdW8qRaeuXi1pmcZGITquGgZVHiUjI_pehEY=",
+      "https://www.benarnews.org/english/news/philippine/body-cameras-06252021144413.html/@@images/image"
+    ]
+  },
+  {
+    "name": "Carlos Mendoza",
+    "date": "June 25, 2024",
+    "time": "4:15 pm",
+    "address": "78 Velasquez Street, Taytay, 1920 Rizal",
+    "location": "14.564928, 121.133629",
+    "type": "Hazard",
+    "status": "Pending",
+    "description": "A hazardous situation was identified on Velasquez Street involving a gas leak.",
+    "image": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs-wF-9JPMyWIMp5aSklsKhgq8o5wr7iBbp68UzquULA&s",
+      "https://media-cldnry.s-nbcnews.com/image/upload/t_fit-760w,f_auto,q_auto:best/streams/2012/December/121204/1C5040280-pb-121203-bopha-hmed-848p.jpg"
+    ]
+  },
+  {
+    "name": "Patricia Garcia",
+    "date": "July 14, 2024",
+    "time": "7:00 pm",
+    "address": "35 Dolores Street, Taytay, 1920 Rizal",
+    "location": "14.561920, 121.137890",
+    "type": "Fire",
+    "status": "Pending",
+    "description": "A residential fire was reported at 35 Dolores Street, causing significant damage.",
+    "image": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvCVNPEUuulOcvEqQFF4oABBsPgV9jlgIiXl16KvL3MA&s",
+      "https://www.nsta.org/sites/default/files/2022-11/burning_house_1024.jpg"
+    ]
+  },
+  {
+    "name": "David Cruz",
+    "date": "August 2, 2024",
+    "time": "3:40 am",
+    "address": "22 Lopez Avenue, Taytay, 1920 Rizal",
+    "location": "14.566700, 121.135290",
+    "type": "Accident",
+    "status": "Pending",
+    "description": "An early morning accident on Lopez Avenue resulted in traffic congestion and injuries.",
+    "image": [
+      "https://media.philstar.com/photos/2022/06/22/3_2022-06-22_22-25-48.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDVCQ0xJdaywDdnHxm0ABf5efBLmoN_3TR5KMlJNZqcg&s"
+    ]
+  },
+  {
+    "name": "Linda Villanueva",
+    "date": "August 12, 2024",
+    "time": "12:20 pm",
+    "address": "90 A. Rodriguez Avenue, Taytay, 1920 Rizal",
+    "location": "14.570000, 121.130000",
+    "type": "Police",
+    "status": "Pending",
+    "description": "A request for police was made at 90 A. Rodriguez Avenue for a stranded individual.",
+    "image": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl2UEZBc0IV7F2Wyx_hLu-tyTGxg09RW3RAGaXKFN7ug&s",
+      "https://dfa.gov.ph/images/PISU/2020/07_July_2020/22_Rach/Cairo_Food_Packs_distribution_1.jpg"
+    ]
+  }
+]

@@ -1,0 +1,114 @@
+.public-nav-cont {
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.public-nav-list {
+    display: inline-flex;
+    flex-direction: horizontal;
+    padding: 20px;
+    gap: 20px;
+    height: 60px;
+    align-items: center;
+    width: auto;
+}
+
+.public-title-cont a {
+    display: inline-flex;
+    font-size: 32px;
+    font-weight: bolder;
+    color: #0A1B57;
+    margin-left: 40px;
+}
+
+/*Section 1*/
+.public-button-cont {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.public-button-sect1 {
+    flex: 1;
+}
+
+.public-button-sect2 {
+    margin-left: auto;
+}
+
+.public-button-sect1 a {
+    display: inline-flex;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    color: #667085;
+}
+
+.public-button-sect1 a:hover {
+    color: #0E267C;
+    font-weight: bold
+}
+
+.public-download-btn {
+    display: inline-block;
+    padding: 10px 10px;
+    background-color: #fff;
+    color: #0E267C;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 2px solid #0E267C;
+    margin-right: 50px;
+}
+
+.public-download-btn:hover {
+    background-color: #0A1B57;
+    color: #fff;
+}
+
+.public-login-btn {
+    display: inline-block;
+    padding: 10px 10px;
+    background-color: #0E267C;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-right: 50px;
+    width: 50px;
+    text-align: center;
+}
+
+.public-login-btn:hover {
+    background-color: #0A1B57;
+}
+
+/*Section 2*/
+.public-title-app-cont{
+    padding: 20px;
+    background-color: #0E267C;
+    display: inline-flex;
+    flex-direction: horizontal;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: auto;
+}
+
+.public-title-app-cont a{
+    display: inline-flex;
+    font-size: 32px;
+    font-weight: bolder;
+    color: #fff;
+}
+
+.public-title-app-cont b{
+    display: inline-flex;
+    font-size: 24px;
+    font-weight: bolder;
+    color: #D5652B;
+    margin: 5px;
+}
+

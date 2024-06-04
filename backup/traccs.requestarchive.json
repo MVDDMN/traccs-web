@@ -1,0 +1,92 @@
+[
+    {
+        "username": "admin",
+        "responder": "Dolores",
+        "barangay": "San Juan",
+        "itemname": "Rice",
+        "type": "Food",
+        "description": "Sack of rice",
+        "quantity": 50
+    },
+    {
+        "username": "prince",
+        "responder": "Santa Ana",
+        "barangay": "Dolores",
+        "itemname": "Water Bottles",
+        "type": "Beverage",
+        "description": "Pack of 24 water bottles",
+        "quantity": 30
+    },
+    {
+        "username": "maritess",
+        "responder": "San Isidro",
+        "barangay": "Santa Ana",
+        "itemname": "Canned Goods",
+        "type": "Food",
+        "description": "Mixed canned goods",
+        "quantity": 100
+    },
+    {
+        "username": "julian",
+        "responder": "Muzon",
+        "barangay": "San Isidro",
+        "itemname": "First Aid Kit",
+        "type": "Medical",
+        "description": "Standard first aid kit",
+        "quantity": 20
+    },
+    {
+        "username": "admin",
+        "responder": "San Juan",
+        "barangay": "Muzon",
+        "itemname": "Blankets",
+        "type": "Non-Food",
+        "description": "Warm blankets",
+        "quantity": 75
+    },
+    {
+        "username": "maritess",
+        "responder": "San Isidro",
+        "barangay": "San Juan",
+        "itemname": "Face Masks",
+        "type": "Medical",
+        "description": "Box of 50 face masks",
+        "quantity": 200
+    },
+    {
+        "username": "prince",
+        "responder": "Muzon",
+        "barangay": "Dolores",
+        "itemname": "Hand Sanitizers",
+        "type": "Medical",
+        "description": "Bottle of hand sanitizers",
+        "quantity": 150
+    },
+    {
+        "username": "julian",
+        "responder": "Santa Ana",
+        "barangay": "San Isidro",
+        "itemname": "Sleeping Mats",
+        "type": "Non-Food",
+        "description": "Foldable sleeping mats",
+        "quantity": 40
+    },
+    {
+        "username": "admin",
+        "responder": "Dolores",
+        "barangay": "Santa Ana",
+        "itemname": "Toilet Paper",
+        "type": "Non-Food",
+        "description": "Pack of 10 rolls",
+        "quantity": 100
+    },
+    {
+        "username": "prince",
+        "responder": "San Juan",
+        "barangay": "Muzon",
+        "itemname": "Flashlights",
+        "type": "Non-Food",
+        "description": "Battery-operated flashlights",
+        "quantity": 60
+    }
+]

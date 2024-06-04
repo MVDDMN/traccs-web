@@ -1,0 +1,73 @@
+.navigation-cont {
+  display: inline-flex;
+  flex-direction: column;
+  height: 100%;
+  width: 300px;
+  background-color: #0E267C;
+  z-index: 3;
+}
+
+.app-title-box{
+  display: inline-flex;
+  flex-direction: column;
+  height: auto;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: #071138;
+}
+
+.app-title-cont {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.app-title-text {
+  color: white;
+  font-size: 32px;
+  font-weight: bolder;
+}
+
+.app-sub-text {
+  color: white;
+  font-size: 12px;
+  font-weight: bolder;
+}
+
+.admin-nav-cont{
+  display: inline-flex;
+  flex-direction: column;
+  height: auto;
+  width: auto;
+}
+
+.nav-list{
+  display: inline-flex;
+  flex-direction: column;
+  height: auto;
+  width: auto;
+}
+
+.module {
+  display: inline-flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.module a {
+  text-decoration: none;
+  text-align: center;
+  color: #ffffff;
+  padding: 20px;
+}
+
+.module a.active-link {
+  background-color: white;
+  color: #0E267C;
+}
+  
+.module a:hover {
+  background-color: #f0f0f0;
+  color: #0E267C;
+}

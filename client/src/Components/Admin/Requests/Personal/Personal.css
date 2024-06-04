@@ -1,0 +1,107 @@
+.personal-content-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.personal-table-container {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 95%;
+    gap: 10px;
+    background-color: #f2f2f2;
+    box-shadow: 0px 5px 5px 5px rgba(0, 0, 0, 0.25);
+    padding: 20px;
+    border-radius: 20px;
+}
+
+/*Request Buttons*/
+.request-button-box {
+    display: inline-flex;
+    flex-direction: row;
+    align-self: flex-end;
+    padding: 20px;
+    gap: 20px;
+    height: 100%;
+    width: auto;
+}
+
+.add-request-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 150px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.add-request-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}
+
+/*Requests Table*/
+.personal-table-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: 510px;
+}
+
+.personal-table {
+    background-color: #f0f0f0;
+    overflow-y: auto;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+.personal-table th,
+.personal-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    height: 30px;
+}
+
+.personal-table th {
+    background-color: #f2f2f2;
+}
+
+.action-button-box {
+    display: inline-flex;
+    flex-direction: row;
+    height: auto;
+    width: auto;
+    gap: 10px;
+}
+
+.view-requests-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 75px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.view-requests-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}

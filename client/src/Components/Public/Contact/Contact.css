@@ -1,0 +1,70 @@
+.contact-container {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.contact-title-bg {
+    background-image: url('../../Assets/homebg.png');
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: inline-flex;
+    flex-direction: horizontal;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-content {
+    padding: 30px;
+    height: 700px;
+    width: 400px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.contact-content-info {
+   display: inline-flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 50px;
+}
+
+.contact-title-text {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.contact-title-items {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.contact-item{
+    display: inline-flex;
+    flex-direction: row;
+    gap: 25px;
+    align-items: center;
+}
+
+.contact-item img{
+    width: 25px;
+    height: 25px;
+}
+
+.contact-map img{
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.contact-map img{
+    width: 400px;
+    height: 300px;
+}
+

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Karl Angelo Dela Cruz",
+    "username": "admin",
+    "password": "Admin123!",
+    "email": "admin123@email.com",
+    "type": "MDRRMO",
+    "barangay": "Santa Ana"
+  },
+  {
+    "name": "Prince Glean Merto",
+    "username": "prince",
+    "password": "Admin123!",
+    "email": "admin123@email.com",
+    "type": "MDRRMO",
+    "barangay": "Dolores"
+  },
+  {
+    "name": "Maritess Paduit",
+    "username": "maritess",
+    "password": "Admin123!",
+    "email": "barangay123@email.com",
+    "type": "Barangay",
+    "barangay": "Muzon"
+  },
+  {
+    "name": "Julian Andrei Cantillon",
+    "username": "julian",
+    "password": "Admin123!",
+    "email": "barangay123@email.com",
+    "type": "Barangay",
+    "barangay": "San Juan"
+  }
+]

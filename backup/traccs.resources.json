@@ -1,0 +1,82 @@
+[
+    {
+        "username": "prince",
+        "itemname": "Water Bottles",
+        "barangay": "Dolores",
+        "type": "Essentials",
+        "description": "Pack of 24 bottled water",
+        "quantity": 10
+    },
+    {
+        "username": "admin",
+        "itemname": "Canned Food",
+        "barangay": "San Juan",
+        "type": "Food",
+        "description": "Assorted canned goods",
+        "quantity": 50
+    },
+    {
+        "username": "maritess",
+        "itemname": "First Aid Kit",
+        "barangay": "Muzon",
+        "type": "Medical",
+        "description": "Complete first aid kit with bandages, antiseptics, and pain relievers",
+        "quantity": 5
+    },
+    {
+        "username": "julian",
+        "itemname": "Blankets",
+        "barangay": "San Isidro",
+        "type": "Shelter",
+        "description": "Warm blankets for cold weather",
+        "quantity": 20
+    },
+    {
+        "username": "prince",
+        "itemname": "Rice Bags",
+        "barangay": "Dolores",
+        "type": "Food",
+        "description": "50 kg bags of rice",
+        "quantity": 30
+    },
+    {
+        "username": "admin",
+        "itemname": "Flashlights",
+        "barangay": "San Juan",
+        "type": "Essentials",
+        "description": "Battery operated flashlights",
+        "quantity": 15
+    },
+    {
+        "username": "maritess",
+        "itemname": "Tents",
+        "barangay": "Muzon",
+        "type": "Shelter",
+        "description": "Family-sized tents",
+        "quantity": 7
+    },
+    {
+        "username": "julian",
+        "itemname": "Sanitary Pads",
+        "barangay": "San Isidro",
+        "type": "Hygiene",
+        "description": "Pack of 30 sanitary pads",
+        "quantity": 40
+    },
+    {
+        "username": "prince",
+        "itemname": "Generators",
+        "barangay": "Dolores",
+        "type": "Power",
+        "description": "Portable generators",
+        "quantity": 3
+    },
+    {
+        "username": "admin",
+        "itemname": "Hand Sanitizers",
+        "barangay": "San Juan",
+        "type": "Hygiene",
+        "description": "500 ml bottles of hand sanitizers",
+        "quantity": 25
+    }
+]

@@ -1,0 +1,54 @@
+/* CSS reset for the print component */
+.print-component * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Ensuring print component does not inherit body background color */
+.print-component {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: white; /* or any other desired background color */
+    color: black; /* explicitly set text color if needed */
+    width: 100%; /* Ensuring it takes the full width */
+}
+
+/* Removing default margin and padding from body when printing */
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .print-component {
+        margin: 0;
+        padding: 20px;
+        width: 100%;
+    }
+}
+
+.print-heading {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.print-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.print-table-header {
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.print-table-cell {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.print-table-row:nth-child(even) {
+    background-color: #f2f2f2;
+}
