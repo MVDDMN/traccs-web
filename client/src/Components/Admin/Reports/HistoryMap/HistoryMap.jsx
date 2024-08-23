@@ -16,6 +16,11 @@ import policemapicon from '../../../Assets/map/police.png';
 
 import 'leaflet/dist/leaflet.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const fireMapIcon = new L.Icon({
     iconUrl: firemapicon,
     iconSize: [25, 25],
@@ -171,7 +176,7 @@ const HistoryMap = () => {
                     // Handle the case when userId is not available
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserType(response.data.type);
                 setUserUsername(response.data.username);
             } catch (error) {
@@ -185,7 +190,7 @@ const HistoryMap = () => {
     useEffect(() => {
         const fetchHistoryData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/historymaps');
+                const response = await axios.get(`${apiBaseUrl}/api/historymaps`);
                 setHistoryData(response.data);
                 setFilteredData(response.data);
             } catch (error) {
@@ -231,7 +236,7 @@ const HistoryMap = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
@@ -239,7 +244,7 @@ const HistoryMap = () => {
 
     const addToArchive = async () => {
         try {
-            await axios.post('http://localhost:3001/api/addToArchive', { historyId: selectedHistory._id });
+            await axios.post(`${apiBaseUrl}/api/addToArchive`, { historyId: selectedHistory._id });
             await logAdminAction('Archive', { historyId: selectedHistory._id }, 'Moved a report to history');
             closeModal();
         } catch (error) {

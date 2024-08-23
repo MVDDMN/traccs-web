@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Users.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const Users = () => {
     const [users, setUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -14,7 +19,7 @@ const Users = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/users');
+                const response = await axios.get(`${apiBaseUrl}/api/users`);
                 setUsers(response.data);
             } catch (error) {
                 console.error("Error fetching users:", error);
@@ -47,7 +52,7 @@ const Users = () => {
 
     const handleDeleteUser = async () => {
         try {
-            await axios.delete(`http://localhost:3001/api/users/${selectedUser._id}`);
+            await axios.delete(`${apiBaseUrl}/api/users/${selectedUser._id}`);
             setShowDeleteModal(false);
         } catch (error) {
             console.error("Error deleting user:", error);
@@ -62,7 +67,7 @@ const Users = () => {
     const handleToggleStatus = async () => {
         const newStatus = selectedUser.status === 'Verified' ? 'Unverified' : 'Verified';
         try {
-            const updatedUser = await axios.put(`http://localhost:3001/api/users/${selectedUser._id}/status`, { status: newStatus });
+            const updatedUser = await axios.put(`${apiBaseUrl}/api/users/${selectedUser._id}/status`, { status: newStatus });
             setSelectedUser(updatedUser.data);
         } catch (error) {
             console.error("Error updating user status:", error);

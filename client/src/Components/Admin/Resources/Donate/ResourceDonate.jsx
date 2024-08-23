@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ResourceDonate.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const ResourceDonate = () => {
     const [donations, setDonations] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +37,7 @@ const ResourceDonate = () => {
                     console.error("User ID not found in session storage");
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserUsername(response.data.username);
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -45,7 +50,7 @@ const ResourceDonate = () => {
     useEffect(() => {
         const fetchDonations = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/donations');
+                const response = await axios.get(`${apiBaseUrl}/api/donations`);
                 setDonations(response.data);
             } catch (error) {
                 console.error("Error fetching donations:", error);
@@ -75,7 +80,7 @@ const ResourceDonate = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
@@ -143,7 +148,7 @@ const ResourceDonate = () => {
         }
 
         try {
-            await axios.put(`http://localhost:3001/api/donations/${selectedDonation._id}`, formValues);
+            await axios.put(`${apiBaseUrl}/api/donations/${selectedDonation._id}`, formValues);
             await logAdminAction('Edit', { donationId: selectedDonation._id, updatedData: formValues }, 'Updated donation details');
             const updatedDonations = donations.map(donation =>
                 donation._id === selectedDonation._id ? { ...donation, ...formValues } : donation

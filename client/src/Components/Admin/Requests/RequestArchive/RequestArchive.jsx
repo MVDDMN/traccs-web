@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './RequestArchive.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const RequestArchive = () => {
     const [requestarchives, setRequestArchives] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -12,7 +17,7 @@ const RequestArchive = () => {
     useEffect(() => {
         const fetchRequestArchives = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/requestarchives');
+                const response = await axios.get(`${apiBaseUrl}/api/requestarchives`);
                 const archivesWithDataTime = response.data.map(item => ({
                     ...item,
                     date_time: item.date_time // Assuming your API response includes date_time

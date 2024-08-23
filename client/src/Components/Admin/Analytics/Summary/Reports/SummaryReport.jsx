@@ -3,6 +3,11 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './SummaryReport.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const SummaryReport = () => {
     const [reportSummary, setReportSummary] = useState({
         totalReports: 0,
@@ -21,7 +26,7 @@ const SummaryReport = () => {
     useEffect(() => {
         const fetchReportSummary = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/reports-summary-status');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/reports-summary-status`);
                 setReportSummary(response.data);
             } catch (error) {
                 console.error('Error fetching report summary:', error);
@@ -30,7 +35,7 @@ const SummaryReport = () => {
 
         const fetchReportTypeSummary = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/report-summary');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/report-summary`);
                 setReportTypeSummary(response.data);
             } catch (error) {
                 console.error('Error fetching report type summary:', error);
@@ -39,7 +44,7 @@ const SummaryReport = () => {
 
         const fetchReportFrequency = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/report-frequency-by-peak');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/report-frequency-by-peak`);
                 setReportFrequency(response.data);
             } catch (error) {
                 console.error('Error fetching report frequency:', error);

@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Barangay.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
+
 const Barangay = () => {
     const [userUsername, setUserUsername] = useState('');
     const [userBarangay, setUserBarangay] = useState('');
@@ -20,7 +26,7 @@ const Barangay = () => {
                     console.error("User ID not found in session storage");
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserUsername(response.data.username);
                 setUserBarangay(response.data.barangay);
             } catch (error) {
@@ -30,7 +36,7 @@ const Barangay = () => {
 
         const fetchRequests = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/requests');
+                const response = await axios.get(`${apiBaseUrl}/api/requests`);
                 setRequests(response.data);
             } catch (error) {
                 console.error("Error fetching requests:", error);
@@ -93,7 +99,7 @@ const Barangay = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
@@ -106,13 +112,13 @@ const Barangay = () => {
                 return;
             }
 
-            const response = await axios.post('http://localhost:3001/api/respond', {
+            const response = await axios.post(`${apiBaseUrl}/api/respond`, {
                 requestId: selectedRequest._id,
                 responder: userBarangay
             });
 
             // Sending notification to the admin
-            await axios.post('http://localhost:3001/api/notifications', {
+            await axios.post(`${apiBaseUrl}/api/notifications`, {
                 message: `${userBarangay} has responded to request of ${selectedRequest.barangay} for ${selectedRequest.type}`
             });
 

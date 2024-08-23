@@ -3,13 +3,18 @@ import axios from 'axios';
 import './ReportStats.css';
 import usericon from '../../../../../Assets/user.png';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const ReportStats = () => {
     const [stats, setStats] = useState({ totalReports: 0, reportsThisMonth: 0, reportsToday: 0 });
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/report-stats');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/report-stats`);
                 setStats(response.data);
             } catch (error) {
                 console.error('Error fetching report stats:', error);

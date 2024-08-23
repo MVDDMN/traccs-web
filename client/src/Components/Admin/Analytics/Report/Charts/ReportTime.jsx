@@ -3,12 +3,17 @@ import { Bar } from 'react-chartjs-2';
 import axios from 'axios';
 import './ReportTime.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const ReportTime = () => {
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get('http://localhost:3001/api/analytics/report-frequency-by-hour');
+            const response = await axios.get(`${apiBaseUrl}/api/analytics/report-frequency-by-hour`);
             const { labels, data } = response.data;
 
             setChartData({

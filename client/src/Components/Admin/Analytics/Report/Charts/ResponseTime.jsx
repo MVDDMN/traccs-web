@@ -3,6 +3,11 @@ import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
 import './ResponseTime.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const ResponseTime = () => {
     const [chartData, setChartData] = useState({
         labels: [],
@@ -20,7 +25,7 @@ const ResponseTime = () => {
     useEffect(() => {
         const fetchResponseTimeSummary = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/response-time-summary');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/response-time-summary`);
                 const data = response.data;
 
                 const responders = data.map(item => item._id);

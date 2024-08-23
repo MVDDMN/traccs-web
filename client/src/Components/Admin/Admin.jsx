@@ -7,6 +7,11 @@ import '../Assets/global-styles.css';
 import logout from '../Assets/logout.png';
 import notify from '../Assets/notification.png';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 function Admin({ routes }) {
   const [showModal, setShowModal] = useState(false);
   const [userName, setUserName] = useState('');
@@ -25,7 +30,7 @@ function Admin({ routes }) {
           navigate("/error");
           return;
         }
-        const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+        const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
         setUserName(response.data.name);
         setUserBarangay(response.data.barangay);
         setUserType(response.data.type);
@@ -38,7 +43,7 @@ function Admin({ routes }) {
   
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/notifications');
+        const response = await axios.get(`${apiBaseUrl}/api/notifications`);
         setNotifications(response.data);
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -67,7 +72,7 @@ function Admin({ routes }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3001/api/logout", {}, { withCredentials: true });
+      await axios.post(`${apiBaseUrl}/api/logout`, {}, { withCredentials: true });
       sessionStorage.removeItem('userId');
       resetUserState();
       navigate("/login");
@@ -78,7 +83,7 @@ function Admin({ routes }) {
 
   const handleClearNotifications = async () => {
     try {
-      await axios.delete('http://localhost:3001/api/notifications');
+      await axios.delete(`${apiBaseUrl}/api/notifications`);
       setNotifications([]);
     } catch (error) {
       console.error("Error clearing notifications:", error);

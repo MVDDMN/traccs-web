@@ -22,6 +22,11 @@ ChartJS.register(
     Legend
 );
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const ReportFrequency = () => {
     const [chartData, setChartData] = useState({
         labels: [],
@@ -32,7 +37,7 @@ const ReportFrequency = () => {
         let isMounted = true;
         const fetchReportFrequency = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/report-frequency');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/report-frequency`);
                 if (isMounted) {
                     const data = response.data;
 

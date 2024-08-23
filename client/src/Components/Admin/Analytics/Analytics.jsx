@@ -3,6 +3,11 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Analytics.css'
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const Analytics = () => {
   const [userType, setUserType] = useState('');
   const navigate = useNavigate();
@@ -15,7 +20,7 @@ const Analytics = () => {
           navigate("/error");
           return;
         }
-        const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+        const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
         setUserType(response.data.type);
       } catch (error) {
         console.error("Error fetching user data:", error);

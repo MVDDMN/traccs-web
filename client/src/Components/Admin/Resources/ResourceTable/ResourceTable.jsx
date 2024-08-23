@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ResourceTable.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const ResourceTable = () => {
     const [resources, setResources] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -25,7 +30,7 @@ const ResourceTable = () => {
     useEffect(() => {
         const fetchResources = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/resources');
+                const response = await axios.get(`${apiBaseUrl}/api/resources`);
                 setResources(response.data);
             } catch (error) {
                 console.error("Error fetching resources:", error);
@@ -39,7 +44,7 @@ const ResourceTable = () => {
                     console.error("User ID not found in session storage");
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserUsername(response.data.username);
                 setUserBarangay(response.data.barangay);
             } catch (error) {
@@ -142,7 +147,7 @@ const ResourceTable = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
@@ -150,7 +155,7 @@ const ResourceTable = () => {
 
     const handleUpdateResource = async () => {
         try {
-            await axios.put(`http://localhost:3001/api/resources/${selectedResource._id}`, formData);
+            await axios.put(`${apiBaseUrl}/api/resources/${selectedResource._id}`, formData);
             await logAdminAction('Edit', { updatedData: formData }, 'Edited resource details');
             closeModal();
         } catch (error) {
@@ -171,7 +176,7 @@ const ResourceTable = () => {
                 username: userUsername,
                 barangay: userBarangay
             };
-            await axios.post(`http://localhost:3001/api/resources`, resourceData);
+            await axios.post(`${apiBaseUrl}/api/resources`, resourceData);
             await logAdminAction('Add', { username: userUsername, barangay: userBarangay }, 'Added a resource');
             closeModal();
         } catch (error) {
@@ -193,7 +198,7 @@ const ResourceTable = () => {
         try {
             const deletedResourceData = resourceToDelete;
 
-            await axios.delete(`http://localhost:3001/api/resources/${resourceToDelete._id}`);
+            await axios.delete(`${apiBaseUrl}/api/resources/${resourceToDelete._id}`);
             setResources(resources.filter(resource => resource._id !== resourceToDelete._id));
             await logAdminAction('Delete', { resourceId: deletedResourceData._id, resourceName: deletedResourceData.name }, 'Deleted a resource');
 

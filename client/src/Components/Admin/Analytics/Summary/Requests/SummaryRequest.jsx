@@ -3,6 +3,11 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './SummaryRequest.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const SummaryRequests = () => {
     const [requestSummary, setRequestSummary] = useState([]);
     const [barangaySummary, setBarangaySummary] = useState([]);
@@ -10,7 +15,7 @@ const SummaryRequests = () => {
     useEffect(() => {
         const fetchRequestSummary = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/requests-summary');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/requests-summary`);
                 setRequestSummary(response.data);
             } catch (error) {
                 console.error('Error fetching request summary:', error);
@@ -19,7 +24,7 @@ const SummaryRequests = () => {
 
         const fetchBarangaySummary = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/barangay-summary');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/barangay-summary`);
                 setBarangaySummary(response.data);
             } catch (error) {
                 console.error('Error fetching barangay summary:', error);

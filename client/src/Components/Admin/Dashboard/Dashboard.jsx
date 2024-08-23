@@ -21,6 +21,11 @@ import defaultmapicon from '../../Assets/location.png';
 
 import 'leaflet/dist/leaflet.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const fireMapIcon = new L.Icon({
     iconUrl: firemapicon,
     iconSize: [25, 25],
@@ -86,7 +91,7 @@ const Dashboard = () => {
                     console.error("User ID not found in session storage");
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/user/${userId}`, { withCredentials: true });
                 setUserBarangay(response.data.barangay);
                 setUserUsername(response.data.username);
             } catch (error) {
@@ -100,7 +105,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/admin');
+                const response = await axios.get(`${apiBaseUrl}/api/admin`);
                 setReports(response.data);
             } catch (error) {
                 console.error('Error fetching reports:', error);
@@ -156,7 +161,7 @@ const Dashboard = () => {
 
     const respondToReport = async () => {
         try {
-            await axios.post('http://localhost:3001/api/respondtoreport', { reportId: selectedReport._id, responder: userBarangay });
+            await axios.post(`${apiBaseUrl}/api/respondtoreport`, { reportId: selectedReport._id, responder: userBarangay });
             setIsResponded(true);
             await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
             closeModal();
@@ -167,7 +172,7 @@ const Dashboard = () => {
 
     const archiveReport = async () => {
         try {
-            await axios.post('http://localhost:3001/api/archivereport', { reportId: selectedReport._id });
+            await axios.post(`${apiBaseUrl}/api/archivereport`, { reportId: selectedReport._id });
             await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
             closeModal();
         } catch (error) {
@@ -177,7 +182,7 @@ const Dashboard = () => {
 
     const denyReport = async () => {
         try {
-            await axios.post('http://localhost:3001/api/deny', { reportId: selectedReport._id, responder: userBarangay });
+            await axios.post(`${apiBaseUrl}/api/deny`, { reportId: selectedReport._id, responder: userBarangay });
             await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
             closeModal();
         } catch (error) {
@@ -276,7 +281,7 @@ const Dashboard = () => {
                                             <h3>{report.name}</h3>
                                             <p><b>Type:</b> {report.type}</p>
                                             <p><b>Status:</b> {report.status}</p>
-                                            <p><b>Location: </b> {report.location}</p>
+                                            <p><b>Location:</b> {report.location}</p>
                                             <p>
                                                 <b>Date and Time: </b>
                                                 {new Date(report.report_date_time).toLocaleString('en-US', {

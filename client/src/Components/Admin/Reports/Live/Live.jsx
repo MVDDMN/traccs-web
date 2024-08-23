@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Live.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const Live = () => {
     const [reports, setReports] = useState([]);
     const [selectedReport, setSelectedReport] = useState(null);
@@ -17,7 +22,7 @@ const Live = () => {
                     console.error("User ID not found in session storage");
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserBarangay(response.data.barangay);
                 setUserUsername(response.data.username);
             } catch (error) {
@@ -31,7 +36,7 @@ const Live = () => {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/admin');
+                const response = await axios.get(`${apiBaseUrl}/api/admin`);
                 setReports(response.data);
             } catch (error) {
                 console.error('Error fetching reports:', error);
@@ -106,7 +111,7 @@ const Live = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
@@ -114,7 +119,7 @@ const Live = () => {
 
     const respondToReport = async () => {
         try {
-            await axios.post('http://localhost:3001/api/respondtoreport', { reportId: selectedReport._id, responder: userBarangay });
+            await axios.post(`${apiBaseUrl}/api/respondtoreport`, { reportId: selectedReport._id, responder: userBarangay });
             await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
 
             // Update the status of the selected report in the state
@@ -137,7 +142,7 @@ const Live = () => {
                 completion_date_time: new Date().toISOString().replace('Z', '+08:00'),
             };
 
-            await axios.post('http://localhost:3001/api/archivereport', reportToArchive);
+            await axios.post(`${apiBaseUrl}/api/archivereport`, reportToArchive);
             await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
 
             // Update the status of the selected report in the state
@@ -154,7 +159,7 @@ const Live = () => {
 
     const denyReport = async () => {
         try {
-            await axios.post('http://localhost:3001/api/deny', { reportId: selectedReport._id, responder: userBarangay });
+            await axios.post(`${apiBaseUrl}/api/deny`, { reportId: selectedReport._id, responder: userBarangay });
             await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
             closeModal();
         } catch (error) {

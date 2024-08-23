@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Archive.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const Archive = () => {
     const [archives, setArchives] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +39,7 @@ const Archive = () => {
                     // Handle the case when userId is not available
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserType(response.data.type);
                 setUserUsername(response.data.username);
             } catch (error) {
@@ -48,7 +53,7 @@ const Archive = () => {
     useEffect(() => {
         const fetchArchives = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/archives');
+                const response = await axios.get(`${apiBaseUrl}/api/archives`);
                 setArchives(response.data);
             } catch (error) {
                 console.error('Error fetching archives:', error);
@@ -106,7 +111,7 @@ const Archive = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
@@ -114,7 +119,7 @@ const Archive = () => {
 
     const deleteArchive = async () => {
         try {
-            await axios.post('http://localhost:3001/api/deleteArchive', { archiveId: selectedArchive._id });
+            await axios.post(`${apiBaseUrl}/api/deleteArchive`, { archiveId: selectedArchive._id });
             setArchives(archives.filter(archive => archive._id !== selectedArchive._id));
             await logAdminAction('Archive', { archiveId: selectedArchive._id }, 'Deleted a report');
             closeModal();
@@ -125,7 +130,7 @@ const Archive = () => {
 
     const addToHistoryMap = async () => {
         try {
-            await axios.post('http://localhost:3001/api/addToHistoryMap', { archiveId: selectedArchive._id });
+            await axios.post(`${apiBaseUrl}/api/addToHistoryMap`, { archiveId: selectedArchive._id });
             await logAdminAction('Archive', { archiveId: selectedArchive._id }, 'Added a report to history map');
             setArchives(archives.filter(archive => archive._id !== selectedArchive._id));
             closeModal();

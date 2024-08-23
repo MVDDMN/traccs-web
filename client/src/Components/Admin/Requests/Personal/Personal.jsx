@@ -3,6 +3,11 @@ import axios from 'axios';
 import './Personal.css';
 import { validateFormData, hasErrors } from './validation';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const Personal = () => {
     const [requests, setRequests] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -31,7 +36,7 @@ const Personal = () => {
                     console.error("User ID not found in session storage");
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserUsername(response.data.username);
                 setUserBarangay(response.data.barangay);
             } catch (error) {
@@ -41,7 +46,7 @@ const Personal = () => {
 
         const fetchRequests = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/requests');
+                const response = await axios.get(`${apiBaseUrl}/api/requests`);
                 const formattedRequests = response.data.map(request => ({
                     ...request,
                     date_time: formatDate(new Date(request.date_time))
@@ -145,7 +150,7 @@ const Personal = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
@@ -159,7 +164,7 @@ const Personal = () => {
         }
 
         try {
-            await axios.put(`http://localhost:3001/api/requests/${selectedRequest._id}`, selectedRequest);
+            await axios.put(`${apiBaseUrl}/api/requests/${selectedRequest._id}`, selectedRequest);
             await logAdminAction('Edit', { requestId: selectedRequest._id, barangay: userBarangay }, 'Updated a request');
 
             closeModal();
@@ -182,7 +187,7 @@ const Personal = () => {
                 barangay: userBarangay,
                 date_time: formatDate(new Date()) // Format current date and time
             };
-            await axios.post(`http://localhost:3001/api/requests`, requestData);
+            await axios.post(`${apiBaseUrl}/api/requests`, requestData);
             await logAdminAction('Add', { username: userUsername, updatedData: formData }, 'Added a request');
             closeModal();
         } catch (error) {
@@ -202,7 +207,7 @@ const Personal = () => {
 
     const handleDeleteRequest = async () => {
         try {
-            await axios.delete(`http://localhost:3001/api/requests/${requestToDelete._id}`);
+            await axios.delete(`${apiBaseUrl}/api/requests/${requestToDelete._id}`);
             setRequests(requests.filter(request => request._id !== requestToDelete._id));
             await logAdminAction('Delete', { requestId: requestToDelete._id }, 'Deleted a request');
             closeModalDelete();

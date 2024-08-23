@@ -9,6 +9,11 @@ import logo2 from '../Assets/logo2.png';
 import './Login.css';
 import { validateUsername, validatePassword } from './loginauth';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -27,7 +32,7 @@ const Login = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging the login attempt:", error);
         }
@@ -41,7 +46,7 @@ const Login = () => {
         }
     
         try {
-            const response = await axios.post("http://localhost:3001/api/login", { username, password }, { withCredentials: true });
+            const response = await axios.post(`${apiBaseUrl}/api/login`, { username, password }, { withCredentials: true });
             if (response.data.message === "Success") {
                 await logLoginAttempt('Success', 'User logged in successfully.');
                 navigate("/admin");

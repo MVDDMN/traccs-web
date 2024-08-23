@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Community.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const Community = () => {
     const [communities, setCommunities] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -12,7 +17,7 @@ const Community = () => {
     useEffect(() => {
         const fetchCommunities = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/communities');
+                const response = await axios.get(`${apiBaseUrl}/api/communities`);
                 setCommunities(response.data);
             } catch (error) {
                 console.error("Error fetching communities:", error);

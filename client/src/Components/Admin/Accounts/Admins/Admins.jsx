@@ -10,6 +10,11 @@ import {
     validateType
 } from './inputValidation';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const Admins = () => {
     const [admins, setAdmins] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +35,7 @@ const Admins = () => {
                     console.error("User ID not found in session storage");
                     return;
                 }
-                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserUsername(response.data.username);
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -43,7 +48,7 @@ const Admins = () => {
     useEffect(() => {
         const fetchAdmins = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/administrators');
+                const response = await axios.get(`${apiBaseUrl}:3001/api/administrators`);
                 setAdmins(response.data);
             } catch (error) {
                 console.error("Error fetching admins:", error);
@@ -88,7 +93,7 @@ const Admins = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
@@ -102,7 +107,7 @@ const Admins = () => {
 
                 if (!isEditMode) {
                     // Check if username or email already exists (only for adding)
-                    const duplicateCheckResponse = await axios.post('http://localhost:3001/api/check-duplicate', {
+                    const duplicateCheckResponse = await axios.post(`${apiBaseUrl}/api/check-duplicate`, {
                         username: formData.username,
                         email: formData.email
                     });
@@ -117,10 +122,10 @@ const Admins = () => {
                 // Proceed if duplicate check passed or if editing
                 if (duplicateCheckPassed) {
                     if (isEditMode) {
-                        await axios.put(`http://localhost:3001/api/administrators/${selectedAdminId}`, formData);
+                        await axios.put(`${apiBaseUrl}/api/administrators/${selectedAdminId}`, formData);
                         await logAdminAction('Edit', { adminId: selectedAdminId, updatedData: formData }, 'Edited admin details');
                     } else {
-                        await axios.post('http://localhost:3001/api/administrators', formData);
+                        await axios.post(`${apiBaseUrl}/api/administrators`, formData);
                         await logAdminAction('Add', formData, 'Added new admin');
                     }
 
@@ -140,7 +145,7 @@ const Admins = () => {
 
     const handleDeleteAdmin = async () => {
         try {
-            await axios.delete(`http://localhost:3001/api/administrators/${selectedAdminId}`);
+            await axios.delete(`${apiBaseUrl}/api/administrators/${selectedAdminId}`);
         } catch (error) {
             console.error("Error deleting admin:", error);
         }
