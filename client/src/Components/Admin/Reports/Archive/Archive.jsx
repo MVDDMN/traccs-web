@@ -6,10 +6,12 @@ const Archive = () => {
     const [archives, setArchives] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedArchive, setSelectedArchive] = useState(null);
+    const [userType, setUserType] = useState('');
+    const [userUsername, setUserUsername] = useState('');
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8;
+    const itemsPerPage = 7;
 
     // Filtering state
     const [selectedTypes, setSelectedTypes] = useState({
@@ -23,10 +25,30 @@ const Archive = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [monthDropdownOpen, setMonthDropdownOpen] = useState(false);
 
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userId = sessionStorage.getItem('userId');
+                if (!userId) {
+                    // Handle the case when userId is not available
+                    return;
+                }
+                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                setUserType(response.data.type);
+                setUserUsername(response.data.username);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
     useEffect(() => {
         const fetchArchives = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/archives');
+                const response = await axios.get('http://localhost:3001/api/archives');
                 setArchives(response.data);
             } catch (error) {
                 console.error('Error fetching archives:', error);
@@ -43,7 +65,8 @@ const Archive = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const filteredArchives = archives.filter(archive => {
-        const archiveMonth = new Date(archive.date).toLocaleString('default', { month: 'long' });
+        const archiveDate = new Date(archive.report_date_time);
+        const archiveMonth = archiveDate.toLocaleString('default', { month: 'long' });
         return selectedTypes[archive.type] && (selectedMonths.length === 0 || selectedMonths.includes(archiveMonth));
     });
     const currentArchives = filteredArchives.slice(indexOfFirstItem, indexOfLastItem);
@@ -71,10 +94,29 @@ const Archive = () => {
         setSelectedArchive(null);
     };
 
+    const logAdminAction = async (action, adminData, description) => {
+        const logEntry = {
+            username: userUsername,
+            action,
+            adminData,
+            type: 'Report Module',
+            description,
+            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        };
+
+        try {
+            await axios.post("http://localhost:3001/api/logs", logEntry);
+        } catch (error) {
+            console.error("Error logging admin action:", error);
+        }
+    };
+
     const deleteArchive = async () => {
         try {
-            await axios.post('http://localhost:3001/deleteArchive', { archiveId: selectedArchive._id });
+            await axios.post('http://localhost:3001/api/deleteArchive', { archiveId: selectedArchive._id });
             setArchives(archives.filter(archive => archive._id !== selectedArchive._id));
+            await logAdminAction('Archive', { archiveId: selectedArchive._id }, 'Deleted a report');
             closeModal();
         } catch (error) {
             console.error('Error deleting archive:', error);
@@ -83,7 +125,8 @@ const Archive = () => {
 
     const addToHistoryMap = async () => {
         try {
-            await axios.post('http://localhost:3001/addToHistoryMap', { archiveId: selectedArchive._id });
+            await axios.post('http://localhost:3001/api/addToHistoryMap', { archiveId: selectedArchive._id });
+            await logAdminAction('Archive', { archiveId: selectedArchive._id }, 'Added a report to history map');
             setArchives(archives.filter(archive => archive._id !== selectedArchive._id));
             closeModal();
         } catch (error) {
@@ -123,9 +166,9 @@ const Archive = () => {
 
     return (
         <div className='archive-content-box'>
-            
+
             <div className="filters-content-box">
-                
+
                 <div className='type-dropdown-box'>
                     <button onClick={toggleDropdown} className="type-dropdown-button">Sort by Type</button>
                     {dropdownOpen && (
@@ -167,14 +210,21 @@ const Archive = () => {
 
             <div className='archive-table-container'>
                 <div className='archive-table-box'>
+                    <div className='archive-table-title-box'>
+                        <a className='archive-table-title-text'>History Reports</a>
+                        <a className='archive-table-description'>
+                            ⓘ
+                            <span className='tooltip-text'>This page contains all the list of historical reports made by the users.</span>
+                        </a>
+                    </div>
                     <table className='archive-table'>
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Type</th>
-                                <th>Date</th>
-                                <th>Time</th>
+                                <th>Date and Time</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -184,10 +234,20 @@ const Archive = () => {
                                     <td>{archive._id}</td>
                                     <td>{archive.name}</td>
                                     <td>{archive.type}</td>
-                                    <td>{archive.date}</td>
-                                    <td>{archive.time}</td>
+                                    <td>{new Date(archive.report_date_time).toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: true,
+                                        timeZone: 'Asia/Manila'
+                                    })}
+                                    </td>
+                                    <td>{archive.status}</td>
                                     <td>
-                                        <button onClick={() => handleViewArchive(archive)} className='table-view-button'>
+                                        <button onClick={() => handleViewArchive(archive)} className='archive-table-view-button'>
                                             View Information
                                         </button>
                                     </td>
@@ -199,78 +259,122 @@ const Archive = () => {
 
                 <div className='pagination'>
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
-                    <span>Page {currentPage} of {totalPages}</span>
+                    <span className='archive-table-page-number'>Page {currentPage} of {totalPages}</span>
                     <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
                 </div>
             </div>
 
             {isModalOpen && selectedArchive && (
-                <div className="reports-modal">
-                    <div className="reports-modal-content">
-                        <div className='reports-modal-content-box'>
-                            <div className='close-modal-button-box'>
-                                <button onClick={closeModal} className='close-modal-button'>X</button>
+                <div className="archive-reports-modal">
+                    <div className="archive-reports-modal-content">
+                        <div className='archive-eports-modal-content-box'>
+                            <div className='archive-close-modal-button-box'>
+                                <button onClick={closeModal} className='archive-close-modal-button'>X</button>
                             </div>
 
-                            <div className='reports-title-box'>
-                                <h2>Archive Details</h2>
+                            <div className='archive-reports-title-box'>
+                                <a className='archive-reports-title-box-text'>
+                                    Report Details
+                                </a>
                             </div>
 
-                            <div className='reports-details-container'>
-                                <div className='reports-details-modal-box'>
-                                    <div className='reports-text-box'>
-                                        <a className='reports-title-text'>
+                            <div className='archive-reports-details-container'>
+                                <div className='archive-reports-details-modal-box'>
+                                    <div className='archive-reports-text-box'>
+                                        <a className='archive-reports-title-text'>
                                             Report Type:
-                                            <b className='reports-content-text'>{selectedArchive.type}</b>
+                                            <b className='archive-reports-content-text'>{selectedArchive.type}</b>
+                                        </a>
+                                        <a className='archive-reports-title-text'>
+                                            Responder:
+                                            <b className='archive-reports-content-text'>{selectedArchive.responder}</b>
                                         </a>
                                     </div>
-                                    <div className='reports-text-box'>
-                                        <a className='reports-title-text'>
+                                    <div className='archive-reports-text-box'>
+                                        <a className='archive-reports-title-text'>
                                             ID:
-                                            <b className='reports-content-text'>{selectedArchive._id}</b>
+                                            <b className='archive-reports-content-text'>{selectedArchive._id}</b>
                                         </a>
-                                        <a className='reports-title-text'>
+                                        <a className='archive-reports-title-text'>
                                             Name:
-                                            <b className='reports-content-text'>{selectedArchive.name}</b>
+                                            <b className='archive-reports-content-text'>{selectedArchive.name}</b>
                                         </a>
                                     </div>
-                                    <div className='reports-text-box'>
-                                        <a className='reports-title-text'>
-                                            Date:
-                                            <b className='reports-content-text'>{selectedArchive.date}</b>
+                                    <div className='archive-reports-text-box'>
+                                        <a className='archive-reports-title-text'>
+                                            Date & Time:
+                                            <b className='archive-reports-content-text'>
+                                                {new Date(selectedArchive.report_date_time).toLocaleString
+                                                    ('en-US',
+                                                        {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit',
+                                                            hour12: true,
+                                                            timeZone: 'Asia/Manila'
+                                                        }
+                                                    )
+                                                }
+                                            </b>
                                         </a>
-                                        <a className='reports-title-text'>
-                                            Time:
-                                            <b className='reports-content-text'>{selectedArchive.time}</b>
+                                        <a className='archive-reports-title-text'>
+                                            Status:
+                                            <b className='archive-reports-content-text'>{selectedArchive.status}</b>
                                         </a>
                                     </div>
-                                    <div className='reports-text-box'>
-                                        <a className='reports-title-text'>
-                                            Address:
-                                            <b className='reports-content-text'>{selectedArchive.address}</b>
-                                        </a>
-                                        <a className='reports-title-text'>
-                                            Location:
-                                            <b className='reports-content-text'>{selectedArchive.location}</b>
-                                        </a>
+                                    <div className='archive-reports-text-box'>
+                                        {selectedArchive.address && (
+                                            <a className='archive-reports-title-text'>
+                                                Address:
+                                                <b className='archive-reports-content-text'>{selectedArchive.address}</b>
+                                            </a>
+                                        )}
+                                        {selectedArchive.location && (
+                                            <a className='archive-reports-title-text'>
+                                                Location:
+                                                <b className='archive-reports-content-text'>{selectedArchive.location}</b>
+                                            </a>
+                                        )}
                                     </div>
-                                    <div className='reports-description-box'>
-                                        <a className='description-title-text'>Description</a>
-                                        <textarea className='reports-description-area' value={selectedArchive.description} readOnly />
+                                    <div className='archive-reports-description-box'>
+                                        <a className='archive-description-title-text'>Description</a>
+                                        <div className='archive-reports-description-area'>
+                                            {selectedArchive.description.fire_type && <p><b>Fire Type:</b> {selectedArchive.description.fire_type}</p>}
+                                            {selectedArchive.description.severity && <p><b>Severity:</b> {selectedArchive.description.severity}</p>}
+                                            {selectedArchive.description.visible_flames && <p><b>Visible Flames:</b> {selectedArchive.description.visible_flames}</p>}
+                                            {selectedArchive.description.smoke && <p><b>Smoke:</b> {selectedArchive.description.smoke}</p>}
+                                            {selectedArchive.description.crime_type && <p><b>Crime Type:</b> {selectedArchive.description.crime_type}</p>}
+                                            {selectedArchive.description.in_progress && <p><b>In Progress:</b> {selectedArchive.description.in_progress}</p>}
+                                            {selectedArchive.description.collision_type && <p><b>Collision Type:</b> {selectedArchive.description.collision_type}</p>}
+                                            {selectedArchive.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedArchive.description.severity_of_accident}</p>}
+                                            {selectedArchive.description.blocked_road && <p><b>Blocked Road:</b> {selectedArchive.description.blocked_road}</p>}
+                                            {selectedArchive.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedArchive.description.number_of_people_involved}</p>}
+                                            {selectedArchive.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedArchive.description.medical_emergency_type}</p>}
+                                            {selectedArchive.description.consciousness && <p><b>Consciousness:</b> {selectedArchive.description.consciousness}</p>}
+                                            {selectedArchive.description.hazard_type && <p><b>Hazard Type:</b> {selectedArchive.description.hazard_type}</p>}
+                                            <p><b>Additional Description:</b> {selectedArchive.description.additional_description}</p>
+                                        </div>
                                     </div>
-                                    <div className='reports-description-box'>
-                                        <a className='description-title-text'>Images</a>
-                                        <div className='reports-image-box'>
-                                            {selectedArchive && selectedArchive.image && selectedArchive.image.map((imageUrl, index) => (
+                                    <div className='archive-reports-description-box'>
+                                        <a className='archive-description-title-text'>Images</a>
+                                        <div className='archive-reports-image-box'>
+                                            {selectedArchive && selectedArchive.images && selectedArchive.images.map((imageUrl, index) => (
                                                 <img key={index} src={imageUrl} alt={`Archive Image ${index + 1}`} />
                                             ))}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className='update-modal-button-box'>
-                                <button onClick={deleteArchive} className='delete-modal-button'>Delete</button>
-                                <button onClick={addToHistoryMap} className='update-modal-button'>Add to History Map</button>
+                            <div className='archive-update-modal-button-box'>
+                                {userType !== "Barangay" && selectedArchive.status !== "Archived" && (
+                                    <button onClick={deleteArchive} className='archive-delete-modal-button'>Delete</button>
+                                )}
+                                {userType !== "Barangay" && selectedArchive.status !== "Denied" && (
+                                    <button onClick={addToHistoryMap} className='archive-update-modal-button'>Add to History Map</button>
+                                )}
                             </div>
                         </div>
                     </div>

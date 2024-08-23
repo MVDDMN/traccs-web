@@ -1,0 +1,153 @@
+const express = require("express");
+const bcrypt = require("bcrypt");
+const adminModel = require('../models/admin');
+const usersModel = require('../models/users');
+const router = express.Router();
+
+// Accounts Module - Show admins
+router.get("/administrators", async (req, res) => {
+    try {
+        const admins = await adminModel.find();
+        res.json(admins);
+    } catch (err) {
+        res.status(500).json("Internal server error");
+    }
+});
+
+// Accounts Module - Add admin
+router.post('/administrators', async (req, res) => {
+    try {
+        const { name, email, username, password, barangay, type } = req.body;
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newAdmin = new adminModel({
+            name,
+            email,
+            username,
+            password: hashedPassword,
+            barangay,
+            type
+        });
+
+        await newAdmin.save();
+        res.status(201).json(newAdmin);
+    } catch (error) {
+        console.error("Error adding administrator:", error); // Log the error
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Accounts Module - Update admin
+router.put('/administrators/:id', async (req, res) => {
+    const adminId = req.params.id;
+    const { name, email, username, password, barangay, type } = req.body;
+
+    try {
+        const admin = await adminModel.findById(adminId);
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+
+        // Only hash the password if it is being updated
+        if (password) {
+            admin.password = await bcrypt.hash(password, 10);
+        }
+
+        admin.name = name || admin.name;
+        admin.email = email || admin.email;
+        admin.username = username || admin.username;
+        admin.barangay = barangay || admin.barangay;
+        admin.type = type || admin.type;
+
+        const updatedAdmin = await admin.save();
+
+        res.json(updatedAdmin);
+    } catch (err) {
+        console.error("Error updating administrator:", err); // Log the error
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Account Module - Check Duplicates
+router.post('/check-duplicate', async (req, res) => {
+    const { username, email } = req.body;
+
+    try {
+        // Check if either username or email exists
+        const existingAdmin = await adminModel.findOne({
+            $or: [{ username }, { email }]
+        });
+
+        if (existingAdmin) {
+            return res.status(400).json({ message: 'Username or email already exists' });
+        }
+
+        return res.status(200).json({ message: 'Available' });
+    } catch (error) {
+        console.error("Error checking duplicate:", error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Accounts Module - Delete admin
+router.delete('/administrators/:id', async (req, res) => {
+    const adminId = req.params.id;
+    try {
+        const deletedAdmin = await adminModel.findByIdAndDelete(adminId);
+        if (!deletedAdmin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+        res.json({ message: "Admin deleted successfully" });
+    } catch (err) {
+        res.status(500).json("Internal server error");
+    }
+});
+
+// Accounts Module - Show users
+router.get("/users", async (req, res) => {
+    try {
+        const users = await usersModel.find();
+        res.json(users);
+    } catch (err) {
+        res.status(500).json("Internal server error");
+    }
+});
+
+// Account Module - Update user status (verify/unverify)
+router.put('/users/:id/status', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const newStatus = req.body.status;  // e.g., "Verified" or "Unverified"
+
+        const updatedUser = await usersModel.findByIdAndUpdate(
+            userId,
+            { status: newStatus },
+            { new: true }
+        );
+
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating user status', error });
+    }
+});
+
+// Account Module - Delete user by ID
+router.delete('/users/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const deletedUser = await usersModel.findByIdAndDelete(userId);
+        
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting user', error });
+    }
+});
+
+
+module.exports = router;

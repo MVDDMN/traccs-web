@@ -1,17 +1,34 @@
-const mongoose = require ("mongoose")
+const mongoose = require("mongoose");
 
 const reportsSchema = new mongoose.Schema({
     name: String,
-    date: String,
-    time: String,
-    address: String,
-    location: String,
+    responder: String,
     type: String,
+    location: String,
+    address: String,
     status: String,
-    description: String,
-    image: [String]
-})
+    report_date_time: String,
+    respond_date_time: String,
+    completion_date_time: String,
+    images: [String],
+    description: {
+        fire_type: String,
+        severity: String,
+        visible_flames: String,
+        smoke: String,
+        crime_type: String,
+        in_progress: String,
+        collision_type: String,
+        severity_of_accident: String,
+        blocked_road: String,
+        number_of_people_involved: String,
+        medical_emergency_type: String,
+        consciousness: String,
+        hazard_type: String,
+        additional_description: String
+    },
+},{ timestamps: true });
 
-const reportsModel = mongoose.model("reports", reportsSchema)
+const reportsModel = mongoose.model("reports", reportsSchema);
 
-module.exports = reportsModel
+module.exports = reportsModel;

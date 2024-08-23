@@ -23,7 +23,7 @@
 .dashboard-reports-content {
     display: inline-flex;
     flex-direction: row;
-    height: 90px;
+    height: 87px;
     width: auto;
     padding: 10px;
     gap: 20px;
@@ -51,6 +51,11 @@
     background: #0A1B57;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.5);
 }
+
+.selected-frame {
+    background: #040f3a;
+}
+
 
 .accident-icon {
     height: 75px;
@@ -128,8 +133,8 @@
     background-color: #0A1B57;
 }
 
-/*Modal*/
-.reports-modal {
+/*Report Modal*/
+.dashboard-reports-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -143,24 +148,24 @@
     z-index: 9999;
 }
 
-.reports-modal-content {
+.dashboard-reports-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 700px;
+    height: 675px;
     width: 850px;
     padding: 25px;
     background-color: white;
     border-radius: 5px;
 }
 
-.reports-modal-content-box {
+.dashboard-reports-modal-content-box {
     display: inline-flex;
     flex-direction: column;
-    height: 100%;
-    width: 100%;
+    height: auto;
+    width: auto;
 }
 
-.close-modal-button {
+.dashboard-close-modal-button {
     background: none;
     border: none;
     padding: 0;
@@ -170,70 +175,104 @@
     font-weight: 900;
 }
 
-.close-modal-button:hover {
+.dashboard-close-modal-button:hover {
     color: gray;
 }
 
-.reports-title-box h2 {
+.dashboard-reports-title-box {
     display: inline-flex;
     flex-direction: column;
-    align-items: center;
+    height: 100%;
     width: 100%;
+    align-items: center;
+}
+
+.dashboard-reports-title-box-text{
+    font-size: 24px;
     font-weight: 300;
 }
 
-.reports-details-container {
+.dashboard-reports-details-container {
     display: inline-flex;
     flex-direction: row;
     height: auto;
     width: auto;
 }
 
-.reports-details-modal-box {
+.dashboard-reports-details-modal-box {
     display: inline-flex;
     flex-direction: column;
     height: 100%;
     width: 100%;
 }
 
-.reports-text-box {
+.dashboard-reports-text-box {
     display: inline-flex;
     flex-direction: row;
     width: 100%;
 }
 
-.reports-title-text {
+.dashboard-reports-title-text {
     display: inline-flex;
     flex-direction: column;
     color: #000;
     padding: 5px;
-    gap: 10px;
+    gap: 5px;
     width: 100%;
 }
 
-.reports-content-text {
+.dashboard-reports-content-text {
     color: #000;
     border-bottom: 2px solid gray;
     font-weight: bold;
     width: auto;
 }
 
-.reports-description-box {
+.dashboard-reports-description-box {
     display: inline-flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     width: 100%;
 }
 
-.reports-description-area {
-    height: 50px;
+.dashboard-reports-description-area {
+    height: 100px;
+    max-height: 150px;
+    overflow-y: auto;
     width: auto;
     border-radius: 5px;
+    border: 2px solid gray;
     padding: 10px;
-    resize: none;
+    overflow-y: scroll;
 }
 
-.reports-image-box {
+.dashboard-reports-description-area::-webkit-scrollbar {
+    width: 12px;
+}
+
+.dashboard-reports-description-area::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+}
+
+.dashboard-reports-description-area::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+.dashboard-reports-description-area::-webkit-scrollbar-track {
+    background-color: #ddd;
+    border-radius: 6px;
+}
+
+.dashboard-description-title-text {
+    font-weight: normal;
+}
+
+.dashboard-reports-description-area p {
+    margin: 5px 0;
+}
+
+.dashboard-reports-image-box {
     height: 150px;
     width: auto;
     border: 1px solid gray;
@@ -241,19 +280,19 @@
     padding: 10px;
 }
 
-.reports-image-box {
+.dashboard-reports-image-box {
     display: inline-flex;
     flex-direction: row;
     justify-content: center;
     overflow: hidden;
 }
 
-.reports-image-box img {
+.dashboard-reports-image-box img {
     margin-right: 10px;
     width: 300px;
 }
 
-.update-modal-button-box {
+.dashboard-update-modal-button-box {
     display: inline-flex;
     flex-direction: row;
     justify-content: right;
@@ -263,7 +302,7 @@
     width: 100%;
 }
 
-.update-modal-button {
+.dashboard-update-modal-button {
     background-color: #0E267C;
     height: 50px;
     width: 150px;
@@ -280,11 +319,11 @@
     padding: 15px;
 }
 
-.update-modal-button:hover {
+.dashboard-update-modal-button:hover {
     background-color: #0A1B57;
 }
 
-.deny-modal-button {
+.dashboard-deny-modal-button {
     background-color: red;
     height: 50px;
     width: 150px;
@@ -301,6 +340,98 @@
     padding: 15px;
 }
 
-.deny-modal-button:hover {
+.dashboard-deny-modal-button:hover {
     background-color: darkred;
 }
+/*End of Report Modal*/
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .accident-frame {
+        width: 200px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+    .accident-title {
+        font-size: 14px;
+    }
+    #map {
+        height: 665.5px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .accident-frame {
+        width: 175px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+    .accident-title {
+        font-size: 14px;
+    }
+    #map {
+        height: 563px;
+    }
+    /*Report Modal Content*/
+    .dashboard-reports-modal-content {
+        height: 600px;
+        width: 800px;
+    }
+    .dashboard-reports-title-text {
+        font-size: 14px;
+    }
+    .dashboard-reports-description-area {
+        height: 50px;
+        font-size: 12px;
+    }
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .accident-frame {
+        width: 135px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+    .accident-title {
+        font-size: 11px;
+    }
+    #map {
+        height: 437.5px;
+    }
+    /*Report Modal Content*/
+    .dashboard-reports-modal-content {
+        height: 500px;
+        width: 800px;
+    }
+    .dashboard-reports-title-box-text{
+        font-size: 16px;
+    }
+    .dashboard-reports-title-text {
+        font-size: 12px;
+    }
+    .dashboard-reports-description-area {
+        height: 40px;
+        font-size: 12px;
+    }
+    .dashboard-reports-image-box {
+        height: 100px;
+    }
+    .dashboard-reports-image-box img {
+        width: 200px;
+    }
+    .dashboard-update-modal-button {
+        height: 40px;
+        width: 100px;
+        font-size: 10px;
+    }
+    .dashboard-deny-modal-button {
+        height: 40px;
+        width: 100px;
+        font-size: 10px;
+    }
+}
+
+

@@ -1,0 +1,27 @@
+.analyticssummary-module-content {
+    display: inline-flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.analyticssummary-charts-container {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 95%;
+    gap: 5px;
+    padding: 20px;
+}
+
+.analyticssummary-charts-box {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    height: auto;
+    width: 100%;
+    gap: 5px;
+}

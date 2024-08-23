@@ -1,0 +1,119 @@
+.requests-stats-container {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 400px;
+    height: 300px;
+}
+
+.requests-stats-title-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.requests-stats-title {
+    font-size: 18px;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+}
+
+.requests-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.requests-stats-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-radius: 5px;
+    width: 350px;
+    justify-content: space-between;
+    background-color: #0E267C;
+}
+
+.requests-stats-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.requests-stats-item-title {
+    font-size: 18px;
+    font-weight: 300;
+    color: white;
+}
+
+.requests-stats-info p {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+}
+
+.requests-stat-icon {
+    width: 50px;
+    height: 50px;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .requests-stats-container {
+        height: 250px;
+        width: 400px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .requests-stats-container {
+        height: 190px;
+        width: 350px;
+    }
+    .requests-stats-item {
+        padding: 5px;
+        width: 350px;
+    }
+    .requests-stats-item-title {
+        font-size: 16px;
+    }
+    .requests-stats-info p {
+        font-size: 20px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .requests-stats-container {
+        height: 125px;
+        width: 250px;
+    }
+    .requests-stats-title {
+        font-size: 12px;
+    }
+    .requests-stats-item {
+        padding: 5px;
+        width: 250px;
+    }
+    .requests-stats-item-title {
+        font-size: 12px;
+    }
+    .requests-stats-info p {
+        font-size: 10px;
+    }
+    .requests-stat-icon {
+        width: 25px;
+        height: 25px;
+    }
+}

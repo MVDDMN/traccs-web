@@ -47,9 +47,8 @@ const Contact = () => {
                                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.8169108238712!2d121.13060759999999!3d14.552460299999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397c70154ec8c45%3A0x424bb684e94f1b19!2sTaytay%20Municipal%20Hall!5e0!3m2!1sen!2sph!4v1716733028523!5m2!1sen!2sph"
                                     width="400"
                                     height="300"
-                                    allowfullscreen=""
                                     loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade">
+                                    referrerPolicy="no-referrer-when-downgrade">
                                 </iframe>
                             </div>
 

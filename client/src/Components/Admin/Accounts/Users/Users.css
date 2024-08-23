@@ -1,0 +1,311 @@
+.accounts-content-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.accounts-table-container {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 95%;
+    gap: 10px;
+    background-color: #f2f2f2;
+    box-shadow: 0px 5px 5px 5px rgba(0, 0, 0, 0.25);
+    padding: 20px;
+    border-radius: 20px;
+}
+
+/*Resource Buttons*/
+.accounts-button-box {
+    display: inline-flex;
+    flex-direction: row;
+    align-self: flex-end;
+    padding: 20px;
+    gap: 20px;
+    height: 100%;
+    width: auto;
+}
+
+.add-accounts-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 150px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.add-accounts-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}
+
+/*Resource Table*/
+.accounts-table-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: 610px;
+}
+
+.accounts-table-title-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.accounts-table-title-text {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 5px;
+    gap: 10px;
+    width: auto;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.accounts-table-description {
+    color: gray;
+    font-weight: 300;
+}
+
+.accounts-table-description:hover {
+    color: #000;
+    font-weight: 600;
+}
+
+.accounts-table-description:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.accounts-table {
+    background-color: #f0f0f0;
+    overflow-y: auto;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+.accounts-table th,
+.accounts-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    height: 25px;
+}
+
+.accounts-table th {
+    background-color: #f2f2f2;
+}
+
+.accounts-table tr:nth-child(odd) td {
+    background-color: #d3d3d3;
+}
+
+
+.action-button-box {
+    display: inline-flex;
+    flex-direction: row;
+    height: auto;
+    width: auto;
+    gap: 10px;
+}
+
+.view-accounts-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 75px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.view-accounts-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}
+
+.delete-accounts-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    height: 40px;
+    width: 75px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-accounts-button:hover {
+    background-color: darkred;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}
+
+/* Modal */
+.users-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+}
+
+.users-modal-content-box {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    width: 800px;
+    padding: 25px;
+    gap: 5px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.users-title-box {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.users-title-text {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+.users-text-box {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    gap: 20px;
+}
+
+.users-details-text {
+    padding: 10px;
+    text-align: left;
+    font-size: 15px;
+    border: none;
+    border-bottom: 2px solid gray;
+    outline: none;
+    font-weight: bold;
+    width: auto;
+}
+
+.users-content-box {
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.users-button-box {
+    display: inline-flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    justify-content: end;
+}
+
+.users-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 150px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    align-self: flex-end;
+}
+
+.users-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .accounts-table-box {
+        height: 529px;
+    }
+    .accounts-table th,
+    .accounts-table td {
+        padding: 4px;
+        height: 25px;
+    }
+    
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .accounts-table-box {
+        height: 427px;
+    }
+    .accounts-table th,
+    .accounts-table td {
+        padding: 3px;
+        height: 25px;
+    }
+    .view-accounts-button {
+        height: 31px;
+        width: 75px;
+    }
+    .delete-accounts-button {
+        height: 31px;
+        width: 75px;
+    }
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .accounts-table-box {
+        height: 319px;
+    }
+    .accounts-table th,
+    .accounts-table td {
+        padding: 3px;
+        height: 15px;
+        font-size: 12px;
+    }
+    .view-accounts-button {
+        height: 20px;
+        width: 50px;
+        font-size: 12px;
+    }
+    .delete-accounts-button {
+        height: 20px;
+        width: 50px;
+        font-size: 12px;
+    }
+}

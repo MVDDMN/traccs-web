@@ -33,7 +33,7 @@
     gap: 20px;
 }
 
-.error-msg-text a {
+.error-msg {
     font-size: 150px;
     font-weight: 400;
 }
@@ -43,7 +43,7 @@
     font-weight: 400;
 }
 
-.error-msg-text c {
+.error-msg-mini {
     font-size: 24px;
     color: #9C9C9C;
 }
@@ -105,5 +105,27 @@
     align-items: center;
 }
 
-
-
+/* Media Queries for Responsiveness */
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .error-content {
+        padding: 100px;
+    }
+    .error-msg {
+        font-size: 130px;
+    }
+    
+    .error-msg-text b {
+        font-size: 70px;
+    }
+    
+    .error-msg-mini {
+        font-size: 16x;
+        color: #9C9C9C;
+    }
+    
+    .error-msg-image {
+        height: 400px;
+        width: 400px;
+    }
+}

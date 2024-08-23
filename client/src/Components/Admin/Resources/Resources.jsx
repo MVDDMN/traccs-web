@@ -13,7 +13,7 @@ const Resources = () => {
 
                     <div className='resource-navigation-content'>
 
-                        <Link to="resourcetable"><a className='resource-button'>Resources</a></Link>
+                        <Link to="resourcetable"><a className='resource-button'>My Resources</a></Link>
                         <Link to="resourcedonate"><a className='resource-button'>Donations</a></Link>
 
                     </div>

@@ -1,0 +1,77 @@
+[{
+  "_id": {
+    "$oid": "66bcec0323190646ea9ec33b"
+  },
+  "fullName": "John Doe",
+  "address": "123 Maple Street, Springfield, IL",
+  "phone": "555-1234",
+  "email": "johndoe@example.com",
+  "password": "password123",
+  "status": "Verified"
+},
+{
+  "_id": {
+    "$oid": "66bcec0323190646ea9ec33c"
+  },
+  "fullName": "Jane Smith",
+  "address": "456 Oak Avenue, San Francisco, CA",
+  "phone": "555-5678",
+  "email": "janesmith@example.com",
+  "password": "securepass456",
+  "status": "Unverified"
+},
+{
+  "_id": {
+    "$oid": "66bcec0323190646ea9ec33d"
+  },
+  "fullName": "Alice Johnson",
+  "address": "789 Pine Road, New York, NY",
+  "phone": "555-9012",
+  "email": "alicej@example.com",
+  "password": "mypassword789",
+  "status": "Verified"
+},
+{
+  "_id": {
+    "$oid": "66bcec0323190646ea9ec33e"
+  },
+  "fullName": "Bob Williams",
+  "address": "321 Birch Blvd, Miami, FL",
+  "phone": "555-3456",
+  "email": "bobw@example.com",
+  "password": "bobspassword123",
+  "status": "Unverified"
+},
+{
+  "_id": {
+    "$oid": "66bcec0323190646ea9ec33f"
+  },
+  "fullName": "Emily Davis",
+  "address": "654 Cedar Lane, Austin, TX",
+  "phone": "555-7890",
+  "email": "emilyd@example.com",
+  "password": "davispass456",
+  "status": "Verified"
+},
+{
+  "_id": {
+    "$oid": "66bcec0323190646ea9ec340"
+  },
+  "fullName": "Michael Brown",
+  "address": "987 Willow Court, Seattle, WA",
+  "phone": "555-2345",
+  "email": "michaelb@example.com",
+  "password": "brownie789",
+  "status": "Unverified"
+},
+{
+  "_id": {
+    "$oid": "66bcec0323190646ea9ec341"
+  },
+  "fullName": "Sarah Green",
+  "address": "135 Maple Ave, Boston, MA",
+  "phone": "555-6789",
+  "email": "sarahg@example.com",
+  "password": "greenpass123",
+  "status": "Verified"
+}]

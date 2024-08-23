@@ -1,0 +1,80 @@
+.response-time-summary-container {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 350px;
+    width: 400px;
+}
+
+.response-time-title-box {
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+}
+
+.response-time-title {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 0;
+    color: #333;
+}
+
+.response-time-chart-container {
+    width: 100%;
+    height: 300px;
+}
+
+.response-time-chart-container canvas {
+    max-height: none;
+}
+
+.response-time-chart-container .response-time-chart-canvas {
+    height: 100%;
+}
+
+.custom-response-time-chart {
+    width: 100%;
+    height: 100%;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .response-time-summary-container {
+        height: 304px;
+        width: 400px;
+    }
+    .response-time-chart-container {
+        height: 290px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .response-time-summary-container {
+        height: 217px;
+        width: 305px;
+    }
+    .response-time-chart-container {
+        height: 180px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .response-time-summary-container {
+        height: 153px;
+        width: 250px;
+    }
+    .response-time-chart-container {
+        height: 140px;
+    }
+    .response-time-title {
+        font-size: 14px;
+    }
+}

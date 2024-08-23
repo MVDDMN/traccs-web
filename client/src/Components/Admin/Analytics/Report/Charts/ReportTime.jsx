@@ -1,0 +1,68 @@
+import React, { useEffect, useState } from 'react';
+import { Bar } from 'react-chartjs-2';
+import axios from 'axios';
+import './ReportTime.css';
+
+const ReportTime = () => {
+    const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get('http://localhost:3001/api/analytics/report-frequency-by-hour');
+            const { labels, data } = response.data;
+
+            setChartData({
+                labels,
+                datasets: [
+                    {
+                        label: 'Number of Reports',
+                        data,
+                        backgroundColor: '#0E267C',
+                        borderColor: '#0E267C',
+                        borderWidth: 1,
+                    },
+                ],
+            });
+        };
+
+        fetchData();
+    }, []);
+
+    return (
+        <div className="chart-container">
+            <div className="chart-header">
+                <a className="chart-title">Report Frequency by Hour</a>
+            </div>
+            <div className="chart">
+                <Bar
+                    data={chartData}
+                    options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Hour of the Day',
+                                },
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Number of Reports',
+                                },
+                                ticks: {
+                                    precision: 0,
+                                },
+                            },
+                        },
+                    }}
+                />
+            </div>
+        </div>
+    );
+};
+
+export default ReportTime;

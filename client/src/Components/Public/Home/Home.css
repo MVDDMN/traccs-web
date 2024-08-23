@@ -32,3 +32,25 @@
     font-weight: 700;
     line-height: normal;
 }
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .home-tagline {
+        font-size: 45px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .home-tagline {
+        font-size: 40px;
+    }
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .home-tagline {
+        font-size: 35px;
+    }
+}

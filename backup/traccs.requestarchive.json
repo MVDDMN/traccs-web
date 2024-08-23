@@ -6,7 +6,8 @@
         "itemname": "Rice",
         "type": "Food",
         "description": "Sack of rice",
-        "quantity": 50
+        "quantity": 50,
+        "date_time": "April 15, 2024 02:30 PM"
     },
     {
         "username": "prince",
@@ -15,7 +16,8 @@
         "itemname": "Water Bottles",
         "type": "Beverage",
         "description": "Pack of 24 water bottles",
-        "quantity": 30
+        "quantity": 30,
+        "date_time": "April 14, 2024 10:45 PM"
     },
     {
         "username": "maritess",
@@ -24,7 +26,8 @@
         "itemname": "Canned Goods",
         "type": "Food",
         "description": "Mixed canned goods",
-        "quantity": 100
+        "quantity": 100,
+        "date_time": "April 13, 2024 04:20 PM"
     },
     {
         "username": "julian",
@@ -33,7 +36,8 @@
         "itemname": "First Aid Kit",
         "type": "Medical",
         "description": "Standard first aid kit",
-        "quantity": 20
+        "quantity": 20,
+        "date_time": "April 12, 2024 08:00 AM"
     },
     {
         "username": "admin",
@@ -42,7 +46,8 @@
         "itemname": "Blankets",
         "type": "Non-Food",
         "description": "Warm blankets",
-        "quantity": 75
+        "quantity": 75,
+        "date_time": "April 11, 2024 05:30 PM"
     },
     {
         "username": "maritess",
@@ -51,7 +56,8 @@
         "itemname": "Face Masks",
         "type": "Medical",
         "description": "Box of 50 face masks",
-        "quantity": 200
+        "quantity": 200,
+        "date_time": "April 10, 2024 11:15 PM"
     },
     {
         "username": "prince",
@@ -60,7 +66,8 @@
         "itemname": "Hand Sanitizers",
         "type": "Medical",
         "description": "Bottle of hand sanitizers",
-        "quantity": 150
+        "quantity": 150,
+        "date_time": "April 9, 2024 09:30 AM"
     },
     {
         "username": "julian",
@@ -69,7 +76,8 @@
         "itemname": "Sleeping Mats",
         "type": "Non-Food",
         "description": "Foldable sleeping mats",
-        "quantity": 40
+        "quantity": 40,
+        "date_time": "April 8, 2024 06:45 PM"
     },
     {
         "username": "admin",
@@ -78,7 +86,8 @@
         "itemname": "Toilet Paper",
         "type": "Non-Food",
         "description": "Pack of 10 rolls",
-        "quantity": 100
+        "quantity": 100,
+        "date_time": "April 7, 2024 01:00 PM"
     },
     {
         "username": "prince",
@@ -87,6 +96,7 @@
         "itemname": "Flashlights",
         "type": "Non-Food",
         "description": "Battery-operated flashlights",
-        "quantity": 60
+        "quantity": 60,
+        "date_time": "April 6, 2024 03:00 PM"
     }
 ]

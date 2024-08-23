@@ -7,7 +7,7 @@
   z-index: 3;
 }
 
-.app-title-box{
+.app-title-box {
   display: inline-flex;
   flex-direction: column;
   height: auto;
@@ -35,14 +35,14 @@
   font-weight: bolder;
 }
 
-.admin-nav-cont{
+.admin-nav-cont {
   display: inline-flex;
   flex-direction: column;
   height: auto;
   width: auto;
 }
 
-.nav-list{
+.nav-list {
   display: inline-flex;
   flex-direction: column;
   height: auto;
@@ -55,19 +55,56 @@
   width: 100%;
 }
 
+.navigation-title-box {
+  display: inline-flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.navigation-title-text {
+  padding: 5px;
+  color: #ffffff;
+  font-weight: 300;
+  background-color: #1f3694;
+}
+
 .module a {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
   text-decoration: none;
   text-align: center;
   color: #ffffff;
   padding: 20px;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out
 }
 
 .module a.active-link {
   background-color: white;
+  font-weight: 600;
   color: #0E267C;
 }
-  
+
 .module a:hover {
   background-color: #f0f0f0;
   color: #0E267C;
+  font-weight: 600;
+  animation: bounceRight 0.2s ease;
+}
+
+.module a::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background-color: #f0f0f0;
+  top: 0;
+  left: 0;
+  right: 100%;
+  bottom: 0;
+  transition: right 0.2s ease-in-out;
+}
+
+.module a:hover::after {
+  right: 0; 
+  transition: right 0.2s ease-in-out;
 }

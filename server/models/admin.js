@@ -6,8 +6,8 @@ const adminSchema = new mongoose.Schema({
     password: String,
     email: String,
     type: String,
-    barangay: String
-})
+    barangay: String,
+}, { timestamps: true });
 
 const adminModel = mongoose.model("admins", adminSchema)
 

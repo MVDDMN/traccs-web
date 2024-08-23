@@ -1,0 +1,61 @@
+.accounts-container {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.accounts-content {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.accounts-navigation-container {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 20px;
+    height: 75px;
+    width: auto;
+    background-color: white;
+    box-shadow: 0px 5px 5px 5px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.accounts-navigation-content {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+    width: 100%;
+}
+
+.accounts-button {
+    display: inline-flex;
+    flex-direction: column;
+    height: auto;
+    width: 150px;
+    border-radius: 5px;
+    padding: 20px;
+    color: white;
+    background-color: #0E267C;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.accounts-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.accounts-module-contents {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}

@@ -22,7 +22,7 @@ const Navigation = () => {
           </div>
 
           <div className='public-button-sect2'>
-            <Link to="/error" className='public-download-btn'>Download TRACCS</Link>
+            <Link to="/download" className='public-download-btn'>Download TRACCS</Link>
             <Link to="/login" className='public-login-btn'>Login</Link>
           </div>
 

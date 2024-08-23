@@ -1,0 +1,460 @@
+.admins-content-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.admins-table-container {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 95%;
+    gap: 10px;
+    background-color: #f2f2f2;
+    box-shadow: 0px 5px 5px 5px rgba(0, 0, 0, 0.25);
+    padding: 20px;
+    border-radius: 20px;
+}
+
+/*Resource Buttons*/
+.admins-button-box {
+    display: inline-flex;
+    flex-direction: row;
+    align-self: flex-end;
+    padding: 20px;
+    gap: 20px;
+    height: 100%;
+    width: auto;
+}
+
+.add-admins-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 150px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.add-admins-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}
+
+/*Resource Table*/
+.admins-table-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: 533px;
+}
+
+.admins-table-title-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.admins-table-title-text {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 5px;
+    gap: 10px;
+    width: auto;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.admins-table-description {
+    color: gray;
+    font-weight: 300;
+}
+
+.admins-table-description:hover {
+    color: #000;
+    font-weight: 600;
+}
+
+.admins-table-description:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.admins-table {
+    background-color: #f0f0f0;
+    overflow-y: auto;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+.admins-table th,
+.admins-table td {
+    padding: 7px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    height: 25px;
+}
+
+.admins-table th {
+    background-color: #f2f2f2;
+}
+
+.admins-table tr:nth-child(odd) td {
+    background-color: #d3d3d3;
+}
+
+.action-button-box {
+    display: inline-flex;
+    flex-direction: row;
+    height: auto;
+    width: auto;
+    gap: 10px;
+}
+
+.view-admins-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 75px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.view-admins-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}
+
+.delete-admins-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    height: 40px;
+    width: 75px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-admins-button:hover {
+    background-color: darkred;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+}
+
+/* Add Admin Modal */
+.add-admin-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+}
+
+.add-admin-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: 400px;
+    padding: 25px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.add-admin-modal-content-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    gap: 10px;
+}
+
+.add-admin-input {
+    padding: 12px;
+    font-size: 15px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    outline: none;
+    width: 100%;
+}
+
+.add-admin-button {
+    background-color: #0E267C;
+    height: 50px;
+    width: 100%;
+    color: white;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.add-admin-button:hover {
+    background-color: #0A1B57;
+}
+
+.close-add-admin-modal-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+}
+
+.close-add-admin-modal-button:hover {
+    color: gray;
+}
+
+/* Update Admin Modal */
+.update-admin-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+}
+
+.update-admin-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: 400px;
+    padding: 25px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.update-admin-modal-content-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    gap: 10px;
+}
+
+.update-admin-input {
+    padding: 12px;
+    font-size: 15px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    outline: none;
+    width: 100%;
+}
+
+.update-admin-button {
+    background-color: #0E267C;
+    height: 50px;
+    width: 100%;
+    color: white;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.update-admin-button:hover {
+    background-color: #0A1B57;
+}
+
+.close-update-admin-modal-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+}
+
+.close-update-admin-modal-button:hover {
+    color: gray;
+}
+
+/* Delete Admin Modal */
+.delete-admin-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+}
+
+.delete-admin-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: 300px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    gap: 20px;
+}
+
+.delete-admin-message {
+    text-align: justify;
+}
+
+.delete-admin-message p {
+    color: black;
+    font-family: Roboto;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+}
+
+.delete-admin-message a {
+    color: black;
+    text-align: justify;
+}
+
+.delete-admin-choice {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.delete-admin-confirm-button {
+    text-decoration: none;
+    color: white;
+    background-color: red;
+    padding: 10px;
+    border-radius: 5px;
+    width: 75px;
+    text-align: center;
+    border: none;
+}
+
+.delete-admin-confirm-button:hover {
+    background-color: darkred;
+}
+
+.delete-admin-choice-button {
+    background: none;
+    border: 2px solid gray;
+    padding: 10px;
+    cursor: pointer;
+    color: black;
+    border-radius: 5px;
+    width: 85px;
+    font-weight: bold;
+}
+
+.delete-admin-choice-button:hover {
+    background-color: gray;
+}
+
+.error {
+    color: red;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .admins-table-box {
+        height: 449px;
+    }
+    .admins-table th,
+    .admins-table td {
+        padding: 2px;
+        height: 30px;
+    }
+    
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .admins-table-box {
+        height: 347px;
+    }
+    .admins-table th,
+    .admins-table td {
+        padding: 2px;
+        height: 20px;
+        font-size: 12px;
+    }
+    .view-admins-button {
+        height: 29px;
+        width: 75px;
+    }
+    .delete-admins-button {
+        height: 29px;
+        width: 75px;
+    }
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .admins-table-box {
+        height: 239px;
+    }
+    .admins-table th,
+    .admins-table td {
+        padding: 1px;
+        height: 15px;
+        font-size: 12px;
+    }
+    .view-admins-button {
+        height: 17px;
+        width: 50px;
+        font-size: 12px;
+    }
+    .delete-admins-button {
+        height: 17px;
+        width: 50px;
+        font-size: 12px;
+    }
+}

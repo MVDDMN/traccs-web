@@ -1,0 +1,419 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './Live.css';
+
+const Live = () => {
+    const [reports, setReports] = useState([]);
+    const [selectedReport, setSelectedReport] = useState(null);
+    const [userBarangay, setUserBarangay] = useState('');
+    const [userUsername, setUserUsername] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userId = sessionStorage.getItem('userId');
+                if (!userId) {
+                    console.error("User ID not found in session storage");
+                    return;
+                }
+                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                setUserBarangay(response.data.barangay);
+                setUserUsername(response.data.username);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        const fetchReports = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/api/admin');
+                setReports(response.data);
+            } catch (error) {
+                console.error('Error fetching reports:', error);
+            }
+        };
+
+        fetchReports();
+        const interval = setInterval(fetchReports, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 7;
+
+    // Filtering state
+    const [selectedTypes, setSelectedTypes] = useState({
+        Fire: true,
+        Accident: true,
+        Police: true,
+        Medical: true,
+        Hazard: true
+    });
+    const [selectedMonths, setSelectedMonths] = useState([]);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [monthDropdownOpen, setMonthDropdownOpen] = useState(false);
+
+    // Pagination calculations
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const filteredReports = reports.filter(report => {
+        const reportDate = new Date(report.report_date_time);
+        const reportMonth = reportDate.toLocaleString('default', { month: 'long' });
+
+        return selectedTypes[report.type] && (selectedMonths.length === 0 || selectedMonths.includes(reportMonth));
+    });
+    const currentReports = filteredReports.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handleViewReport = (report) => {
+        setSelectedReport(report);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedReport(null);
+    };
+
+    const logAdminAction = async (action, adminData, description) => {
+        const logEntry = {
+            username: userUsername,
+            action,
+            adminData,
+            type: 'Report Module',
+            description,
+            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        };
+
+        try {
+            await axios.post("http://localhost:3001/api/logs", logEntry);
+        } catch (error) {
+            console.error("Error logging admin action:", error);
+        }
+    };
+
+    const respondToReport = async () => {
+        try {
+            await axios.post('http://localhost:3001/api/respondtoreport', { reportId: selectedReport._id, responder: userBarangay });
+            await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
+
+            // Update the status of the selected report in the state
+            const updatedReports = reports.map(report =>
+                report._id === selectedReport._id ? { ...report, status: 'Responded' } : report
+            );
+            setReports(updatedReports);
+
+            closeModal();
+        } catch (error) {
+            console.error('Error responding to report:', error);
+        }
+    };
+
+    const archiveReport = async () => {
+        try {
+            const reportToArchive = {
+                reportId: selectedReport._id,
+                report_date_time: new Date(selectedReport.report_date_time).toISOString().replace('Z', '+08:00'),
+                completion_date_time: new Date().toISOString().replace('Z', '+08:00'),
+            };
+
+            await axios.post('http://localhost:3001/api/archivereport', reportToArchive);
+            await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
+
+            // Update the status of the selected report in the state
+            const updatedReports = reports.map(report =>
+                report._id === selectedReport._id ? { ...report, status: 'Done' } : report
+            );
+            setReports(updatedReports);
+
+            closeModal();
+        } catch (error) {
+            console.error('Error archiving report:', error);
+        }
+    };
+
+    const denyReport = async () => {
+        try {
+            await axios.post('http://localhost:3001/api/deny', { reportId: selectedReport._id, responder: userBarangay });
+            await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
+            closeModal();
+        } catch (error) {
+            console.error('Error denying report:', error);
+        }
+    };
+
+    const handleCheckboxChange = (event) => {
+        const { name, checked } = event.target;
+        setSelectedTypes(prevState => ({
+            ...prevState,
+            [name]: checked
+        }));
+    };
+
+    const handleMonthChange = (event) => {
+        const { value, checked } = event.target;
+        const monthFormatted = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(); // Ensure proper case
+
+        if (checked) {
+            setSelectedMonths([...selectedMonths, monthFormatted]);
+        } else {
+            setSelectedMonths(selectedMonths.filter(month => month !== monthFormatted));
+        }
+    };
+
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
+    const toggleMonthDropdown = () => {
+        setMonthDropdownOpen(!monthDropdownOpen);
+    };
+
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    return (
+        <div className='report-content-box'>
+
+            <div className="filters-content-box">
+
+                <div className='type-dropdown-box'>
+                    <button onClick={toggleDropdown} className="type-dropdown-button">Sort by Type</button>
+                    {dropdownOpen && (
+                        <div className="type-dropdown-content">
+                            {Object.keys(selectedTypes).map(type => (
+                                <label key={type}>
+                                    <input
+                                        type="checkbox"
+                                        name={type}
+                                        checked={selectedTypes[type]}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                    {type}
+                                </label>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className="month-dropdown-box">
+                    <button onClick={toggleMonthDropdown} className="month-dropdown-button">Sort by Month</button>
+                    {monthDropdownOpen && (
+                        <div className="month-dropdown-content">
+                            {months.map(month => (
+                                <label key={month}>
+                                    <input
+                                        type="checkbox"
+                                        value={month}
+                                        checked={selectedMonths.includes(month)}
+                                        onChange={handleMonthChange}
+                                    />
+                                    {month}
+                                </label>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className='report-table-container'>
+                <div className='report-table-box'>
+                    <div className='report-table-title-box'>
+                        <a className='report-table-title-text'>Live Reports</a>
+                        <a className='report-table-description'>
+                            ⓘ
+                            <span className='tooltip-text'>This page contains all the list of reports made by the users.</span>
+                        </a>
+                    </div>
+
+                    <table className='report-table'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Date and Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentReports.map(report => (
+                                <tr key={report._id}>
+                                    <td>{report._id}</td>
+                                    <td>{report.name}</td>
+                                    <td>{report.type}</td>
+                                    <td>
+                                        {new Date(report.report_date_time).toLocaleString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit',
+                                            hour12: true,
+                                            timeZone: 'Asia/Manila'
+                                        })}
+                                    </td>
+                                    <td>{report.status}</td>
+                                    <td>
+                                        <button onClick={() => handleViewReport(report)} className='live-table-view-button'>
+                                            View Information
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className='pagination'>
+                    <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
+                    <span className='report-page-number'>Page {currentPage} of {totalPages}</span>
+                    <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+                </div>
+            </div>
+
+            {isModalOpen && (
+                <div className="live-reports-modal">
+                    <div className="live-reports-modal-content">
+                        <div className='live-reports-modal-content-box'>
+                            <div className='live-close-modal-button-box'>
+                                <button onClick={closeModal} className='live-close-modal-button'>X</button>
+                            </div>
+
+                            <div className='live-reports-title-box'>
+                                <a className='live-reports-title-box-text'>
+                                    Report Details
+                                </a>
+                            </div>
+
+                            <div className='live-reports-details-container'>
+                                <div className='live-reports-details-modal-box'>
+                                    <div className='live-reports-text-box'>
+                                        <a className='live-reports-title-text'>
+                                            Report Type:
+                                            <b className='live-reports-content-text'>{selectedReport.type}</b>
+                                        </a>
+                                        {selectedReport.responder && (
+                                            <a className='live-reports-title-text'>
+                                                Responder:
+                                                <b className='live-reports-content-text'>{selectedReport.responder}</b>
+                                            </a>
+                                        )}
+                                    </div>
+                                    <div className='live-reports-text-box'>
+                                        <a className='live-reports-title-text'>
+                                            ID:
+                                            <b className='live-reports-content-text'>{selectedReport._id}</b>
+                                        </a>
+                                        <a className='live-reports-title-text'>
+                                            Name:
+                                            <b className='live-reports-content-text'>{selectedReport.name}</b>
+                                        </a>
+                                    </div>
+                                    <div className='live-reports-text-box'>
+                                        <a className='live-reports-title-text'>
+                                            Date & Time:
+                                            <b className='live-reports-content-text'>
+                                                {new Date(selectedReport.report_date_time).toLocaleString
+                                                    ('en-US',
+                                                        {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit',
+                                                            hour12: true,
+                                                            timeZone: 'Asia/Manila'
+                                                        }
+                                                    )
+                                                }
+                                            </b>
+                                        </a>
+                                        <a className='live-reports-title-text'>
+                                            Status:
+                                            <b className='live-reports-content-text'>{selectedReport.status}</b>
+                                        </a>
+                                    </div>
+                                    <div className='live-reports-text-box'>
+                                        {selectedReport.address && (
+                                            <a className='live-reports-title-text'>
+                                                Address:
+                                                <b className='live-reports-content-text'>{selectedReport.address}</b>
+                                            </a>
+                                        )}
+                                        {selectedReport.location && (
+                                            <a className='live-reports-title-text'>
+                                                Location:
+                                                <b className='live-reports-content-text'>{selectedReport.location}</b>
+                                            </a>
+                                        )}
+                                    </div>
+                                    <div className='live-reports-description-box'>
+                                        <a className='live-description-title-text'>Description</a>
+                                        <div className='live-reports-description-area'>
+                                            {selectedReport.description.fire_type && <p><b>Fire Type:</b> {selectedReport.description.fire_type}</p>}
+                                            {selectedReport.description.severity && <p><b>Severity:</b> {selectedReport.description.severity}</p>}
+                                            {selectedReport.description.visible_flames && <p><b>Visible Flames:</b> {selectedReport.description.visible_flames}</p>}
+                                            {selectedReport.description.smoke && <p><b>Smoke:</b> {selectedReport.description.smoke}</p>}
+                                            {selectedReport.description.crime_type && <p><b>Crime Type:</b> {selectedReport.description.crime_type}</p>}
+                                            {selectedReport.description.in_progress && <p><b>In Progress:</b> {selectedReport.description.in_progress}</p>}
+                                            {selectedReport.description.collision_type && <p><b>Collision Type:</b> {selectedReport.description.collision_type}</p>}
+                                            {selectedReport.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedReport.description.severity_of_accident}</p>}
+                                            {selectedReport.description.blocked_road && <p><b>Blocked Road:</b> {selectedReport.description.blocked_road}</p>}
+                                            {selectedReport.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedReport.description.number_of_people_involved}</p>}
+                                            {selectedReport.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedReport.description.medical_emergency_type}</p>}
+                                            {selectedReport.description.consciousness && <p><b>Consciousness:</b> {selectedReport.description.consciousness}</p>}
+                                            {selectedReport.description.hazard_type && <p><b>Hazard Type:</b> {selectedReport.description.hazard_type}</p>}
+                                            <p><b>Additional Description:</b> {selectedReport.description.additional_description}</p>
+                                        </div>
+                                    </div>
+                                    <div className='live-reports-description-box'>
+                                        <a className='live-description-title-text'>Images</a>
+                                        <div className='live-reports-image-box'>
+                                            {selectedReport && selectedReport.images && selectedReport.images.map((imageUrl, index) => (
+                                                <img key={index} src={imageUrl} alt={`Report Image ${index + 1}`} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='live-update-modal-button-box'>
+                                <button onClick={denyReport} className='live-deny-modal-button'>Deny</button>
+                                <button onClick={selectedReport.status === 'Responded' ? archiveReport : respondToReport} className='live-update-modal-button'>
+                                    {selectedReport.status === 'Responded' ? 'Done' : 'Respond'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default Live;

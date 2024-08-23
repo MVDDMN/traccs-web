@@ -11,7 +11,8 @@
     margin: 20px;
     background-color: white; /* or any other desired background color */
     color: black; /* explicitly set text color if needed */
-    width: 100%; /* Ensuring it takes the full width */
+    width: calc(100% - 40px); /* Adjusted width to account for left and right margins */
+    overflow-x: auto; /* Add horizontal scroll if content overflows */
 }
 
 /* Removing default margin and padding from body when printing */
@@ -24,18 +25,20 @@
     .print-component {
         margin: 0;
         padding: 20px;
-        width: 100%;
+        width: calc(100% - 40px); /* Adjusted width for printing */
     }
 }
 
 .print-heading {
     font-size: 1.5em;
     margin-bottom: 20px;
+    margin-right: 10px; /* Add margin-right here */
 }
 
 .print-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Ensure table doesn't expand beyond its container */
 }
 
 .print-table-header {
@@ -44,9 +47,14 @@
     padding: 8px;
 }
 
+.print-table-header-description {
+    width: 30%; /* Adjust the width as needed */
+}
+
 .print-table-cell {
     border: 1px solid #ddd;
     padding: 8px;
+    word-wrap: break-word; /* Allow long words to wrap within cells */
 }
 
 .print-table-row:nth-child(even) {

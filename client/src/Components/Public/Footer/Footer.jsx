@@ -18,7 +18,7 @@ const Footer = () => {
         </div>
 
         <div className='public-footer-socmed'>
-            <img src={facebook} alt="Facebook"/><a>Facebook</a>
+            <img src={facebook} alt="Facebook"/><a href='https://www.facebook.com/TaytayCommandCenterMdrrmo' className='footer-link'>Facebook</a>
         </div>
 
         <div className='public-footer-copyright'>

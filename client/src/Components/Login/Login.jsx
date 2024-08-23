@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import usericon from '../Assets/email.png';
 import passicon from '../Assets/password.png';
@@ -17,25 +17,44 @@ const Login = () => {
 
     const navigate = useNavigate();
 
+    const logLoginAttempt = async (status, description) => {
+        const logEntry = {
+            username,
+            type: 'Login Module',
+            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+            description,
+        };
+
+        try {
+            await axios.post("http://localhost:3001/api/logs", logEntry);
+        } catch (error) {
+            console.error("Error logging the login attempt:", error);
+        }
+    };
+
     const handleLogin = async () => {
         if (!validateUsername(username) || !validatePassword(password)) {
             setErrorMessage("• Invalid username or password.");
+            await logLoginAttempt('Failure', 'Invalid username or password format.');
             return;
         }
     
         try {
-            const response = await axios.post("http://localhost:3001/login", { username, password }, { withCredentials: true });
+            const response = await axios.post("http://localhost:3001/api/login", { username, password }, { withCredentials: true });
             if (response.data.message === "Success") {
+                await logLoginAttempt('Success', 'User logged in successfully.');
                 navigate("/admin");
-                // Set user information in localStorage or state for further use
-                localStorage.setItem('userId', response.data.userId);
+                sessionStorage.setItem('userId', response.data.userId);
             } else {
                 setErrorMessage("• Invalid username or password.");
+                await logLoginAttempt('Failure', 'Invalid username or password.');
             }
         } catch (error) {
-            setErrorMessage("• Invalid connection.");
+            setErrorMessage("• Invalid username or password.");
+            await logLoginAttempt('Failure', 'Error during login request.');
         }
-    };      
+    };
 
     return (
         <div className="login-container">
@@ -47,7 +66,7 @@ const Login = () => {
                         </svg>
                     </div>
                     <div className="login-title-box">
-                        <a className="login-title-text">TRACCS</a>
+                        <Link to="/" className="login-title-text">TRACCS</Link>
                         <a className="login-title-acronym">
                             Taytay Response, Assistance and
                             Community Coordination System
@@ -63,8 +82,8 @@ const Login = () => {
                 <div className="login-right-container">
                     <div className="login-content-box">
                         <div className="login-logo-box">
-                            <img src={logo1} alt="Logo1" />
-                            <img src={logo2} alt="Logo2" />
+                            <img src={logo1} className="login-icons" alt="Logo1" />
+                            <img src={logo2} className="login-icons"alt="Logo2" />
                         </div>
 
                         <div className="login-message-box">
@@ -100,7 +119,9 @@ const Login = () => {
                             </div>
 
                             {errorMessage && <p className="login-error-message">{errorMessage}</p>}
-                            <button onClick={handleLogin} className="login-button"><a>Continue</a></button>
+                            <div className="login-button-box">
+                                <button onClick={handleLogin} className="login-button"><a>Continue</a></button>
+                            </div>
 
                             <div className='login-terms'>
                                 <p>By continuing you agree to our</p>

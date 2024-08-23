@@ -16,10 +16,10 @@ const Error = () => {
                     <div className='error-message'>
 
                         <div className='error-msg-text'>
-                            <a>404</a>
+                            <a className='error-msg'>404</a>
                             <b>Page not Found!</b>
-                            <c>This page doesn't exist or was removed!</c>
-                            <c>We suggest you go back to Home!</c>
+                            <a className='error-msg-mini'>This page doesn't exist or was removed!</a>
+                            <a className='error-msg-mini'>We suggest you go back to Home!</a>
                         </div>
 
                         <div className='error-btn-box'>
@@ -37,7 +37,7 @@ const Error = () => {
 
                 <div className='error-image-box'>
                     <div className='error-img-cont'>
-                        <img src={errorimg} alt="error-img"/>
+                        <img src={errorimg} className='error-msg-image' alt="error-img"/>
                     </div>
                 </div>
             </div>

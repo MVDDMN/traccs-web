@@ -7,7 +7,8 @@ const requestsSchema = new mongoose.Schema({
     itemname: String,
     type: String,
     description: String,
-    quantity: Number
+    quantity: Number,
+    date_time: String
 })
 
 const requestsModel = mongoose.model("requests", requestsSchema)

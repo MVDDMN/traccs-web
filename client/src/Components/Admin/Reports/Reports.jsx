@@ -12,14 +12,16 @@ const Reports = () => {
                 <div className='reports-navigation-container'>
                     <div className='reports-navigation-content'>
 
-                        <Link to="archive"><a className='reports-button'>Archive</a></Link>
+                        <Link to="live"><a className='reports-button'>Live Reports</a></Link>
+                        <Link to="archive"><a className='reports-button'>History</a></Link>
                         <Link to="historymap"><a className='reports-button'>History Map</a></Link>
+
 
                     </div>
                 </div>
 
                 <div className='reports-module-contents'>
-                    <Outlet/>
+                    <Outlet />
                 </div>
 
             </div>

@@ -13,10 +13,10 @@ const Request = () => {
 
                     <div className='request-navigation-content'>
 
-                        <Link to="barangay"><a className='request-button'>Barangay</a></Link>
-                        <Link to="community"><a className='request-button'>Community</a></Link>
-                        <Link to="personal"><a className='request-button'>Personal</a></Link>
-                        <Link to="requestarchives"><a className='request-button'>Archive</a></Link>
+                        <Link to="barangay" className='request-button'>Barangay</Link>
+                        <Link to="community" className='request-button'>Community</Link>
+                        <Link to="personal" className='request-button'>My Requests</Link>
+                        <Link to="requestarchives" className='request-button'>History</Link>
 
                     </div>
 
@@ -25,7 +25,7 @@ const Request = () => {
                 <div className='request-module-contents'>
 
                     <Outlet />
-                    
+
                 </div>
 
             </div>

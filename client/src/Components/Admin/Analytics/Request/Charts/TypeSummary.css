@@ -1,0 +1,72 @@
+.requests-type-chart-container {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    height: 300px;
+    width: 1300px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.requests-type-title-box {
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    padding: 5px;
+}
+
+.requests-type-title {
+    text-align: center;
+    margin-top: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.requests-type-canvas {
+    width: auto;
+    max-width: 1300px;
+    height: auto;
+    max-height: 250px;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .requests-type-chart-container {
+        height: 275px;
+        width: 1300px;
+    }
+    .requests-type-canvas {
+        max-width: 1300px;
+        max-height: 250px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .requests-type-chart-container {
+        height: 213px;
+        width: 1100px;
+    }
+    .requests-type-canvas {
+        max-width: 1100px;
+        max-height: 190px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .requests-type-chart-container {
+        height: 149px;
+        width: 800px;
+    }
+    .requests-type-canvas {
+        max-width: 800px;
+        max-height: 130px;
+    }
+}

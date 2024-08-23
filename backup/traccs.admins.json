@@ -1,34 +1,12 @@
-[
-  {
-    "name": "Karl Angelo Dela Cruz",
-    "username": "admin",
-    "password": "Admin123!",
-    "email": "admin123@email.com",
-    "type": "MDRRMO",
-    "barangay": "Santa Ana"
+[{
+  "_id": {
+    "$oid": "66be0f7debc42ce2b4e1c538"
   },
-  {
-    "name": "Prince Glean Merto",
-    "username": "prince",
-    "password": "Admin123!",
-    "email": "admin123@email.com",
-    "type": "MDRRMO",
-    "barangay": "Dolores"
-  },
-  {
-    "name": "Maritess Paduit",
-    "username": "maritess",
-    "password": "Admin123!",
-    "email": "barangay123@email.com",
-    "type": "Barangay",
-    "barangay": "Muzon"
-  },
-  {
-    "name": "Julian Andrei Cantillon",
-    "username": "julian",
-    "password": "Admin123!",
-    "email": "barangay123@email.com",
-    "type": "Barangay",
-    "barangay": "San Juan"
-  }
-]
+  "name": "root",
+  "username": "root",
+  "password": "$2b$10$KGxr.mDAXF1zdRR1rv9/GuOZJVag9n6MZRLph01djstsfzVdZxxGS",
+  "email": "root@email.com",
+  "type": "MDRRMO",
+  "barangay": "MDRRMO",
+  "__v": 0
+}]

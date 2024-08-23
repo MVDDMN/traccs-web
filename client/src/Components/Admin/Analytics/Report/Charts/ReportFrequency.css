@@ -1,0 +1,76 @@
+.report-frequency-container {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 350px;
+    width: 850px;
+    max-width: 850px;
+}
+
+.report-frequency-title-box {
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+}
+
+.report-frequency-title {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 0;
+    color: #333;
+}
+
+.report-frequency-chart-container {
+    width: 100%;
+    height: 350px;
+}
+
+.report-frequency-chart-container canvas {
+    max-height: none;
+}
+
+.custom-report-frequency-chart {
+    width: 100%;
+    height: 100%;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .report-frequency-container {
+        height: 304px;
+        width: 850px;
+    }
+    .report-frequency-chart-container {
+        height: 300px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .report-frequency-container {
+        height: 217px;
+        width: 750px;
+    }
+    .report-frequency-chart-container {
+        height: 220px;
+        max-width: 750px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .report-frequency-container {
+        height: 153px;
+        width: 625px;
+    }
+    .report-frequency-chart-container {
+        height: 160px;
+        max-width: 625px;
+    }
+}

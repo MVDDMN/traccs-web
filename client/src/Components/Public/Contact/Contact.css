@@ -68,3 +68,45 @@
     height: 300px;
 }
 
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .contact-content {
+        height: 600px;
+        width: 400px;
+    }
+    .contact-title-items {
+        gap: 20px;
+    }
+    .contact-map img{
+        width: 400px;
+        height: 300px;
+    }
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .contact-content {
+        height: 500px;
+        width: 400px;
+    }
+    .contact-content-info {
+        gap: 25px
+    }
+    .contact-title-text {
+        font-size: 22px;
+        font-weight: bold;
+    }
+    .contact-title-items {
+        gap: 10px;
+    }
+    .contact-map img{
+        width: 400px;
+        height: 300px;
+    }
+}

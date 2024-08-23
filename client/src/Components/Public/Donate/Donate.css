@@ -30,8 +30,8 @@
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    height: 625px;
-    width: 750px;
+    height: 325px;
+    width: 600px;
     background-color: white;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
@@ -62,108 +62,28 @@
     font-weight: 400;
 }
 
-.donation-textfield-box {
+.donate-button-container {
     display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-    padding: 20px;
-    height: auto;
-    width: auto;
-}
-
-.donation-text {
-    height: auto;
-    width: 300px;
-    padding: 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    border-color: 2px solid gray;
-}
-
-.donate-button-box {
-    background-color: #0E267C;
-    box-shadow: 0px 3.926px 3.926px 0px rgba(0, 0, 0, 0.25);
-    color: white;
-    border: none;
-    padding: 15px;
-    width: 350px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    transition: 0.4s;
-    font-size: 16px;
-    font-weight: 700;
-    font-style: normal;
-    cursor: pointer;
-    border-radius: 10px;
-}
-
-.donate-button-box:hover {
-    background-color: #0A1B57;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-/*Modal*/
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
+    flex-direction: row;
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
     justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
+    gap: 50px;
 }
 
-.modal-content {
-    display: inline-flex;
-    flex-direction: column;
-    height: 250px;
-    width: 300px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 30px;
-}
-
-.modal-content-box {
-    display: inline-flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    gap: 20px;
-}
-
-.modal-title {
-    font-size: 20px;
-    text-align: left;
-}
-
-.modal-description {
-    font-weight: 200;
-    text-align: justify;
-}
-
-.ok-button-box {
-    align-self: flex-end;
-    border: none;
-    text-decoration: none;
-    cursor: pointer;
-    background: none;
-    color: black;
-    transition: 0.7s;
-    font-weight: 700;
-}
-
-.ok-button-box:hover {
-    color: red;
-}
-
-.donation-error-message {
-    width: 100%;
+.donate-download-btn {
+    display: inline-block;
+    padding: 10px 10px;
+    width: 140px;
+    font-weight: 600;
     text-align: center;
-    font-weight: bold;
-    color: red;
+    background-color: #fff;
+    color: #0E267C;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 2px solid #0E267C;
+}
+
+.donate-download-btn:hover {
+    background-color: #0A1B57;
+    color: #fff;
 }

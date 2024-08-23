@@ -2,15 +2,61 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import locationIcon from '../../../Assets/location.png';
 import './HistoryMap.css';
 import { useReactToPrint } from 'react-to-print';
 import PrintComponent from './PrintComponent';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 
-const customIcon = new L.Icon({
-    iconUrl: locationIcon,
+// Map icons
+import accidentmapicon from '../../../Assets/map/accident.png';
+import firemapicon from '../../../Assets/map/fire.png';
+import hazardmapicon from '../../../Assets/map/hazard.png';
+import medicalmapicon from '../../../Assets/map/medical.png';
+import policemapicon from '../../../Assets/map/police.png';
+
+import 'leaflet/dist/leaflet.css';
+
+const fireMapIcon = new L.Icon({
+    iconUrl: firemapicon,
     iconSize: [25, 25],
 });
+
+const accidentMapIcon = new L.Icon({
+    iconUrl: accidentmapicon,
+    iconSize: [25, 25],
+});
+
+const policeMapIcon = new L.Icon({
+    iconUrl: policemapicon,
+    iconSize: [25, 25],
+});
+
+const medicalMapIcon = new L.Icon({
+    iconUrl: medicalmapicon,
+    iconSize: [25, 25],
+});
+
+const hazardMapIcon = new L.Icon({
+    iconUrl: hazardmapicon,
+    iconSize: [25, 25],
+});
+
+const getMapIcon = (type) => {
+    switch (type) {
+        case 'Fire':
+            return fireMapIcon;
+        case 'Accident':
+            return accidentMapIcon;
+        case 'Police':
+            return policeMapIcon;
+        case 'Medical':
+            return medicalMapIcon;
+        case 'Hazard':
+            return hazardMapIcon;
+        default:
+            return customIcon;
+    }
+};
 
 const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -19,16 +65,6 @@ const months = [
 
 const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSelectedMonths }) => {
     const map = useMap();
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [monthDropdownOpen, setMonthDropdownOpen] = useState(false);
-
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    };
-
-    const toggleMonthDropdown = () => {
-        setMonthDropdownOpen(!monthDropdownOpen);
-    };
 
     const handleCheckboxChange = (event) => {
         const { name, checked } = event.target;
@@ -52,24 +88,24 @@ const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSel
 
         filterDiv.innerHTML = `
         <div class="filter-content-box">
-            <div class="month-dropdown-box">
-                <button id="month-dropdown-button" class="month-dropdown-button" style="margin-right: 10px;">Sort by Month</button>
-                <div id="month-dropdown-content" class="month-dropdown-content" style="display: none; width: 93%;">
-                    ${months.map(month => `
-                        <label>
-                            <input type="checkbox" value="${month}" ${selectedMonths.includes(month) ? 'checked' : ''} onChange="handleMonthChange">
-                            ${month}
-                        </label>
-                    `).join('')}
-                </div>
-            </div>
             <div class="type-dropdown-box">
-                <button id="type-dropdown-button" class="type-dropdown-button">Sort by Type</button>
-                <div id="type-dropdown-content" class="type-dropdown-content" style="display: none;">
+                <button id="type-dropdown-button" class="type-dropdown-button" style="margin-right: 10px;">Sort by Type</button>
+                <div id="type-dropdown-content" class="type-dropdown-content" style="display: none; width: 94%;">
                     ${Object.keys(selectedTypes).map(type => `
                         <label>
                             <input type="checkbox" name="${type}" ${selectedTypes[type] ? 'checked' : ''} onChange="handleCheckboxChange">
                             ${type}
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+            <div class="month-dropdown-box">
+                <button id="month-dropdown-button" class="month-dropdown-button">Sort by Month</button>
+                <div id="month-dropdown-content" class="month-dropdown-content" style="display: none; width: 99%;">
+                    ${months.map(month => `
+                        <label>
+                            <input type="checkbox" value="${month}" ${selectedMonths.includes(month) ? 'checked' : ''} onChange="handleMonthChange">
+                            ${month}
                         </label>
                     `).join('')}
                 </div>
@@ -114,7 +150,7 @@ const HistoryMap = () => {
     const [historyData, setHistoryData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedReport, setSelectedReport] = useState(null);
+    const [selectedHistory, setSelectedHistory] = useState(null);
     const [selectedTypes, setSelectedTypes] = useState({
         Fire: true,
         Accident: true,
@@ -122,45 +158,89 @@ const HistoryMap = () => {
         Medical: true,
         Hazard: true
     });
-    const [selectedMonths, setSelectedMonths] = useState([]);
+    const [selectedMonths, setSelectedMonths] = useState(months);
     const componentRef = useRef();
+    const [userType, setUserType] = useState('');
+    const [userUsername, setUserUsername] = useState('');
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userId = sessionStorage.getItem('userId');
+                if (!userId) {
+                    // Handle the case when userId is not available
+                    return;
+                }
+                const response = await axios.get(`http://localhost:3001/api/user/${userId}`, { withCredentials: true });
+                setUserType(response.data.type);
+                setUserUsername(response.data.username);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     useEffect(() => {
         const fetchHistoryData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/historymaps');
+                const response = await axios.get('http://localhost:3001/api/historymaps');
                 setHistoryData(response.data);
-                setFilteredData(response.data); // Initialize with all data
+                setFilteredData(response.data);
             } catch (error) {
                 console.error('Error fetching history data:', error);
             }
         };
 
         fetchHistoryData();
-        const interval = setInterval(fetchHistoryData, 1000);
+        const interval = setInterval(fetchHistoryData, 5000);
 
         return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
         const filteredByType = historyData.filter(entry => selectedTypes[entry.type]);
-        const filteredByMonth = selectedMonths.length === 0 ? filteredByType : filteredByType.filter(entry => selectedMonths.includes(entry.date.split('-')[1]));
+        const filteredByMonth = selectedMonths.length === 0 ? filteredByType : filteredByType.filter(entry => {
+            const entryDate = new Date(entry.report_date_time);
+            const entryMonthName = months[entryDate.getMonth()];
+            return selectedMonths.includes(entryMonthName);
+        });
         setFilteredData(filteredByMonth);
     }, [selectedTypes, selectedMonths, historyData]);
 
-    const handleViewReport = (report) => {
-        setSelectedReport(report);
+    const handleViewReport = (history) => {
+        setSelectedHistory(history);
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setSelectedReport(null);
+        setSelectedHistory(null);
+    };
+
+    const logAdminAction = async (action, adminData, description) => {
+        const logEntry = {
+            username: userUsername,
+            action,
+            adminData,
+            type: 'Report Module',
+            description,
+            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        };
+
+        try {
+            await axios.post("http://localhost:3001/api/logs", logEntry);
+        } catch (error) {
+            console.error("Error logging admin action:", error);
+        }
     };
 
     const addToArchive = async () => {
         try {
-            await axios.post('http://localhost:3001/addToArchive', { historyId: selectedReport._id });
+            await axios.post('http://localhost:3001/api/addToArchive', { historyId: selectedHistory._id });
+            await logAdminAction('Archive', { historyId: selectedHistory._id }, 'Moved a report to history');
             closeModal();
         } catch (error) {
             console.error('Error moving to archive:', error);
@@ -174,29 +254,45 @@ const HistoryMap = () => {
     return (
         <div className='history-maps-box'>
             <div className='history-maps-content'>
-                <MapContainer id="history-map" center={[14.5591613626185, 121.14011670582923]} zoom={14} scrollWheelZoom={false}>
-                    <TileLayer
-                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                <MapContainer id="history-map" center={[14.5591613626185, 121.14011670582923]} zoom={15} scrollWheelZoom={false}>
+                    <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     <FilterControl selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes} selectedMonths={selectedMonths} setSelectedMonths={setSelectedMonths} />
-                    {filteredData.map((entry, index) => (
-                        <Marker
-                            key={index}
-                            position={entry.location.split(',').map(coord => parseFloat(coord))}
-                            icon={customIcon}
-                        >
-                            <Popup>
-                                <div>
-                                    <h3>{entry.name}</h3>
-                                    <p className='marker-report-description'>{entry.description}</p>
-                                    <button onClick={() => handleViewReport(entry)} className="map-report-button">
-                                        View Report
-                                    </button>
-                                </div>
-                            </Popup>
-                        </Marker>
-                    ))}
+                    <MarkerClusterGroup>
+                        {filteredData.map((entry, index) => (
+                            <Marker
+                                key={entry._id}
+                                position={[parseFloat(entry.location.split(',')[0]), parseFloat(entry.location.split(',')[1])]}
+                                icon={getMapIcon(entry.type)}
+                            >
+                                <Popup>
+                                    <div>
+                                        <h3>{entry.name}</h3>
+                                        <p><b>Type:</b> {entry.type}</p>
+                                        <p><b>Status:</b> {entry.status}</p>
+                                        <p><b>Location:</b> {entry.location}</p>
+                                        <p>
+                                            <b>Date and Time: </b>
+                                            {new Date(entry.report_date_time).toLocaleString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                second: '2-digit',
+                                                hour12: true,
+                                                timeZone: 'Asia/Manila'
+                                            })}
+                                        </p>
+                                        <button onClick={() => handleViewReport(entry)} className="map-report-button">
+                                            View Report
+                                        </button>
+                                    </div>
+                                </Popup>
+                            </Marker>
+                        ))}
+                    </MarkerClusterGroup>
                     <div className="leaflet-overlay-pane generate-pdf-overlay" style={{ position: 'absolute', bottom: '20px', right: '10px' }}>
                         <button className='generate-report-button' onClick={handlePrint}>Generate Report</button>
                     </div>
@@ -206,72 +302,99 @@ const HistoryMap = () => {
                 </MapContainer>
             </div>
 
-            {isModalOpen && selectedReport && (
-                <div className="reports-modal">
-                    <div className="reports-modal-content">
-                        <div className='reports-modal-content-box'>
-                            <div className='close-modal-button-box'>
-                                <button onClick={closeModal} className='close-modal-button'>X</button>
+            {isModalOpen && selectedHistory && (
+                <div className="historymap-reports-modal">
+                    <div className="historymap-reports-modal-content">
+                        <div className='historymap-reports-modal-content-box'>
+                            <div className='historymap-close-modal-button-box'>
+                                <button onClick={closeModal} className='historymap-close-modal-button'>X</button>
                             </div>
 
-                            <div className='reports-title-box'>
-                                <h2>Report Details</h2>
+                            <div className='historymap-reports-title-box'>
+                                <a className='historymap-reports-title-box-text'>
+                                    Archived Report Details
+                                </a>
                             </div>
 
-                            <div className='reports-details-container'>
-                                <div className='reports-details-modal-box'>
-                                    <div className='reports-text-box'>
-                                        <a className='reports-title-text'>
+                            <div className='historymap-reports-details-container'>
+                                <div className='historymap-reports-details-modal-box'>
+                                    <div className='historymap-reports-text-box'>
+                                        <a className='historymap-reports-title-text'>
                                             Report Type:
-                                            <b className='reports-content-text'>{selectedReport.type}</b>
+                                            <b className='historymap-reports-content-text'>{selectedHistory.type}</b>
+                                        </a>
+                                        <a className='historymap-reports-title-text'>
+                                            Responder:
+                                            <b className='historymap-reports-content-text'>{selectedHistory.responder}</b>
                                         </a>
                                     </div>
-                                    <div className='reports-text-box'>
-                                        <a className='reports-title-text'>
+                                    <div className='historymap-reports-text-box'>
+                                        <a className='historymap-reports-title-text'>
                                             ID:
-                                            <b className='reports-content-text'>{selectedReport._id}</b>
+                                            <b className='historymap-reports-content-text'>{selectedHistory._id}</b>
                                         </a>
-                                        <a className='reports-title-text'>
+                                        <a className='historymap-reports-title-text'>
                                             Name:
-                                            <b className='reports-content-text'>{selectedReport.name}</b>
+                                            <b className='historymap-reports-content-text'>{selectedHistory.name}</b>
                                         </a>
                                     </div>
-                                    <div className='reports-text-box'>
-                                        <a className='reports-title-text'>
-                                            Date:
-                                            <b className='reports-content-text'>{selectedReport.date}</b>
+                                    <div className='historymap-reports-text-box'>
+                                        <a className='historymap-reports-title-text'>
+                                            Date & Time:
+                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timezone: 'Asia/Manila' })}</b>
                                         </a>
-                                        <a className='reports-title-text'>
-                                            Time:
-                                            <b className='reports-content-text'>{selectedReport.time}</b>
-                                        </a>
-                                    </div>
-                                    <div className='reports-text-box'>
-                                        <a className='reports-title-text'>
-                                            Address:
-                                            <b className='reports-content-text'>{selectedReport.address}</b>
-                                        </a>
-                                        <a className='reports-title-text'>
-                                            Location:
-                                            <b className='reports-content-text'>{selectedReport.location}</b>
+                                        <a className='historymap-reports-title-text'>
+                                            Status:
+                                            <b className='historymap-reports-content-text'>{selectedHistory.status}</b>
                                         </a>
                                     </div>
-                                    <div className='reports-description-box'>
-                                        <a className='description-title-text'>Description</a>
-                                        <textarea className='reports-description-area' value={selectedReport.description} readOnly />
+                                    <div className='historymap-reports-text-box'>
+                                        {selectedHistory.address && (
+                                            <a className='historymap-reports-title-text'>
+                                                Address:
+                                                <b className='historymap-reports-content-text'>{selectedHistory.address}</b>
+                                            </a>
+                                        )}
+                                        {selectedHistory.location && (
+                                            <a className='historymap-reports-title-text'>
+                                                Location:
+                                                <b className='historymap-reports-content-text'>{selectedHistory.location}</b>
+                                            </a>
+                                        )}
                                     </div>
-                                    <div className='reports-description-box'>
-                                        <a className='description-title-text'>Images</a>
-                                        <div className='reports-image-box'>
-                                            {selectedReport.image && selectedReport.image.map((imageUrl, index) => (
-                                                <img key={index} src={imageUrl} alt={`Report Image ${index + 1}`} />
+                                    <div className='historymap-reports-description-box'>
+                                        <a className='historymap-description-title-text'>Description</a>
+                                        <div className='historymap-reports-description-area'>
+                                            {selectedHistory.description.fire_type && <p><b>Fire Type:</b> {selectedHistory.description.fire_type}</p>}
+                                            {selectedHistory.description.severity && <p><b>Severity:</b> {selectedHistory.description.severity}</p>}
+                                            {selectedHistory.description.visible_flames && <p><b>Visible Flames:</b> {selectedHistory.description.visible_flames}</p>}
+                                            {selectedHistory.description.smoke && <p><b>Smoke:</b> {selectedHistory.description.smoke}</p>}
+                                            {selectedHistory.description.crime_type && <p><b>Crime Type:</b> {selectedHistory.description.crime_type}</p>}
+                                            {selectedHistory.description.in_progress && <p><b>In Progress:</b> {selectedHistory.description.in_progress}</p>}
+                                            {selectedHistory.description.collision_type && <p><b>Collision Type:</b> {selectedHistory.description.collision_type}</p>}
+                                            {selectedHistory.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedHistory.description.severity_of_accident}</p>}
+                                            {selectedHistory.description.blocked_road && <p><b>Blocked Road:</b> {selectedHistory.description.blocked_road}</p>}
+                                            {selectedHistory.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedHistory.description.number_of_people_involved}</p>}
+                                            {selectedHistory.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedHistory.description.medical_emergency_type}</p>}
+                                            {selectedHistory.description.consciousness && <p><b>Consciousness:</b> {selectedHistory.description.consciousness}</p>}
+                                            {selectedHistory.description.hazard_type && <p><b>Hazard Type:</b> {selectedHistory.description.hazard_type}</p>}
+                                            <p><b>Additional Description:</b> {selectedHistory.description.additional_description}</p>
+                                        </div>
+                                    </div>
+                                    <div className='historymap-reports-description-box'>
+                                        <a className='historymap-description-title-text'>Images</a>
+                                        <div className='historymap-reports-image-box'>
+                                            {selectedHistory.images && selectedHistory.images.map((imageUrl, index) => (
+                                                <img key={index} src={imageUrl} alt={`Archive Image ${index + 1}`} />
                                             ))}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className='update-modal-button-box'>
-                                <button onClick={addToArchive} className="deny-modal-button">Remove</button>
+                            <div className='historymap-update-modal-button-box'>
+                                {userType !== "Barangay" && (
+                                    <button onClick={addToArchive} className="historymap-deny-modal-button">Remove</button>
+                                )}
                             </div>
                         </div>
                     </div>
