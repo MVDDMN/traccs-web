@@ -17,6 +17,7 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const accountRoutes = require("./routes/accountRoutes");
 const analyticRoutes = require("./routes/analyticRoutes");
 
+const path = require('path');  // Import path module
 const app = express();
 
 // Handle preflight requests globally before any other middleware
@@ -52,6 +53,14 @@ app.use("/api", logsRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", accountRoutes);
 app.use("/api", analyticRoutes);
+
+// Serve static files from the React app's build directory
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Catch-all handler to serve React's index.html for any request that doesn't match an API route
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 // Start the server
 app.listen(process.env.PORT || 3001, () => {
