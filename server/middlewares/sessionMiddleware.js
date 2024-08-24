@@ -6,8 +6,9 @@ const sessionMiddleware = session({
     saveUninitialized: true,
     rolling: true,
     cookie: {
-        secure: false,
-        maxAge: 10000 // Session timeout period (in milliseconds)
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 10000,
+        sameSite: 'None'
     }
 });
 
