@@ -2,54 +2,54 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 /*Public Imports*/
-import Public from './Components/Public/Public';
-import Home from './Components/Public/Home/Home';
-import About from './Components/Public/About/About';
-import Contact from './Components/Public/Contact/Contact';
-import Donate from './Components/Public/Donate/Donate';
-import Download from './Components/Public/Download/Download';
-import Error from './Components/Public/Error/Error';
+import Public from './Components/Public/Public.jsx';
+import Home from './Components/Public/Home/Home.jsx';
+import About from './Components/Public/About/About.jsx';
+import Contact from './Components/Public/Contact/Contact.jsx';
+import Donate from './Components/Public/Donate/Donate.jsx';
+import Download from './Components/Public/Download/Download.jsx';
+import Error from './Components/Public/Error/Error.jsx';
 
 /*Login Imports*/
-import Login from './Components/Login/Login';
+import Login from './Components/Login/Login.jsx';
 
 /*Admin Imports*/
-import Admin from './Components/Admin/Admin';
+import Admin from './Components/Admin/Admin.jsx';
 
 /*Dashboard Imports*/
-import Dashboard from './Components/Admin/Dashboard/Dashboard';
+import Dashboard from './Components/Admin/Dashboard/Dashboard.jsx';
 
 /*Reports Imports*/
-import Report from './Components/Admin/Reports/Reports';
-import Archive from './Components/Admin/Reports/Archive/Archive';
-import HistoryMap from './Components/Admin/Reports/HistoryMap/HistoryMap';
-import Live from './Components/Admin/Reports/Live/Live';
+import Report from './Components/Admin/Reports/Reports.jsx';
+import Archive from './Components/Admin/Reports/Archive/Archive.jsx';
+import HistoryMap from './Components/Admin/Reports/HistoryMap/HistoryMap.jsx';
+import Live from './Components/Admin/Reports/Live/Live.jsx';
 
 /*Resource Imports*/
-import Resource from './Components/Admin/Resources/Resources';
-import ResourceTable from './Components/Admin/Resources/ResourceTable/ResourceTable';
-import ResourceDonate from './Components/Admin/Resources/Donate/ResourceDonate';
+import Resource from './Components/Admin/Resources/Resources.jsx';
+import ResourceTable from './Components/Admin/Resources/ResourceTable/ResourceTable.jsx';
+import ResourceDonate from './Components/Admin/Resources/Donate/ResourceDonate.jsx';
 
 /*Request Imports*/
-import Request from './Components/Admin/Requests/Request';
-import Barangay from './Components/Admin/Requests/Barangay/Barangay';
-import Community from './Components/Admin/Requests/Community/Community';
-import RequestArchive from './Components/Admin/Requests/RequestArchive/RequestArchive';
-import Personal from './Components/Admin/Requests/Personal/Personal';
+import Request from './Components/Admin/Requests/Request.jsx';
+import Barangay from './Components/Admin/Requests/Barangay/Barangay.jsx';
+import Community from './Components/Admin/Requests/Community/Community.jsx';
+import RequestArchive from './Components/Admin/Requests/RequestArchive/RequestArchive.jsx';
+import Personal from './Components/Admin/Requests/Personal/Personal.jsx';
 
 /*Analytics Imports*/
-import Analytics from './Components/Admin/Analytics/Analytics';
-import AnalyticsReports from './Components/Admin/Analytics/Report/AnalyticsReports';
-import AnalyticsRequests from './Components/Admin/Analytics/Request/AnalyticsRequests';
-import AnalyticsSummary from './Components/Admin/Analytics/Summary/AnalyticsSummary';
+import Analytics from './Components/Admin/Analytics/Analytics.jsx';
+import AnalyticsReports from './Components/Admin/Analytics/Report/AnalyticsReports.jsx';
+import AnalyticsRequests from './Components/Admin/Analytics/Request/AnalyticsRequests.jsx';
+import AnalyticsSummary from './Components/Admin/Analytics/Summary/AnalyticsSummary.jsx';
 
 /*Account Imports*/
-import Accounts from './Components/Admin/Accounts/Accounts';
-import Admins from './Components/Admin/Accounts/Admins/Admins';
-import Users from './Components/Admin/Accounts/Users/Users';
+import Accounts from './Components/Admin/Accounts/Accounts.jsx';
+import Admins from './Components/Admin/Accounts/Admins/Admins.jsx';
+import Users from './Components/Admin/Accounts/Users/Users.jsx';
 
 /*Log Imports*/
-import Logs from './Components/Admin/Logs/Logs';
+import Logs from './Components/Admin/Logs/Logs.jsx';
 
 function App() {
 
