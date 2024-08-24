@@ -7,8 +7,6 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
 
 const corsMiddleware = cors({
     origin: (origin, callback) => {
-        console.log('Origin:', origin);
-        console.log('Allowed Origins:', allowedOrigins);
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
