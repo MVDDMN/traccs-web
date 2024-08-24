@@ -7,15 +7,19 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
 
 const corsMiddleware = cors({
     origin: (origin, callback) => {
+        console.log('Origin:', origin);
+        console.log('Allowed Origins:', allowedOrigins);
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         } else {
             const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            console.error(msg, 'Origin:', origin);
             return callback(new Error(msg), false);
         }
     },
     credentials: true,
 });
+
 
 module.exports = corsMiddleware;
