@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 require('dotenv').config();
 
-//Middlewares
-const sessionMiddleware = require("./middlewares/sessionMiddleware");
+// Middlewares
 const corsMiddleware = require("./middlewares/corsMiddleware");
+const sessionMiddleware = require("./middlewares/sessionMiddleware");
 
-//Routes
+// Routes
 const loginRoutes = require("./routes/loginRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const resourceRoutes = require("./routes/resourceRoutes");
@@ -18,14 +18,20 @@ const accountRoutes = require("./routes/accountRoutes");
 const analyticRoutes = require("./routes/analyticRoutes");
 
 const app = express();
-app.use(express.json());
+
+// Apply CORS middleware before any other middleware or routes
 app.use(corsMiddleware);
-app.use(cookieParser());
-app.use(sessionMiddleware);
+
+// Body parsers
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-app.use(express.text({limit : '10mb'}));
+app.use(express.text({ limit: '10mb' }));
 
+// Other middlewares
+app.use(cookieParser());
+app.use(sessionMiddleware);
+
+// MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log("Connected to MongoDB");
@@ -44,6 +50,7 @@ app.use("/api", notificationRoutes);
 app.use("/api", accountRoutes);
 app.use("/api", analyticRoutes);
 
+// Start the server
 app.listen(process.env.PORT || 3001, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 });
