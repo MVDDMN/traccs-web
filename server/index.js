@@ -54,12 +54,12 @@ app.use("/api", notificationRoutes);
 app.use("/api", accountRoutes);
 app.use("/api", analyticRoutes);
 
-// Serve static files from the React app's build directory
-app.use(express.static(path.join(__dirname, 'client/build')));
+// Serve static files from the Vite build directory
+app.use(express.static(path.join(__dirname, 'dist')));
 
-// Catch-all handler to serve React's index.html for any request that doesn't match an API route
+// Catch-all handler to serve Vite's index.html for any request that doesn't match an API route
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // Start the server
