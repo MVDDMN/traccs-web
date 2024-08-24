@@ -91,7 +91,7 @@ const Dashboard = () => {
                     console.error("User ID not found in session storage");
                     return;
                 }
-                const response = await axios.get(`${apiBaseUrl}/user/${userId}`, { withCredentials: true });
+                const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserBarangay(response.data.barangay);
                 setUserUsername(response.data.username);
             } catch (error) {
@@ -153,7 +153,7 @@ const Dashboard = () => {
         };
 
         try {
-            await axios.post("http://localhost:3001/api/logs", logEntry);
+            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
         } catch (error) {
             console.error("Error logging admin action:", error);
         }
