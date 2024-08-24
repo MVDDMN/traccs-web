@@ -48,7 +48,7 @@ const Admins = () => {
     useEffect(() => {
         const fetchAdmins = async () => {
             try {
-                const response = await axios.get(`${apiBaseUrl}:3001/api/administrators`);
+                const response = await axios.get(`${apiBaseUrl}/api/administrators`);
                 setAdmins(response.data);
             } catch (error) {
                 console.error("Error fetching admins:", error);
