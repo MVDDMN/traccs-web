@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 require('dotenv').config();
 
 // Middlewares
-const corsMiddleware = require("./middlewares/corsMiddleware");
+const { corsMiddleware, handlePreflightRequests } = require("./middlewares/corsMiddleware");
 const sessionMiddleware = require("./middlewares/sessionMiddleware");
 
 // Routes
@@ -18,6 +18,9 @@ const accountRoutes = require("./routes/accountRoutes");
 const analyticRoutes = require("./routes/analyticRoutes");
 
 const app = express();
+
+// Handle preflight requests globally before any other middleware
+app.use(handlePreflightRequests);
 
 // Apply CORS middleware before any other middleware or routes
 app.use(corsMiddleware);
@@ -52,5 +55,5 @@ app.use("/api", analyticRoutes);
 
 // Start the server
 app.listen(process.env.PORT || 3001, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
+    console.log(`Server is running on port ${process.env.PORT || 3001}`);
 });
