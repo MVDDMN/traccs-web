@@ -49,7 +49,7 @@ import Admins from './Components/Admin/Accounts/Admins/Admins.jsx';
 import Users from './Components/Admin/Accounts/Users/Users.jsx';
 
 /*Log Imports*/
-import Logs from './Components/Admin/Logs/Logs.jsx';
+import Logs from './Components/Admin/ActivityLog/Logs.jsx';
 
 function App() {
 

@@ -1,0 +1,291 @@
+.logs-container {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.logs-content {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.logs-content-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.logs-table-container {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 95%;
+    gap: 10px;
+    background-color: #f2f2f2;
+    box-shadow: 0px 5px 5px 5px rgba(0, 0, 0, 0.25);
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.logs-top-bar {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.logs-table-title-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.logs-table-title-text {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 5px;
+    gap: 10px;
+    width: auto;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logs-table-description {
+    color: gray;
+    font-weight: 300;
+}
+
+.logs-table-description:hover {
+    color: #000;
+    font-weight: 600;
+}
+
+.logs-table-description:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.sort-filter label {
+    align-self: center;
+}
+
+.sort-filter select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+/*Requests Table*/
+.logs-table-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: 729px;
+}
+
+.logs-table {
+    background-color: #f0f0f0;
+    overflow-y: auto;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+.logs-table th,
+.logs-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    height: 25px;
+}
+
+.logs-table th {
+    background-color: #f2f2f2;
+}
+
+.logs-table tr:nth-child(odd) td {
+    background-color: #d3d3d3;
+}
+
+.view-logs-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 75px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.view-logs-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Logs Modal */
+.logs-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+}
+
+.logs-modal-content {
+    display: inline-flex;
+    flex-direction: column;
+    height: 420px;
+    width: 850px;
+    padding: 25px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.logs-modal-content-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.close-modal-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: black;
+    border-radius: 10px;
+    font-weight: 900;
+}
+
+.close-modal-button:hover {
+    color: gray;
+}
+
+.logs-title-box h2 {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    font-weight: 300;
+}
+
+.logs-details-container {
+    display: inline-flex;
+    flex-direction: row;
+    height: auto;
+    width: auto;
+}
+
+.logs-details-modal-box {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.logs-text-box {
+    display: inline-flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.logs-title-text {
+    display: inline-flex;
+    flex-direction: column;
+    color: #000;
+    padding: 5px;
+    gap: 10px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.logs-content-text {
+    color: #000;
+    border-bottom: 2px solid gray;
+    font-weight: bold;
+    width: auto;
+    padding: 5px;
+}
+
+.logs-description-box {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.logs-description-area {
+    height: 50px;
+    width: auto;
+    border-radius: 5px;
+    padding: 10px;
+    resize: none;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .logs-table-box {
+        height: 644px;
+    }
+    .logs-table th,
+    .logs-table td {
+        padding: 5px;
+        height: 20px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .logs-table-box {
+        height: 542px;
+    }
+    .logs-table th,
+    .logs-table td {
+        padding: 2px;
+        height: 20px;
+    }
+    .view-logs-button {
+        height: 37.5px;
+        width: 75px;
+    }
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .logs-table-box {
+        height: 434px;
+    }
+    .logs-table th,
+    .logs-table td {
+        padding: 2px;
+        height: 20px;
+    }
+    .view-logs-button {
+        height: 27px;
+        width: 75px;
+    }
+}
