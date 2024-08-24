@@ -113,7 +113,7 @@ const Dashboard = () => {
         };
 
         fetchReports();
-        const interval = setInterval(fetchReports, 10000);
+        const interval = setInterval(fetchReports, 1000);
 
         return () => clearInterval(interval);
     }, []);
