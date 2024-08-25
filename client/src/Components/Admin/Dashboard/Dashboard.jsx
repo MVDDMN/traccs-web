@@ -83,6 +83,15 @@ const Dashboard = () => {
     const [userBarangay, setUserBarangay] = useState('');
     const [userUsername, setUserUsername] = useState('');
 
+    const fetchReports = async () => {
+        try {
+            const response = await axios.get(`${apiBaseUrl}/api/admin`);
+            setReports(response.data);
+        } catch (error) {
+            console.error('Error fetching reports:', error);
+        }
+    };
+
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -103,17 +112,8 @@ const Dashboard = () => {
     }, []);
 
     useEffect(() => {
-        const fetchReports = async () => {
-            try {
-                const response = await axios.get(`${apiBaseUrl}/api/admin`);
-                setReports(response.data);
-            } catch (error) {
-                console.error('Error fetching reports:', error);
-            }
-        };
-
         fetchReports();
-        const interval = setInterval(fetchReports, 5000);
+        const interval = setInterval(fetchReports, 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -166,7 +166,8 @@ const Dashboard = () => {
             await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
             closeModal();
 
-            //Refetch reports here
+            // Refetch reports here
+            fetchReports();
         } catch (error) {
             console.error('Error responding to report:', error);
         }
@@ -178,7 +179,8 @@ const Dashboard = () => {
             await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
             closeModal();
 
-            //Refetch reports here
+            // Refetch reports here
+            fetchReports();
         } catch (error) {
             console.error('Error archiving report:', error);
         }
@@ -190,7 +192,8 @@ const Dashboard = () => {
             await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
             closeModal();
 
-            //Refetch reports here
+            // Refetch reports here
+            fetchReports();
         } catch (error) {
             console.error('Error denying report:', error);
         }
