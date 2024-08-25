@@ -382,7 +382,7 @@ const Dashboard = () => {
                                     <div className='dashboard-reports-description-box'>
                                         <a className='dashboard-description-title-text'>Description</a>
                                         <div className='dashboard-reports-description-area'>
-                                            {selectedReport.description.fire_type && <p><b>Fire Type:</b> {selectedReport.description.fire_type}</p>}
+                                            {selectedReport.description && selectedReport.description.fire_type && <p><b>Fire Type:</b> {selectedReport.description.fire_type}</p>}
                                             {selectedReport.description.severity && <p><b>Severity:</b> {selectedReport.description.severity}</p>}
                                             {selectedReport.description.visible_flames && <p><b>Visible Flames:</b> {selectedReport.description.visible_flames}</p>}
                                             {selectedReport.description.smoke && <p><b>Smoke:</b> {selectedReport.description.smoke}</p>}
