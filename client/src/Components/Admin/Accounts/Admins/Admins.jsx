@@ -276,6 +276,7 @@ const Admins = () => {
                                                 value={formData.name}
                                                 onChange={handleInputChange}
                                                 className="request-input"
+                                                disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, name: validateName(formData.name) })}
                                             />
                                         </div>
@@ -287,6 +288,7 @@ const Admins = () => {
                                                 value={formData.email}
                                                 onChange={handleInputChange}
                                                 className="request-input"
+                                                disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, email: validateEmail(formData.email) })}
                                             />
                                         </div>
@@ -300,6 +302,7 @@ const Admins = () => {
                                                 value={formData.username}
                                                 onChange={handleInputChange}
                                                 className="request-input"
+                                                disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, username: validateUsername(formData.username) })}
                                             />
                                         </div>
@@ -323,6 +326,7 @@ const Admins = () => {
                                                 value={formData.barangay}
                                                 onChange={handleInputChange}
                                                 className="request-input"
+                                                disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, barangay: validateBarangay(formData.barangay) })}
                                             >
                                                 <option value="">Select Barangay</option>
@@ -341,6 +345,7 @@ const Admins = () => {
                                                 value={formData.type}
                                                 onChange={handleInputChange}
                                                 className="request-input"
+                                                disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, type: validateType(formData.type) })}
                                             >
                                                 <option value="">Select Type</option>
