@@ -3,6 +3,11 @@ import axios from 'axios';
 import { Pie } from 'react-chartjs-2';
 import './PieSummary.css';
 
+// Determine the base URL based on the environment
+const apiBaseUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_API_BASE_URL
+    : import.meta.env.VITE_API_BASE_URL;
+
 const PieSummary = () => {
     const [chartData, setChartData] = useState({
         labels: [],
@@ -42,7 +47,7 @@ const PieSummary = () => {
     useEffect(() => {
         const fetchPieSummary = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/analytics/barangay-summary');
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/barangay-summary`);
                 const data = response.data;
 
                 const barangays = data.map(item => item._id);
