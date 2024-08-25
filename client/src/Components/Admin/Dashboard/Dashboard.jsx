@@ -165,6 +165,8 @@ const Dashboard = () => {
             setIsResponded(true);
             await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
             closeModal();
+
+            //Refetch reports here
         } catch (error) {
             console.error('Error responding to report:', error);
         }
@@ -175,6 +177,8 @@ const Dashboard = () => {
             await axios.post(`${apiBaseUrl}/api/archivereport`, { reportId: selectedReport._id });
             await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
             closeModal();
+
+            //Refetch reports here
         } catch (error) {
             console.error('Error archiving report:', error);
         }
@@ -185,6 +189,8 @@ const Dashboard = () => {
             await axios.post(`${apiBaseUrl}/api/deny`, { reportId: selectedReport._id, responder: userBarangay });
             await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
             closeModal();
+
+            //Refetch reports here
         } catch (error) {
             console.error('Error denying report:', error);
         }
