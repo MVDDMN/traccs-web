@@ -199,6 +199,20 @@ const Live = () => {
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
+    const renderImage = (image) => {
+        if (image.startsWith('http://') || image.startsWith('https://')) {
+            // URL image
+            return <img src={image} alt="Report Image" />;
+        } else if (image.startsWith('data:image') || /^[A-Za-z0-9+/]{4}/.test(image)) {
+            // Base64 image
+            const base64Image = image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`;
+            return <img src={base64Image} alt="Report Image" />;
+        } else {
+            // Handle case where image is neither a URL nor base64
+            return <p>Invalid image format</p>;
+        }
+    };
+
     return (
         <div className='report-content-box'>
 
@@ -400,8 +414,8 @@ const Live = () => {
                                     <div className='live-reports-description-box'>
                                         <a className='live-description-title-text'>Images</a>
                                         <div className='live-reports-image-box'>
-                                            {selectedReport && selectedReport.images && selectedReport.images.map((imageUrl, index) => (
-                                                <img key={index} src={imageUrl} alt={`Report Image ${index + 1}`} />
+                                            {selectedReport && selectedReport.images && selectedReport.images.map((image, index) => (
+                                                renderImage(image)
                                             ))}
                                         </div>
                                     </div>

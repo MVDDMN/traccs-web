@@ -256,6 +256,20 @@ const HistoryMap = () => {
         content: () => componentRef.current,
     });
 
+    const renderImage = (image) => {
+        if (image.startsWith('http://') || image.startsWith('https://')) {
+            // URL image
+            return <img src={image} alt="Report Image" />;
+        } else if (image.startsWith('data:image') || /^[A-Za-z0-9+/]{4}/.test(image)) {
+            // Base64 image
+            const base64Image = image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`;
+            return <img src={base64Image} alt="Report Image" />;
+        } else {
+            // Handle case where image is neither a URL nor base64
+            return <p>Invalid image format</p>;
+        }
+    };
+
     return (
         <div className='history-maps-box'>
             <div className='history-maps-content'>
@@ -389,8 +403,8 @@ const HistoryMap = () => {
                                     <div className='historymap-reports-description-box'>
                                         <a className='historymap-description-title-text'>Images</a>
                                         <div className='historymap-reports-image-box'>
-                                            {selectedHistory.images && selectedHistory.images.map((imageUrl, index) => (
-                                                <img key={index} src={imageUrl} alt={`Archive Image ${index + 1}`} />
+                                            {selectedHistory && selectedHistory.images && selectedHistory.images.map((image, index) => (
+                                                renderImage(image)
                                             ))}
                                         </div>
                                     </div>

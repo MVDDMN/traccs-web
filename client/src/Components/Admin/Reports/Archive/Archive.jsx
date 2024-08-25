@@ -169,6 +169,20 @@ const Archive = () => {
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
+    const renderImage = (image) => {
+        if (image.startsWith('http://') || image.startsWith('https://')) {
+            // URL image
+            return <img src={image} alt="Report Image" />;
+        } else if (image.startsWith('data:image') || /^[A-Za-z0-9+/]{4}/.test(image)) {
+            // Base64 image
+            const base64Image = image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`;
+            return <img src={base64Image} alt="Report Image" />;
+        } else {
+            // Handle case where image is neither a URL nor base64
+            return <p>Invalid image format</p>;
+        }
+    };
+
     return (
         <div className='archive-content-box'>
 
@@ -366,8 +380,8 @@ const Archive = () => {
                                     <div className='archive-reports-description-box'>
                                         <a className='archive-description-title-text'>Images</a>
                                         <div className='archive-reports-image-box'>
-                                            {selectedArchive && selectedArchive.images && selectedArchive.images.map((imageUrl, index) => (
-                                                <img key={index} src={imageUrl} alt={`Archive Image ${index + 1}`} />
+                                            {selectedArchive && selectedArchive.images && selectedArchive.images.map((image, index) => (
+                                                renderImage(image)
                                             ))}
                                         </div>
                                     </div>
