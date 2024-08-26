@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Users.css';
 
+//To do's
+//Viewing of Profile Picture and Image
+
 // Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
@@ -113,7 +116,7 @@ const Users = () => {
                             ))}
                         </tbody>
                     </table>
-                </div>
+                </div> 
 
                 <div className='pagination'>
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
@@ -122,7 +125,6 @@ const Users = () => {
                 </div>
             </div>
 
-            {/* View Modal */}
             {showViewModal && (
                 <div className="users-modal">
 
@@ -136,6 +138,17 @@ const Users = () => {
 
                             <div className='users-title-box'>
                                 <a className='users-title-text'>User Details</a>
+                            </div>
+
+                            <div className='users-text-box'>
+                                <div className='users-image-container'>
+                                    <label className='users-image-title'>Profile Picture</label>
+                                </div>
+
+                                <div className='users-image-container'>
+                                <label className='users-image-title'>Valid ID Picture</label>
+                                </div>
+
                             </div>
 
                             <div className='users-text-box'>

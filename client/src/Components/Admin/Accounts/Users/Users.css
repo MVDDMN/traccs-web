@@ -180,8 +180,8 @@
 .users-modal-content-box {
     display: flex;
     flex-direction: column;
-    height: 400px;
-    width: 800px;
+    height: 40em;
+    width: 50em;
     padding: 25px;
     gap: 5px;
     background-color: white;
@@ -205,6 +205,24 @@
     justify-content: center;
     width: 100%;
     gap: 20px;
+}
+
+.users-image-container {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    height: 12em;
+    width: 50%;
+    border: 2px solid gray;
+}
+
+.users-image-title {
+    font-size: 14px;
+    padding: 5px;
+    color: gray;
+    width: auto;
 }
 
 .users-details-text {
@@ -306,6 +324,25 @@
     .delete-accounts-button {
         height: 20px;
         width: 50px;
+        font-size: 12px;
+    }
+    .users-modal-content-box {
+        height: 30em;
+        width: 40em;
+        gap: 2px;
+    }
+    .users-image-container {
+        height: 10em;
+        width: 30em;
+    }
+    .users-text-box {
+        gap: 5px;
+    }
+    .users-text {
+        font-size: 12px;
+    }
+    .users-details-text {
+        padding: 5px;
         font-size: 12px;
     }
 }
