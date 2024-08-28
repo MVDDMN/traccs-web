@@ -18,6 +18,8 @@ const Users = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState({});
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -68,7 +70,14 @@ const Users = () => {
     };
 
     const handleToggleStatus = async () => {
-        const newStatus = selectedUser.status === 'Verified' ? 'Unverified' : 'Verified';
+        let newStatus;
+        
+        if (!selectedUser.status || selectedUser.status === '') {
+            newStatus = 'Unverified';
+        } else {
+            newStatus = selectedUser.status === 'Verified' ? 'Unverified' : 'Verified';
+        }
+
         try {
             const updatedUser = await axios.put(`${apiBaseUrl}/api/users/${selectedUser._id}/status`, { status: newStatus });
             setSelectedUser(updatedUser.data);
@@ -76,6 +85,12 @@ const Users = () => {
             console.error("Error updating user status:", error);
         }
     };
+
+    const handleImageClick = (img) => {
+        setSelectedImage(img);
+        setShowImageModal(true);
+    };
+
 
     return (
         <div className="accounts-content-box">
@@ -146,7 +161,20 @@ const Users = () => {
                                 </div>
 
                                 <div className='users-image-container'>
-                                <label className='users-image-title'>Valid ID Picture</label>
+                                    {selectedUser.IdImage && selectedUser.IdImage.length > 0 ? (
+                                        selectedUser.IdImage.map((img, index) => (
+                                            <img
+                                                key={index}
+                                                src={`data:image/jpeg;base64,${img}`}
+                                                alt={`Valid ID ${index + 1}`}
+                                                className='users-id-image'
+                                                onClick={() => handleImageClick(img)}
+                                            />
+                                        ))
+                                    ) : (
+                                        <label className='users-image-missing-text'>No Valid ID Picture</label>
+                                    )}
+                                    <label className='users-image-title'>Valid ID Picture</label>
                                 </div>
 
                             </div>
@@ -195,6 +223,14 @@ const Users = () => {
 
                     </div>
 
+                </div>
+            )}
+
+            {showImageModal && (
+                <div className="image-modal" onClick={() => setShowImageModal(false)}>
+                    <div className="image-modal-content">
+                        <img src={`data:image/jpeg;base64,${selectedImage}`} alt="Enlarged ID" />
+                    </div>
                 </div>
             )}
 
