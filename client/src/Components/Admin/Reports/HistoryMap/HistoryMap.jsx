@@ -167,6 +167,8 @@ const HistoryMap = () => {
     const componentRef = useRef();
     const [userType, setUserType] = useState('');
     const [userUsername, setUserUsername] = useState('');
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -270,6 +272,11 @@ const HistoryMap = () => {
         }
     };
 
+    const handleImageClick = (img) => {
+        setSelectedImage(img);
+        setShowImageModal(true);
+    };
+
     return (
         <div className='history-maps-box'>
             <div className='history-maps-content'>
@@ -321,6 +328,17 @@ const HistoryMap = () => {
                 </MapContainer>
             </div>
 
+            {showImageModal && (
+                <div className="image-modal" onClick={() => setShowImageModal(false)}>
+                    <div className="image-modal-content">
+                        <img
+                            src={selectedImage.startsWith('http') ? selectedImage : `data:image/jpeg;base64,${selectedImage}`}
+                            alt="Enlarged View"
+                        />
+                    </div>
+                </div>
+            )}
+
             {isModalOpen && selectedHistory && (
                 <div className="historymap-reports-modal">
                     <div className="historymap-reports-modal-content">
@@ -331,13 +349,17 @@ const HistoryMap = () => {
 
                             <div className='historymap-reports-title-box'>
                                 <a className='historymap-reports-title-box-text'>
-                                    Archived Report Details
+                                    History Map Report Details
                                 </a>
                             </div>
 
                             <div className='historymap-reports-details-container'>
                                 <div className='historymap-reports-details-modal-box'>
                                     <div className='historymap-reports-text-box'>
+                                        <a className='historymap-reports-title-text'>
+                                            ID:
+                                            <b className='historymap-reports-content-text'>{selectedHistory._id}</b>
+                                        </a>
                                         <a className='historymap-reports-title-text'>
                                             Report Type:
                                             <b className='historymap-reports-content-text'>{selectedHistory.type}</b>
@@ -349,25 +371,43 @@ const HistoryMap = () => {
                                     </div>
                                     <div className='historymap-reports-text-box'>
                                         <a className='historymap-reports-title-text'>
-                                            ID:
-                                            <b className='historymap-reports-content-text'>{selectedHistory._id}</b>
-                                        </a>
-                                        <a className='historymap-reports-title-text'>
                                             Name:
                                             <b className='historymap-reports-content-text'>{selectedHistory.name}</b>
                                         </a>
+                                        {selectedHistory.phone && (
+                                            <a className='historymap-reports-title-text'>
+                                                Contact no.:
+                                                <b className='historymap-reports-content-text'>{selectedHistory.phone}</b>
+                                            </a>
+                                        )}
+                                        {selectedHistory.email && (
+                                            <a className='historymap-reports-title-text'>
+                                                Email:
+                                                <b className='historymap-reports-content-text'>{selectedHistory.email}</b>
+                                            </a>
+                                        )}
                                     </div>
                                     <div className='historymap-reports-text-box'>
                                         <a className='historymap-reports-title-text'>
-                                            Date & Time:
+                                            Report Date & Time:
                                             <b className='historymap-reports-content-text'>{new Date(selectedHistory.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timezone: 'Asia/Manila' })}</b>
                                         </a>
+                                        <a className='historymap-reports-title-text'>
+                                            Respond Date & Time:
+                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timezone: 'Asia/Manila' })}</b>
+                                        </a>
+                                        <a className='historymap-reports-title-text'>
+                                            Completion Date & Time:
+                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.completion_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timezone: 'Asia/Manila' })}</b>
+                                        </a>
+                                        
+                                    </div>
+
+                                    <div className='historymap-reports-text-box'>
                                         <a className='historymap-reports-title-text'>
                                             Status:
                                             <b className='historymap-reports-content-text'>{selectedHistory.status}</b>
                                         </a>
-                                    </div>
-                                    <div className='historymap-reports-text-box'>
                                         {selectedHistory.address && (
                                             <a className='historymap-reports-title-text'>
                                                 Address:
@@ -381,33 +421,39 @@ const HistoryMap = () => {
                                             </a>
                                         )}
                                     </div>
-                                    <div className='historymap-reports-description-box'>
-                                        <a className='historymap-description-title-text'>Description</a>
-                                        <div className='historymap-reports-description-area'>
-                                            {selectedHistory.description.fire_type && <p><b>Fire Type:</b> {selectedHistory.description.fire_type}</p>}
-                                            {selectedHistory.description.severity && <p><b>Severity:</b> {selectedHistory.description.severity}</p>}
-                                            {selectedHistory.description.visible_flames && <p><b>Visible Flames:</b> {selectedHistory.description.visible_flames}</p>}
-                                            {selectedHistory.description.smoke && <p><b>Smoke:</b> {selectedHistory.description.smoke}</p>}
-                                            {selectedHistory.description.crime_type && <p><b>Crime Type:</b> {selectedHistory.description.crime_type}</p>}
-                                            {selectedHistory.description.in_progress && <p><b>In Progress:</b> {selectedHistory.description.in_progress}</p>}
-                                            {selectedHistory.description.collision_type && <p><b>Collision Type:</b> {selectedHistory.description.collision_type}</p>}
-                                            {selectedHistory.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedHistory.description.severity_of_accident}</p>}
-                                            {selectedHistory.description.blocked_road && <p><b>Blocked Road:</b> {selectedHistory.description.blocked_road}</p>}
-                                            {selectedHistory.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedHistory.description.number_of_people_involved}</p>}
-                                            {selectedHistory.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedHistory.description.medical_emergency_type}</p>}
-                                            {selectedHistory.description.consciousness && <p><b>Consciousness:</b> {selectedHistory.description.consciousness}</p>}
-                                            {selectedHistory.description.hazard_type && <p><b>Hazard Type:</b> {selectedHistory.description.hazard_type}</p>}
-                                            <p><b>Additional Description:</b> {selectedHistory.description.additional_description}</p>
+
+                                    <div className='historymap-reports-details-container'>
+                                        <div className='historymap-reports-description-box'>
+                                            <a className='historymap-description-title-text'>Description</a>
+                                            <div className='historymap-reports-description-area'>
+                                                {selectedHistory.description.fire_type && <p><b>Fire Type:</b> {selectedHistory.description.fire_type}</p>}
+                                                {selectedHistory.description.severity && <p><b>Severity:</b> {selectedHistory.description.severity}</p>}
+                                                {selectedHistory.description.visible_flames && <p><b>Visible Flames:</b> {selectedHistory.description.visible_flames}</p>}
+                                                {selectedHistory.description.smoke && <p><b>Smoke:</b> {selectedHistory.description.smoke}</p>}
+                                                {selectedHistory.description.crime_type && <p><b>Crime Type:</b> {selectedHistory.description.crime_type}</p>}
+                                                {selectedHistory.description.in_progress && <p><b>In Progress:</b> {selectedHistory.description.in_progress}</p>}
+                                                {selectedHistory.description.collision_type && <p><b>Collision Type:</b> {selectedHistory.description.collision_type}</p>}
+                                                {selectedHistory.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedHistory.description.severity_of_accident}</p>}
+                                                {selectedHistory.description.blocked_road && <p><b>Blocked Road:</b> {selectedHistory.description.blocked_road}</p>}
+                                                {selectedHistory.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedHistory.description.number_of_people_involved}</p>}
+                                                {selectedHistory.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedHistory.description.medical_emergency_type}</p>}
+                                                {selectedHistory.description.consciousness && <p><b>Consciousness:</b> {selectedHistory.description.consciousness}</p>}
+                                                {selectedHistory.description.hazard_type && <p><b>Hazard Type:</b> {selectedHistory.description.hazard_type}</p>}
+                                                <p><b>Additional Description:</b> {selectedHistory.description.additional_description}</p>
+                                            </div>
+                                        </div>
+                                        <div className='historymap-reports-description-box'>
+                                            <a className='historymap-description-title-text'>Images</a>
+                                            <div className='historymap-reports-image-box'>
+                                                {selectedHistory && selectedHistory.images && selectedHistory.images.map((image, index) => (
+                                                    <div key={index} onClick={() => handleImageClick(image)}>
+                                                        {renderImage(image)}
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className='historymap-reports-description-box'>
-                                        <a className='historymap-description-title-text'>Images</a>
-                                        <div className='historymap-reports-image-box'>
-                                            {selectedHistory && selectedHistory.images && selectedHistory.images.map((image, index) => (
-                                                renderImage(image)
-                                            ))}
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <div className='historymap-update-modal-button-box'>

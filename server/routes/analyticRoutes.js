@@ -181,17 +181,24 @@ router.get('/analytics/report-stats', async (req, res) => {
 // Analytics Module - Report frequency per hour
 router.get('/analytics/report-frequency-by-hour', async (req, res) => {
     try {
-        const reports = await historyModel.find({}, 'report_date_time');
+        // Fetch the report date and type from the database
+        const reports = await historyModel.find({}, 'report_date_time type');
 
         const hourFrequency = Array(24).fill(0);
+        const reportTypesByHour = Array(24).fill().map(() => []);
 
         reports.forEach(report => {
             const reportDate = new Date(report.report_date_time);
             const hour = reportDate.getHours();
             hourFrequency[hour]++;
+
+            // Collect unique report types for each hour
+            if (!reportTypesByHour[hour].includes(report.type)) {
+                reportTypesByHour[hour].push(report.type);
+            }
         });
 
-        // Create labels in 12-hour format based on the existing date format
+        // Create labels in 12-hour format
         const labels = hourFrequency.map((_, index) => {
             const hour12 = index % 12 || 12; // Convert to 12-hour format
             const period = index < 12 ? 'AM' : 'PM'; // AM/PM period
@@ -200,7 +207,8 @@ router.get('/analytics/report-frequency-by-hour', async (req, res) => {
 
         const data = hourFrequency;
 
-        res.json({ labels, data });
+        // Respond with labels, data, and report types
+        res.json({ labels, data, reportTypes: reportTypesByHour });
     } catch (err) {
         res.status(500).send(err);
     }

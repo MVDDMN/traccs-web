@@ -14,7 +14,7 @@ const ReportTime = () => {
     useEffect(() => {
         const fetchData = async () => {
             const response = await axios.get(`${apiBaseUrl}/api/analytics/report-frequency-by-hour`);
-            const { labels, data } = response.data;
+            const { labels, data, reportTypes } = response.data;
 
             setChartData({
                 labels,
@@ -25,6 +25,7 @@ const ReportTime = () => {
                         backgroundColor: '#0E267C',
                         borderColor: '#0E267C',
                         borderWidth: 1,
+                        reportTypes, // Include report types in the dataset
                     },
                 ],
             });
@@ -60,6 +61,19 @@ const ReportTime = () => {
                                 },
                                 ticks: {
                                     precision: 0,
+                                },
+                            },
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        const reportTypes = tooltipItem.dataset.reportTypes[tooltipItem.dataIndex];
+                                        return [
+                                            `Reports: ${tooltipItem.raw}`,
+                                            `Types: ${reportTypes.join(', ')}`
+                                        ];
+                                    },
                                 },
                             },
                         },

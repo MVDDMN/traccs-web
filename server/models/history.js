@@ -2,6 +2,8 @@ const mongoose = require ("mongoose")
 
 const historySchema = new mongoose.Schema({
     name: String,
+    phone: String,
+    email: String,
     responder: String,
     type: String,
     location: String,
@@ -25,9 +27,11 @@ const historySchema = new mongoose.Schema({
         medical_emergency_type: String,
         consciousness: String,
         hazard_type: String,
+        assistance_type: String,
+        urgency_level: String,
         additional_description: String
     },
-});
+},{ timestamps: true });
 
 const historyModel = mongoose.model("histories", historySchema)
 

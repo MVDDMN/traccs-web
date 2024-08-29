@@ -69,11 +69,12 @@
 .historymap-reports-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 750px;
-    width: 850px;
+    height: 42em;
+    width: 50%;
     padding: 25px;
     background-color: white;
     border-radius: 5px;
+    
 }
 
 .historymap-reports-modal-content-box {
@@ -81,6 +82,7 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
+    gap: 5px;
 }
 
 .historymap-close-modal-button {
@@ -115,6 +117,7 @@
     flex-direction: row;
     height: auto;
     width: auto;
+    gap: 5px;
 }
 
 .historymap-reports-details-modal-box {
@@ -150,17 +153,18 @@
     display: inline-flex;
     flex-direction: column;
     gap: 10px;
-    width: 100%;
+    width: 50%;
+    height: 100%;
 }
 
 .historymap-reports-description-area {
-    height: 100px;
-    max-height: 150px;
+    height: 17em;
+    max-height: 100%;
     overflow-y: auto;
     width: auto;
     border-radius: 5px;
     border: 2px solid gray;
-    padding: 10px;
+    padding: 7px;
     overflow-y: scroll;
 }
 
@@ -191,23 +195,23 @@
 }
 
 .historymap-reports-image-box {
-    height: 150px;
-    width: auto;
-    border: 1px solid gray;
-    border-radius: 5px;
-    padding: 10px;
-}
-
-.historymap-reports-image-box {
     display: inline-flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
     overflow: hidden;
+    height: 18em;
+    max-height: 100%;
+    width: auto;
+    border: 1px solid gray;
+    border-radius: 5px;
+    gap: 5px;
 }
 
 .historymap-reports-image-box img {
-    margin-right: 10px;
-    width: 300px;
+    height: 165px;
+    width: 185px;
+    border-radius: 5px;
 }
 
 .historymap-update-modal-button-box {
@@ -215,18 +219,16 @@
     flex-direction: row;
     justify-content: right;
     align-items: last baseline;
-    gap: 20px;
     height: 100%;
     width: 100%;
 }
 
 .historymap-deny-modal-button {
     background-color: red;
-    height: 50px;
     width: 150px;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 20px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -240,10 +242,9 @@
 .historymap-deny-modal-button:hover {
     background-color: darkred;
 }
+
 /*End of History Map Report Modal*/
-
 /* Media Queries for Responsiveness */
-
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     #history-map {
@@ -263,10 +264,7 @@
     .historymap-reports-title-text {
         font-size: 14px;
     }
-    .historymap-reports-description-area {
-        height: 50px;
-        font-size: 12px;
-    }
+
 }
 /* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
@@ -275,7 +273,7 @@
     }
     /*Report Modal Content*/
     .historymap-reports-modal-content {
-        height: 540px;
+        height: 32em;
         width: 700px;
     }
     .historymap-reports-title-box-text{
@@ -285,14 +283,14 @@
         font-size: 12px;
     }
     .historymap-reports-description-area {
-        height: 40px;
+        height: 175px;
         font-size: 12px;
     }
     .historymap-reports-image-box {
-        height: 100px;
+        height: 190px;
     }
     .historymap-reports-image-box img {
-        width: 200px;
+        width: 150px;
     }
     .historymap-update-modal-button {
         height: 40px;
@@ -300,8 +298,8 @@
         font-size: 10px;
     }
     .historymap-deny-modal-button {
-        height: 40px;
-        width: 100px;
+        padding: 10px;
+        width: 75px;
         font-size: 10px;
     }
 }

@@ -81,6 +81,8 @@ const Dashboard = () => {
     const [isResponded, setIsResponded] = useState(false);
     const [userBarangay, setUserBarangay] = useState('');
     const [userUsername, setUserUsername] = useState('');
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
 
     const fetchReports = async () => {
         try {
@@ -214,6 +216,11 @@ const Dashboard = () => {
         }
     };
 
+    const handleImageClick = (img) => {
+        setSelectedImage(img);
+        setShowImageModal(true);
+    };
+
     return (
         <div className="dashboard-container">
             <div className='dashboard-content'>
@@ -329,6 +336,17 @@ const Dashboard = () => {
                 </div>
             </div>
 
+            {showImageModal && (
+                <div className="image-modal" onClick={() => setShowImageModal(false)}>
+                    <div className="image-modal-content">
+                        <img
+                            src={selectedImage.startsWith('http') ? selectedImage : `data:image/jpeg;base64,${selectedImage}`}
+                            alt="Enlarged View"
+                        />
+                    </div>
+                </div>
+            )}
+
             {isModalOpen && (
                 <div className="dashboard-reports-modal">
                     <div className="dashboard-reports-modal-content">
@@ -345,7 +363,12 @@ const Dashboard = () => {
 
                             <div className='dashboard-reports-details-container'>
                                 <div className='dashboard-reports-details-modal-box'>
+
                                     <div className='dashboard-reports-text-box'>
+                                        <a className='dashboard-reports-title-text'>
+                                            Report ID:
+                                            <b className='dashboard-reports-content-text'>{selectedReport._id}</b>
+                                        </a>
                                         <a className='dashboard-reports-title-text'>
                                             Report Type:
                                             <b className='dashboard-reports-content-text'>{selectedReport.type}</b>
@@ -357,27 +380,45 @@ const Dashboard = () => {
                                             </a>
                                         )}
                                     </div>
+
                                     <div className='dashboard-reports-text-box'>
-                                        <a className='dashboard-reports-title-text'>
-                                            ID:
-                                            <b className='dashboard-reports-content-text'>{selectedReport._id}</b>
-                                        </a>
                                         <a className='dashboard-reports-title-text'>
                                             Name:
                                             <b className='dashboard-reports-content-text'>{selectedReport.name}</b>
                                         </a>
+                                        {selectedReport.phone && (
+                                            <a className='dashboard-reports-title-text'>
+                                                Contact no.:
+                                                <b className='dashboard-reports-content-text'>{selectedReport.phone}</b>
+                                            </a>
+                                        )}
+                                        {selectedReport.email && (
+                                            <a className='dashboard-reports-title-text'>
+                                                Email:
+                                                <b className='dashboard-reports-content-text'>{selectedReport.email}</b>
+                                            </a>
+                                        )}
+
                                     </div>
+
                                     <div className='dashboard-reports-text-box'>
                                         <a className='dashboard-reports-title-text'>
-                                            Date & Time:
+                                            Report Date & Time:
                                             <b className='dashboard-reports-content-text'>{new Date(selectedReport.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
                                         </a>
+                                        {selectedReport.respond_date_time && (
+                                            <a className='dashboard-reports-title-text'>
+                                                Respond Date & Time:
+                                                <b className='dashboard-reports-content-text'>{new Date(selectedReport.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
+                                            </a>
+                                        )}
+                                    </div>
+
+                                    <div className='dashboard-reports-text-box'>
                                         <a className='dashboard-reports-title-text'>
                                             Status:
                                             <b className='dashboard-reports-content-text'>{selectedReport.status}</b>
                                         </a>
-                                    </div>
-                                    <div className='dashboard-reports-text-box'>
                                         {selectedReport.address && (
                                             <a className='dashboard-reports-title-text'>
                                                 Address:
@@ -389,38 +430,46 @@ const Dashboard = () => {
                                                 Location:
                                                 <b className='dashboard-reports-content-text'>{selectedReport.location}</b>
                                             </a>
-
                                         )}
                                     </div>
-                                    <div className='dashboard-reports-description-box'>
-                                        <a className='dashboard-description-title-text'>Description</a>
-                                        <div className='dashboard-reports-description-area'>
-                                            {selectedReport.description && selectedReport.description.fire_type && <p><b>Fire Type:</b> {selectedReport.description.fire_type}</p>}
-                                            {selectedReport.description.severity && <p><b>Severity:</b> {selectedReport.description.severity}</p>}
-                                            {selectedReport.description.visible_flames && <p><b>Visible Flames:</b> {selectedReport.description.visible_flames}</p>}
-                                            {selectedReport.description.smoke && <p><b>Smoke:</b> {selectedReport.description.smoke}</p>}
-                                            {selectedReport.description.crime_type && <p><b>Crime Type:</b> {selectedReport.description.crime_type}</p>}
-                                            {selectedReport.description.in_progress && <p><b>In Progress:</b> {selectedReport.description.in_progress}</p>}
-                                            {selectedReport.description.collision_type && <p><b>Collision Type:</b> {selectedReport.description.collision_type}</p>}
-                                            {selectedReport.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedReport.description.severity_of_accident}</p>}
-                                            {selectedReport.description.blocked_road && <p><b>Blocked Road:</b> {selectedReport.description.blocked_road}</p>}
-                                            {selectedReport.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedReport.description.number_of_people_involved}</p>}
-                                            {selectedReport.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedReport.description.medical_emergency_type}</p>}
-                                            {selectedReport.description.consciousness && <p><b>Consciousness:</b> {selectedReport.description.consciousness}</p>}
-                                            {selectedReport.description.hazard_type && <p><b>Hazard Type:</b> {selectedReport.description.hazard_type}</p>}
-                                            <p><b>Additional Description:</b> {selectedReport.description.additional_description}</p>
+                                        
+                                    <div className='dashboard-reports-details-container'>
+                                        
+                                        <div className='dashboard-reports-description-box'>
+                                            <a className='dashboard-description-title-text'>Description</a>
+                                            <div className='dashboard-reports-description-area'>
+                                                {selectedReport.description && selectedReport.description.fire_type && <p><b>Fire Type:</b> {selectedReport.description.fire_type}</p>}
+                                                {selectedReport.description.severity && <p><b>Severity:</b> {selectedReport.description.severity}</p>}
+                                                {selectedReport.description.visible_flames && <p><b>Visible Flames:</b> {selectedReport.description.visible_flames}</p>}
+                                                {selectedReport.description.smoke && <p><b>Smoke:</b> {selectedReport.description.smoke}</p>}
+                                                {selectedReport.description.crime_type && <p><b>Crime Type:</b> {selectedReport.description.crime_type}</p>}
+                                                {selectedReport.description.in_progress && <p><b>In Progress:</b> {selectedReport.description.in_progress}</p>}
+                                                {selectedReport.description.collision_type && <p><b>Collision Type:</b> {selectedReport.description.collision_type}</p>}
+                                                {selectedReport.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedReport.description.severity_of_accident}</p>}
+                                                {selectedReport.description.blocked_road && <p><b>Blocked Road:</b> {selectedReport.description.blocked_road}</p>}
+                                                {selectedReport.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedReport.description.number_of_people_involved}</p>}
+                                                {selectedReport.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedReport.description.medical_emergency_type}</p>}
+                                                {selectedReport.description.consciousness && <p><b>Consciousness:</b> {selectedReport.description.consciousness}</p>}
+                                                {selectedReport.description.hazard_type && <p><b>Hazard Type:</b> {selectedReport.description.hazard_type}</p>}
+                                                <p><b>Additional Description:</b> {selectedReport.description.additional_description}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className='dashboard-reports-description-box'>
-                                        <a className='dashboard-description-title-text'>Images</a>
-                                        <div className='dashboard-reports-image-box'>
-                                            {selectedReport && selectedReport.images && selectedReport.images.map((image, index) => (
-                                                renderImage(image)
-                                            ))}
+
+                                        <div className='dashboard-reports-description-box'>
+                                            <a className='dashboard-description-title-text'>Images</a>
+                                            <div className='dashboard-reports-image-box'>
+                                                {selectedReport && selectedReport.images && selectedReport.images.map((image, index) => (
+                                                    <div key={index} onClick={() => handleImageClick(image)}>
+                                                        {renderImage(image)}
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
+
                             <div className='dashboard-update-modal-button-box'>
                                 <button onClick={denyReport} className='dashboard-deny-modal-button'>Deny</button>
                                 <button onClick={isResponded ? archiveReport : respondToReport} className='dashboard-update-modal-button'>

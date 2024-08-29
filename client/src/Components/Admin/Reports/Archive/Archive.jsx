@@ -13,6 +13,8 @@ const Archive = () => {
     const [selectedArchive, setSelectedArchive] = useState(null);
     const [userType, setUserType] = useState('');
     const [userUsername, setUserUsername] = useState('');
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -183,6 +185,11 @@ const Archive = () => {
         }
     };
 
+    const handleImageClick = (img) => {
+        setSelectedImage(img);
+        setShowImageModal(true);
+    };
+
     return (
         <div className='archive-content-box'>
 
@@ -283,23 +290,38 @@ const Archive = () => {
                 </div>
             </div>
 
+            {showImageModal && (
+                <div className="image-modal" onClick={() => setShowImageModal(false)}>
+                    <div className="image-modal-content">
+                        <img
+                            src={selectedImage.startsWith('http') ? selectedImage : `data:image/jpeg;base64,${selectedImage}`}
+                            alt="Enlarged View"
+                        />
+                    </div>
+                </div>
+            )}
+
             {isModalOpen && selectedArchive && (
                 <div className="archive-reports-modal">
                     <div className="archive-reports-modal-content">
-                        <div className='archive-eports-modal-content-box'>
+                        <div className='archive-reports-modal-content-box'>
                             <div className='archive-close-modal-button-box'>
                                 <button onClick={closeModal} className='archive-close-modal-button'>X</button>
                             </div>
 
                             <div className='archive-reports-title-box'>
                                 <a className='archive-reports-title-box-text'>
-                                    Report Details
+                                    Historical Report Details
                                 </a>
                             </div>
 
                             <div className='archive-reports-details-container'>
                                 <div className='archive-reports-details-modal-box'>
                                     <div className='archive-reports-text-box'>
+                                        <a className='archive-reports-title-text'>
+                                            ID:
+                                            <b className='archive-reports-content-text'>{selectedArchive._id}</b>
+                                        </a>
                                         <a className='archive-reports-title-text'>
                                             Report Type:
                                             <b className='archive-reports-content-text'>{selectedArchive.type}</b>
@@ -311,17 +333,25 @@ const Archive = () => {
                                     </div>
                                     <div className='archive-reports-text-box'>
                                         <a className='archive-reports-title-text'>
-                                            ID:
-                                            <b className='archive-reports-content-text'>{selectedArchive._id}</b>
-                                        </a>
-                                        <a className='archive-reports-title-text'>
                                             Name:
                                             <b className='archive-reports-content-text'>{selectedArchive.name}</b>
                                         </a>
+                                        {selectedArchive.phone && (
+                                            <a className='archive-reports-title-text'>
+                                                Contact No.:
+                                                <b className='archive-reports-content-text'>{selectedArchive.phone}</b>
+                                            </a>
+                                        )}
+                                        {selectedArchive.email && (
+                                            <a className='archive-reports-title-text'>
+                                                Email:
+                                                <b className='archive-reports-content-text'>{selectedArchive.email}</b>
+                                            </a>
+                                        )}
                                     </div>
                                     <div className='archive-reports-text-box'>
                                         <a className='archive-reports-title-text'>
-                                            Date & Time:
+                                            Report Date & Time:
                                             <b className='archive-reports-content-text'>
                                                 {new Date(selectedArchive.report_date_time).toLocaleString
                                                     ('en-US',
@@ -340,11 +370,49 @@ const Archive = () => {
                                             </b>
                                         </a>
                                         <a className='archive-reports-title-text'>
-                                            Status:
-                                            <b className='archive-reports-content-text'>{selectedArchive.status}</b>
+                                            Respond Date & Time:
+                                            <b className='archive-reports-content-text'>
+                                                {new Date(selectedArchive.respond_date_time).toLocaleString
+                                                    ('en-US',
+                                                        {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit',
+                                                            hour12: true,
+                                                            timeZone: 'Asia/Manila'
+                                                        }
+                                                    )
+                                                }
+                                            </b>
+                                        </a>
+                                        <a className='archive-reports-title-text'>
+                                            Completion Date & Time:
+                                            <b className='archive-reports-content-text'>
+                                                {new Date(selectedArchive.completion_date_time).toLocaleString
+                                                    ('en-US',
+                                                        {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit',
+                                                            hour12: true,
+                                                            timeZone: 'Asia/Manila'
+                                                        }
+                                                    )
+                                                }
+                                            </b>
                                         </a>
                                     </div>
                                     <div className='archive-reports-text-box'>
+                                        <a className='archive-reports-title-text'>
+                                            Status:
+                                            <b className='archive-reports-content-text'>{selectedArchive.status}</b>
+                                        </a>
                                         {selectedArchive.address && (
                                             <a className='archive-reports-title-text'>
                                                 Address:
@@ -358,31 +426,36 @@ const Archive = () => {
                                             </a>
                                         )}
                                     </div>
-                                    <div className='archive-reports-description-box'>
-                                        <a className='archive-description-title-text'>Description</a>
-                                        <div className='archive-reports-description-area'>
-                                            {selectedArchive.description.fire_type && <p><b>Fire Type:</b> {selectedArchive.description.fire_type}</p>}
-                                            {selectedArchive.description.severity && <p><b>Severity:</b> {selectedArchive.description.severity}</p>}
-                                            {selectedArchive.description.visible_flames && <p><b>Visible Flames:</b> {selectedArchive.description.visible_flames}</p>}
-                                            {selectedArchive.description.smoke && <p><b>Smoke:</b> {selectedArchive.description.smoke}</p>}
-                                            {selectedArchive.description.crime_type && <p><b>Crime Type:</b> {selectedArchive.description.crime_type}</p>}
-                                            {selectedArchive.description.in_progress && <p><b>In Progress:</b> {selectedArchive.description.in_progress}</p>}
-                                            {selectedArchive.description.collision_type && <p><b>Collision Type:</b> {selectedArchive.description.collision_type}</p>}
-                                            {selectedArchive.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedArchive.description.severity_of_accident}</p>}
-                                            {selectedArchive.description.blocked_road && <p><b>Blocked Road:</b> {selectedArchive.description.blocked_road}</p>}
-                                            {selectedArchive.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedArchive.description.number_of_people_involved}</p>}
-                                            {selectedArchive.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedArchive.description.medical_emergency_type}</p>}
-                                            {selectedArchive.description.consciousness && <p><b>Consciousness:</b> {selectedArchive.description.consciousness}</p>}
-                                            {selectedArchive.description.hazard_type && <p><b>Hazard Type:</b> {selectedArchive.description.hazard_type}</p>}
-                                            <p><b>Additional Description:</b> {selectedArchive.description.additional_description}</p>
+
+                                    <div className='archive-reports-details-container'>
+                                        <div className='archive-reports-description-box'>
+                                            <a className='archive-description-title-text'>Description</a>
+                                            <div className='archive-reports-description-area'>
+                                                {selectedArchive.description.fire_type && <p><b>Fire Type:</b> {selectedArchive.description.fire_type}</p>}
+                                                {selectedArchive.description.severity && <p><b>Severity:</b> {selectedArchive.description.severity}</p>}
+                                                {selectedArchive.description.visible_flames && <p><b>Visible Flames:</b> {selectedArchive.description.visible_flames}</p>}
+                                                {selectedArchive.description.smoke && <p><b>Smoke:</b> {selectedArchive.description.smoke}</p>}
+                                                {selectedArchive.description.crime_type && <p><b>Crime Type:</b> {selectedArchive.description.crime_type}</p>}
+                                                {selectedArchive.description.in_progress && <p><b>In Progress:</b> {selectedArchive.description.in_progress}</p>}
+                                                {selectedArchive.description.collision_type && <p><b>Collision Type:</b> {selectedArchive.description.collision_type}</p>}
+                                                {selectedArchive.description.severity_of_accident && <p><b>Severity of Accident:</b> {selectedArchive.description.severity_of_accident}</p>}
+                                                {selectedArchive.description.blocked_road && <p><b>Blocked Road:</b> {selectedArchive.description.blocked_road}</p>}
+                                                {selectedArchive.description.number_of_people_involved && <p><b>Number of People Involved:</b> {selectedArchive.description.number_of_people_involved}</p>}
+                                                {selectedArchive.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedArchive.description.medical_emergency_type}</p>}
+                                                {selectedArchive.description.consciousness && <p><b>Consciousness:</b> {selectedArchive.description.consciousness}</p>}
+                                                {selectedArchive.description.hazard_type && <p><b>Hazard Type:</b> {selectedArchive.description.hazard_type}</p>}
+                                                <p><b>Additional Description:</b> {selectedArchive.description.additional_description}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className='archive-reports-description-box'>
-                                        <a className='archive-description-title-text'>Images</a>
-                                        <div className='archive-reports-image-box'>
-                                            {selectedArchive && selectedArchive.images && selectedArchive.images.map((image, index) => (
-                                                renderImage(image)
-                                            ))}
+                                        <div className='archive-reports-description-box'>
+                                            <a className='archive-description-title-text'>Images</a>
+                                            <div className='archive-reports-image-box'>
+                                                {selectedArchive && selectedArchive.images && selectedArchive.images.map((image, index) => (
+                                                    <div key={index} onClick={() => handleImageClick(image)}>
+                                                        {renderImage(image)}
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
