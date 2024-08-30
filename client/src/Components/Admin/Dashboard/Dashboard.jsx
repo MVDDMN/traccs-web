@@ -241,7 +241,7 @@ const Dashboard = () => {
     const renderCircles = () => {
         return Object.entries(locationReportCounts).map(([location, data], index) => {
             const [lat, lng] = location.split(',').map(Number);
-            const intensity = Math.min(1, data.count / 20); // Adjust as needed
+            const intensity = Math.min(1, data.count / 10); // Adjust as needed
             const radius = data.count * 50; // Increase circle radius based on count
 
             return (

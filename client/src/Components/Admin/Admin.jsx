@@ -84,7 +84,7 @@ function Admin({ routes }) {
 
     // Set up intervals
     const userDataInterval = setInterval(fetchUserData, 10000); // 10 seconds
-    const notificationsInterval = setInterval(fetchNotifications, 1000); // 1 second
+    const notificationsInterval = setInterval(fetchNotifications, 10000); // 1 second
 
     // Cleanup intervals when the component unmounts
     return () => {
