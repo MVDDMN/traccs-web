@@ -56,7 +56,7 @@ function Admin({ routes }) {
           const latestReport = newReports[newReports.length - 1];
 
           // Construct the custom message for the report notification
-          const newReportNotificationMessage = `New report received from ${latestReport.name} and is Type: ${latestReport.type}`;
+          const newReportNotificationMessage = `New report received from ${latestReport.name} for ${latestReport.type}`;
 
           // Send the notification message to the backend
           await axios.post(`${apiBaseUrl}/api/notifications`, {
