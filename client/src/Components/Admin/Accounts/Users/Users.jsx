@@ -157,6 +157,19 @@ const Users = () => {
 
                             <div className='users-text-box'>
                                 <div className='users-image-container'>
+                                    {selectedUser.profileImage && selectedUser.profileImage.length > 0 ? (
+                                        selectedUser.profileImage.map((img, index) => (
+                                            <img
+                                                key={index}
+                                                src={`data:image/jpeg;base64,${img}`}
+                                                alt={`Profile Picture ${index + 1}`}
+                                                className='users-profile-image'
+                                                onClick={() => handleImageClick(img)}
+                                            />
+                                        ))
+                                    ) : (
+                                        <label className='users-image-missing-text'>No Profile Picture</label>
+                                    )}
                                     <label className='users-image-title'>Profile Picture</label>
                                 </div>
 

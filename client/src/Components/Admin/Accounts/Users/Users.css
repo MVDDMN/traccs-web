@@ -218,10 +218,18 @@
     border: 2px solid gray;
 }
 
+.users-profile-image {
+    height: 85%;
+    width: 45%;
+    border-radius: 150px;
+    border: 2px solid gray;
+}
+
 .users-id-image {
     height: 85%;
     width: 90%;
     border-radius: 5px;
+    
 }
 
 .users-image-missing-text {
