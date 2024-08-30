@@ -164,7 +164,7 @@ const Users = () => {
                                                 src={`data:image/jpeg;base64,${img}`}
                                                 alt={`Profile Picture ${index + 1}`}
                                                 className='users-profile-image'
-                                                onClick={() => handleImageClick(img)}
+                                                onClick={() => handleImageClick(img)}   
                                             />
                                         ))
                                     ) : (

@@ -7,6 +7,9 @@ import '../Assets/global-styles.css';
 import logout from '../Assets/logout.png';
 import notify from '../Assets/notification.png';
 
+// Notification sound
+import notificationSound from '../Assets/notification.mp3';
+
 // Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
@@ -23,6 +26,8 @@ function Admin({ routes }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let previousReports = [];
+
     const fetchUserData = async () => {
       try {
         const userId = sessionStorage.getItem('userId');
@@ -40,31 +45,54 @@ function Admin({ routes }) {
         navigate("/error");
       }
     };
-  
+
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`${apiBaseUrl}/api/notifications`);
-        setNotifications(response.data);
+        const response = await axios.get(`${apiBaseUrl}/api/reports`);
+        const newReports = response.data;
+
+        // Check if there's a new report
+        if (previousReports.length > 0 && newReports.length > previousReports.length) {
+          const latestReport = newReports[newReports.length - 1];
+
+          // Construct the custom message for the report notification
+          const newReportNotificationMessage = `New report received from ${latestReport.name} and is Type: ${latestReport.type}`;
+
+          // Send the notification message to the backend
+          await axios.post(`${apiBaseUrl}/api/notifications`, {
+            message: newReportNotificationMessage,
+          });
+
+          // Fetch notifications to update the state
+          const notificationsResponse = await axios.get(`${apiBaseUrl}/api/notifications`);
+          setNotifications(notificationsResponse.data);
+
+          // Play notification sound
+          const audio = new Audio(notificationSound);
+          audio.play();
+        }
+
+        previousReports = newReports;
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }
     };
-  
+
     // Fetch user data immediately
     fetchUserData();
     fetchNotifications();
-  
+
     // Set up intervals
     const userDataInterval = setInterval(fetchUserData, 10000); // 10 seconds
     const notificationsInterval = setInterval(fetchNotifications, 1000); // 1 second
-  
+
     // Cleanup intervals when the component unmounts
     return () => {
       clearInterval(userDataInterval);
       clearInterval(notificationsInterval);
     };
   }, [navigate]);
-  
+
   const resetUserState = () => {
     setUserBarangay('');
     setUserUsername('');
@@ -90,10 +118,6 @@ function Admin({ routes }) {
     }
   };
 
-  const filteredNotifications = notifications.filter(notification =>
-    notification.message.includes(`responded to request of ${userBarangay}`)
-  );
-
   return (
     <div className="app-cont">
       <Navigation userType={userType} />
@@ -104,13 +128,13 @@ function Admin({ routes }) {
             <div className='admin-info'>
               <button className='notification-button' onClick={() => setShowNotifications(!showNotifications)}>
                 <img className="notification-img" src={notify} alt="notify" />
-                {filteredNotifications.length > 0 && <span className="notification-count">{filteredNotifications.length}</span>}
+                {notifications.length > 0 && <span className="notification-count">{notifications.length}</span>}
                 {showNotifications && (
                   <div className="notifications-dropdown">
-                    {filteredNotifications.length === 0 ? (
+                    {notifications.length === 0 ? (
                       <div className="no-notifications">No notifications</div>
                     ) : (
-                      filteredNotifications.map((notification, index) => (
+                      notifications.map((notification, index) => (
                         <div key={index} className="notification-item">
                           {notification.message}
                         </div>
@@ -142,7 +166,7 @@ function Admin({ routes }) {
                 <p>Log Out of the System?</p>
                 <a>
                   You won’t be able to see messages and updates
-                  from the community while you’re log out.
+                  from the community while you’re logged out.
                   Are you sure?
                 </a>
               </div>
