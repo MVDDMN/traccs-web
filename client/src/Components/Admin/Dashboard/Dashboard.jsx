@@ -8,7 +8,7 @@ import policeicon from '../../Assets/police.png';
 import medicalicon from '../../Assets/medical.png';
 import hazardicon from '../../Assets/hazard.png';
 import usericon from '../../Assets/user.png';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
 // Map icons
@@ -83,6 +83,7 @@ const Dashboard = () => {
     const [userUsername, setUserUsername] = useState('');
     const [showImageModal, setShowImageModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
+    const [locationReportCounts, setLocationReportCounts] = useState({});
 
     const fetchReports = async () => {
         try {
@@ -221,6 +222,44 @@ const Dashboard = () => {
         setShowImageModal(true);
     };
 
+    useEffect(() => {
+        const counts = reports.reduce((acc, report) => {
+            const loc = report.location;
+            if (!acc[loc]) {
+                acc[loc] = {
+                    count: 0,
+                    reports: []
+                };
+            }
+            acc[loc].count += 1;
+            acc[loc].reports.push(report);
+            return acc;
+        }, {});
+        setLocationReportCounts(counts);
+    }, [reports]);
+
+    const renderCircles = () => {
+        return Object.entries(locationReportCounts).map(([location, data], index) => {
+            const [lat, lng] = location.split(',').map(Number);
+            const intensity = Math.min(1, data.count / 20); // Adjust as needed
+            const radius = data.count * 50; // Increase circle radius based on count
+
+            return (
+                <Circle
+                    key={index}
+                    center={[lat, lng]}
+                    radius={radius}
+                    pathOptions={{
+                        color: 'transparent',
+                        fillColor: 'red',
+                        fillOpacity: intensity
+                    }}
+
+                />
+            );
+        });
+    };
+
     return (
         <div className="dashboard-container">
             <div className='dashboard-content'>
@@ -299,7 +338,7 @@ const Dashboard = () => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
                         <MarkerClusterGroup>
-                            {filteredReports.map(report => (
+                            {reports.map(report => (
                                 <Marker
                                     key={report._id}
                                     position={[parseFloat(report.location.split(',')[0]), parseFloat(report.location.split(',')[1])]}
@@ -332,6 +371,7 @@ const Dashboard = () => {
                                 </Marker>
                             ))}
                         </MarkerClusterGroup>
+                        {renderCircles()}
                     </MapContainer>
                 </div>
             </div>
@@ -432,9 +472,9 @@ const Dashboard = () => {
                                             </a>
                                         )}
                                     </div>
-                                        
+
                                     <div className='dashboard-reports-details-container'>
-                                        
+
                                         <div className='dashboard-reports-description-box'>
                                             <a className='dashboard-description-title-text'>Description</a>
                                             <div className='dashboard-reports-description-area'>

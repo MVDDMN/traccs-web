@@ -189,7 +189,7 @@
     align-items: center;
 }
 
-.dashboard-reports-title-box-text{
+.dashboard-reports-title-box-text {
     font-size: 24px;
     font-weight: 300;
 }
@@ -350,6 +350,7 @@
 .dashboard-deny-modal-button:hover {
     background-color: darkred;
 }
+
 /*End of Report Modal*/
 
 /* Media Queries for Responsiveness */
@@ -360,9 +361,11 @@
         height: auto;
         margin-bottom: 10px;
     }
+
     .accident-title {
         font-size: 14px;
     }
+
     #map {
         height: 665.5px;
     }
@@ -375,12 +378,15 @@
         height: auto;
         margin-bottom: 10px;
     }
+
     .accident-title {
         font-size: 14px;
     }
+
     #map {
         height: 563px;
     }
+
     .dashboard-reports-image-box img {
         width: 170px;
     }
@@ -393,43 +399,51 @@
         height: auto;
         margin-bottom: 10px;
     }
+
     .accident-title {
         font-size: 11px;
     }
+
     #map {
         height: 437.5px;
     }
+
     /*Report Modal Content*/
     .dashboard-reports-modal-content {
         height: 505px;
         width: 800px;
     }
-    .dashboard-reports-title-box-text{
+
+    .dashboard-reports-title-box-text {
         font-size: 16px;
     }
+
     .dashboard-reports-title-text {
         font-size: 12px;
     }
+
     .dashboard-reports-description-area {
         height: 185px;
         font-size: 12px;
     }
+
     .dashboard-reports-image-box {
         height: 200px;
     }
+
     .dashboard-reports-image-box img {
         width: 170px;
     }
+
     .dashboard-update-modal-button {
         height: 40px;
         width: 100px;
         font-size: 10px;
     }
+
     .dashboard-deny-modal-button {
         height: 40px;
         width: 100px;
         font-size: 10px;
     }
 }
-
-
