@@ -27,9 +27,9 @@ app.use(handlePreflightRequests);
 app.use(corsMiddleware);
 
 // Body parsers
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
-app.use(express.text({ limit: '10mb' }));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ limit: '2mb', extended: true }));
+app.use(express.text({ limit: '2mb' }));
 
 // Other middlewares
 app.use(cookieParser());

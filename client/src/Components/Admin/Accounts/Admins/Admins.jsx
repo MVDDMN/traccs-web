@@ -146,6 +146,7 @@ const Admins = () => {
     const handleDeleteAdmin = async () => {
         try {
             await axios.delete(`${apiBaseUrl}/api/administrators/${selectedAdminId}`);
+            await logAdminAction('Delete', { adminId: selectedAdminId, updatedData: formData }, 'Deleted an Admin');
         } catch (error) {
             console.error("Error deleting admin:", error);
         }

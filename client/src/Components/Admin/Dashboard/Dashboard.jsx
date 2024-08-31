@@ -130,6 +130,7 @@ const Dashboard = () => {
 
     const handleFilterChange = (type) => {
         setFilter(type);
+        console.log("Current filter:", type);
     };
 
     const handleViewReport = (report) => {
@@ -338,7 +339,7 @@ const Dashboard = () => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
                         <MarkerClusterGroup>
-                            {reports.map(report => (
+                            {filteredReports.map(report => (
                                 <Marker
                                     key={report._id}
                                     position={[parseFloat(report.location.split(',')[0]), parseFloat(report.location.split(',')[1])]}

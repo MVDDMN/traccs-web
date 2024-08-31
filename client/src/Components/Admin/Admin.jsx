@@ -46,7 +46,7 @@ function Admin({ routes }) {
       }
     };
 
-    const fetchNotifications = async () => {
+    const fetchNewReports = async () => {
       try {
         const response = await axios.get(`${apiBaseUrl}/api/reports`);
         const newReports = response.data;
@@ -63,10 +63,6 @@ function Admin({ routes }) {
             message: newReportNotificationMessage,
           });
 
-          // Fetch notifications to update the state
-          const notificationsResponse = await axios.get(`${apiBaseUrl}/api/notifications`);
-          setNotifications(notificationsResponse.data);
-
           // Play notification sound
           const audio = new Audio(notificationSound);
           audio.play();
@@ -74,17 +70,32 @@ function Admin({ routes }) {
 
         previousReports = newReports;
       } catch (error) {
+        console.error("Error fetching new reports:", error);
+      }
+    };
+
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(`${apiBaseUrl}/api/notifications`);
+        setNotifications(response.data);
+      } catch (error) {
         console.error("Error fetching notifications:", error);
       }
     };
 
     // Fetch user data immediately
     fetchUserData();
+
+    // Fetch notifications and reports initially
     fetchNotifications();
+    fetchNewReports();
 
     // Set up intervals
     const userDataInterval = setInterval(fetchUserData, 10000); // 10 seconds
-    const notificationsInterval = setInterval(fetchNotifications, 10000); // 1 second
+    const notificationsInterval = setInterval(() => {
+      fetchNotifications();
+      fetchNewReports();
+    }, 10000); // 10 seconds
 
     // Cleanup intervals when the component unmounts
     return () => {
