@@ -15,6 +15,7 @@ const ResourceDonate = () => {
     const [selectedDonation, setSelectedDonation] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [userUsername, setUserUsername] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [formValues, setFormValues] = useState({
         firstName: '',
         lastName: '',
@@ -52,13 +53,15 @@ const ResourceDonate = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/donations`);
                 setDonations(response.data);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching donations:", error);
+                setIsLoading(false); // Data is still loaded
             }
         };
 
         fetchDonations();
-        const interval = setInterval(fetchDonations, 1000);
+        const interval = setInterval(fetchDonations, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -169,10 +172,9 @@ const ResourceDonate = () => {
             reader.onloadend = () => {
                 const img = new Image();
                 img.onload = () => {
-                    // Create a canvas to resize the image
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const maxSize = 600; // Set max width/height
+                    const maxSize = 600;
                     let width = img.width;
                     let height = img.height;
 
@@ -192,12 +194,13 @@ const ResourceDonate = () => {
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Get the resized image as base64
+                    // Get the resized image as base64, but without the data URL prefix
                     const resizedBase64 = canvas.toDataURL(file.type);
-                    console.log('Resized Base64 string size (bytes):', resizedBase64.length);
+                    const base64Data = resizedBase64.replace(/^data:image\/[a-z]+;base64,/, '');
+                    console.log('Resized Base64 string size (bytes):', base64Data.length);
 
-                    // Set the image data
-                    setFormValues({ ...formValues, image: resizedBase64 });
+                    // Set the image data without the prefix
+                    setFormValues({ ...formValues, image: base64Data });
                 };
                 img.src = reader.result;
             };
@@ -205,7 +208,6 @@ const ResourceDonate = () => {
             reader.readAsDataURL(file);
         }
     };
-
 
     const handleImageClick = () => {
         document.getElementById('image-upload').click();
@@ -229,7 +231,7 @@ const ResourceDonate = () => {
     };
 
     return (
-        <div className="resourcedonate-content-box">
+        <div className="donations-content-box">
             <div className='donations-table-container'>
                 <div className='donations-table-box'>
                     <div className='donations-table-title-box'>
@@ -239,39 +241,44 @@ const ResourceDonate = () => {
                             <span className='tooltip-text'>This page contains all the donations made by the users.</span>
                         </a>
                     </div>
-                    <table className='donations-table'>
-                        <thead>
-                            <tr>
-                                <th>Donation ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Donation Type</th>
-                                <th>Type</th>
-                                <th>Donation Amount</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentDonations.map(donation => (
-                                <tr key={donation._id}>
-                                    <td>{donation._id}</td>
-                                    <td>{donation.firstName}</td>
-                                    <td>{donation.lastName}</td>
-                                    <td>{donation.email}</td>
-                                    <td>{donation.donationType}</td>
-                                    <td>{donation.type}</td>
-                                    <td>{donation.donationAmount}</td>
-                                    <td>
-                                        <div className='action-button-box'>
-                                            <button className='view-donations-button' onClick={() => handleEditDonation(donation)}>Update</button>
-                                            <button className='view-donations-button' onClick={() => handleViewDonation(donation)}>View</button>
-                                        </div>
-                                    </td>
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='donations-table'>
+
+                            <thead>
+                                <tr>
+                                    <th>Donation ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Donation Type</th>
+                                    <th>Type</th>
+                                    <th>Donation Amount</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentDonations.map(donation => (
+                                    <tr key={donation._id}>
+                                        <td>{donation._id}</td>
+                                        <td>{donation.firstName}</td>
+                                        <td>{donation.lastName}</td>
+                                        <td>{donation.email}</td>
+                                        <td>{donation.donationType}</td>
+                                        <td>{donation.type}</td>
+                                        <td>{donation.donationAmount}</td>
+                                        <td>
+                                            <div className='action-button-box'>
+                                                <button className='view-donations-button' onClick={() => handleEditDonation(donation)}>Update</button>
+                                                <button className='view-donations-button' onClick={() => handleViewDonation(donation)}>View</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <div className='pagination'>
@@ -369,10 +376,10 @@ const ResourceDonate = () => {
                                         <div className='donations-divider-box-image'>
                                             {selectedDonation.image && (
                                                 <img
-                                                    src={selectedDonation.image}
+                                                    src={`data:image/jpeg;base64,${selectedDonation.image}`}
                                                     alt="Donation"
                                                     className='donations-preview-img'
-                                                    onClick={() => setIsImageModalOpen(true)}  // Open the image modal on click
+                                                    onClick={() => setIsImageModalOpen(true)}
                                                 />
                                             )}
                                         </div>
@@ -385,11 +392,15 @@ const ResourceDonate = () => {
                 </div>
             )}
 
-            {isImageModalOpen && (
+            {isImageModalOpen && selectedDonation.image && (
                 <div className="image-modal">
                     <span className="close-image-modal" onClick={() => setIsImageModalOpen(false)}>&times;</span>
                     <div className="image-modal-content">
-                        <img src={selectedDonation.image} alt="Full Donation" className='full-image' />
+                        <img
+                            src={`data:image/jpeg;base64,${selectedDonation.image}`}
+                            alt="Full Donation"
+                            className='full-image'
+                        />
                     </div>
                 </div>
             )}
@@ -509,7 +520,7 @@ const ResourceDonate = () => {
                                                 {formValues.image && (
                                                     <div className="donations-image-preview">
                                                         <img
-                                                            src={formValues.image}
+                                                            src={`data:image/jpeg;base64,${formValues.image}`}
                                                             alt="Uploaded"
                                                             className="donations-preview-img"
                                                             onClick={handleImageClick}

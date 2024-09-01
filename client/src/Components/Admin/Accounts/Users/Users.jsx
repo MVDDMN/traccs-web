@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Users.css';
 
-//To do's
-//Viewing of Profile Picture and Image
-
 // Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
@@ -20,19 +17,22 @@ const Users = () => {
     const [selectedUser, setSelectedUser] = useState({});
     const [showImageModal, setShowImageModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/users`);
                 setUsers(response.data);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching users:", error);
+                setIsLoading(false); // Even if there's an error, stop the loading state
             }
         };
 
         fetchUsers();
-        const interval = setInterval(fetchUsers, 1000);
+        const interval = setInterval(fetchUsers, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -71,7 +71,7 @@ const Users = () => {
 
     const handleToggleStatus = async () => {
         let newStatus;
-        
+
         if (!selectedUser.status || selectedUser.status === '') {
             newStatus = 'Unverified';
         } else {
@@ -104,34 +104,40 @@ const Users = () => {
                             <span className='tooltip-text'>This page contains the list which allows to verify/unverify all the user accounts.</span>
                         </a>
                     </div>
-                    <table className='accounts-table'>
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Name</th>
-                                <th>E-mail</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentUsers.map(user => (
-                                <tr key={user._id}>
-                                    <td>{user._id}</td>
-                                    <td>{user.fullName}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.status}</td>
-                                    <td>
-                                        <div className='action-button-box'>
-                                            <button className='view-accounts-button' onClick={() => handleViewUser(user)}>View</button>
-                                            <button className='delete-accounts-button' onClick={() => { setSelectedUser(user); setShowDeleteModal(true); }}>Delete</button>
-                                        </div>
-                                    </td>
+
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='accounts-table'>
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>E-mail</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div> 
+                            </thead>
+                            <tbody>
+                                {currentUsers.map(user => (
+                                    <tr key={user._id}>
+                                        <td>{user._id}</td>
+                                        <td>{user.fullName}</td>
+                                        <td>{user.email}</td>
+                                        <td>{user.status}</td>
+                                        <td>
+                                            <div className='action-button-box'>
+                                                <button className='view-accounts-button' onClick={() => handleViewUser(user)}>View</button>
+                                                <button className='delete-accounts-button' onClick={() => { setSelectedUser(user); setShowDeleteModal(true); }}>Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                    
+                </div>
 
                 <div className='pagination'>
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
@@ -164,7 +170,7 @@ const Users = () => {
                                                 src={`data:image/jpeg;base64,${img}`}
                                                 alt={`Profile Picture ${index + 1}`}
                                                 className='users-profile-image'
-                                                onClick={() => handleImageClick(img)}   
+                                                onClick={() => handleImageClick(img)}
                                             />
                                         ))
                                     ) : (

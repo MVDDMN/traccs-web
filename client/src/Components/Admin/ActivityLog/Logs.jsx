@@ -5,8 +5,8 @@ import './Logs.css';
 
 // Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'
-    ? import.meta.env.VITE_PROD_API_BASE_URL
-    : import.meta.env.VITE_API_BASE_URL;
+  ? import.meta.env.VITE_PROD_API_BASE_URL
+  : import.meta.env.VITE_API_BASE_URL;
 
 const Logs = () => {
   const [logs, setLogs] = useState([]);
@@ -15,6 +15,7 @@ const Logs = () => {
   const [selectedLog, setSelectedLog] = useState(null);
   const [userType, setUserType] = useState('');
   const [sortOrder, setSortOrder] = useState('newest'); // State for sorting order
+  const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 11;
   const navigate = useNavigate();
 
@@ -48,13 +49,15 @@ const Logs = () => {
       try {
         const response = await axios.get(`${apiBaseUrl}/api/logs`);
         setLogs(response.data);
+        setIsLoading(false); // Data is loaded
       } catch (error) {
         console.error("Error fetching logs:", error);
+        setIsLoading(false); // Data is still loaded
       }
     };
 
     fetchLogs();
-    const interval = setInterval(fetchLogs, 1000);
+    const interval = setInterval(fetchLogs, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -126,34 +129,39 @@ const Logs = () => {
 
               </div>
 
-              <table className='logs-table'>
-                <thead>
-                  <tr>
-                    <th>Activity Log ID</th>
-                    <th>Username</th>
-                    <th>Type</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentLogs.map(log => (
-                    <tr key={log._id}>
-                      <td>{log._id}</td>
-                      <td>{log.username}</td>
-                      <td>{log.type}</td>
-                      <td>{log.date}</td>
-                      <td>{log.time}</td>
-                      <td>
-                        <div className='action-button-box'>
-                          <button className='view-logs-button' onClick={() => openModal(log)}>View</button>
-                        </div>
-                      </td>
+              {isLoading ? (
+                <div className='loading-message'>Loading table, please wait...</div>
+              ) : (
+                <table className='logs-table'>
+                  <thead>
+                    <tr>
+                      <th>Activity Log ID</th>
+                      <th>Username</th>
+                      <th>Type</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {currentLogs.map(log => (
+                      <tr key={log._id}>
+                        <td>{log._id}</td>
+                        <td>{log.username}</td>
+                        <td>{log.type}</td>
+                        <td>{log.date}</td>
+                        <td>{log.time}</td>
+                        <td>
+                          <div className='action-button-box'>
+                            <button className='view-logs-button' onClick={() => openModal(log)}>View</button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
             </div>
             <div className='pagination'>
               <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>

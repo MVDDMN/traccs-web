@@ -26,6 +26,7 @@ const Admins = () => {
     const itemsPerPage = 8;
     const [errors, setErrors] = useState({});
     const [userUsername, setUserUsername] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -50,13 +51,15 @@ const Admins = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/administrators`);
                 setAdmins(response.data);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching admins:", error);
+                setIsLoading(false);
             }
         };
 
         fetchAdmins();
-        const interval = setInterval(fetchAdmins, 1000);
+        const interval = setInterval(fetchAdmins, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -212,39 +215,44 @@ const Admins = () => {
                             <span className='tooltip-text'>This page allows to create and list all admin accounts</span>
                         </a>
                     </div>
-                    <table className='admins-table'>
-                        <thead>
-                            <tr>
-                                <th>Admin ID</th>
-                                <th>Name</th>
-                                <th>E-mail</th>
-                                <th>Type</th>
-                                <th>Barangay</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentAdmins.map(admin => (
-                                <tr key={admin._id}>
-                                    <td>{admin._id}</td>
-                                    <td>{admin.name}</td>
-                                    <td>{admin.email}</td>
-                                    <td>{admin.type}</td>
-                                    <td>{admin.barangay}</td>
-                                    <td>
-                                        <div className='action-button-box'>
-                                            <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Edit</button>
-                                            {admin.username !== 'root' && (
-                                                <>
-                                                    <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
-                                                </>
-                                            )}
-                                        </div>
-                                    </td>
+
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='admins-table'>
+                            <thead>
+                                <tr>
+                                    <th>Admin ID</th>
+                                    <th>Name</th>
+                                    <th>E-mail</th>
+                                    <th>Type</th>
+                                    <th>Barangay</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentAdmins.map(admin => (
+                                    <tr key={admin._id}>
+                                        <td>{admin._id}</td>
+                                        <td>{admin.name}</td>
+                                        <td>{admin.email}</td>
+                                        <td>{admin.type}</td>
+                                        <td>{admin.barangay}</td>
+                                        <td>
+                                            <div className='action-button-box'>
+                                                <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Edit</button>
+                                                {admin.username !== 'root' && (
+                                                    <>
+                                                        <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <div className='pagination'>

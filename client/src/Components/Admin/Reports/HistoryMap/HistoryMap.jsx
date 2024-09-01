@@ -201,7 +201,7 @@ const HistoryMap = () => {
         };
 
         fetchHistoryData();
-        const interval = setInterval(fetchHistoryData, 5000);
+        const interval = setInterval(fetchHistoryData, 30000);
 
         return () => clearInterval(interval);
     }, []);
@@ -400,7 +400,7 @@ const HistoryMap = () => {
                                             Completion Date & Time:
                                             <b className='historymap-reports-content-text'>{new Date(selectedHistory.completion_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timezone: 'Asia/Manila' })}</b>
                                         </a>
-                                        
+
                                     </div>
 
                                     <div className='historymap-reports-text-box'>
@@ -453,7 +453,7 @@ const HistoryMap = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                             <div className='historymap-update-modal-button-box'>

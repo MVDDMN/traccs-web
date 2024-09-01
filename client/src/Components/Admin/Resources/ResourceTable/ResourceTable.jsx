@@ -17,6 +17,7 @@ const ResourceTable = () => {
     const [userUsername, setUserUsername] = useState("");
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [resourceToDelete, setResourceToDelete] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [formData, setFormData] = useState({
         itemname: '',
         barangay: '',
@@ -32,8 +33,10 @@ const ResourceTable = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/resources`);
                 setResources(response.data);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching resources:", error);
+                setIsLoading(false); // Data is still loaded
             }
         };
 
@@ -54,7 +57,7 @@ const ResourceTable = () => {
 
         fetchResources();
         fetchUserData();
-        const interval = setInterval(fetchResources, 1000);
+        const interval = setInterval(fetchResources, 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -223,33 +226,38 @@ const ResourceTable = () => {
                             <span className='tooltip-text'>This page allows to create and list all resources of the barangay.</span>
                         </a>
                     </div>
-                    <table className='resource-table'>
-                        <thead>
-                            <tr>
-                                <th>Resource ID</th>
-                                <th>Item Name</th>
-                                <th>Type</th>
-                                <th>Quantity</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentResources.map(resource => (
-                                <tr key={resource._id}>
-                                    <td>{resource._id}</td>
-                                    <td>{resource.itemname}</td>
-                                    <td>{resource.type}</td>
-                                    <td>{resource.quantity}</td>
-                                    <td>
-                                        <div className='action-button-box'>
-                                            <button className='view-resource-button' onClick={() => openModal(resource)}>Edit</button>
-                                            <button className='delete-resource-button' onClick={() => openDeleteModal(resource)}>Delete</button>
-                                        </div>
-                                    </td>
+
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='resource-table'>
+                            <thead>
+                                <tr>
+                                    <th>Resource ID</th>
+                                    <th>Item Name</th>
+                                    <th>Type</th>
+                                    <th>Quantity</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentResources.map(resource => (
+                                    <tr key={resource._id}>
+                                        <td>{resource._id}</td>
+                                        <td>{resource.itemname}</td>
+                                        <td>{resource.type}</td>
+                                        <td>{resource.quantity}</td>
+                                        <td>
+                                            <div className='action-button-box'>
+                                                <button className='view-resource-button' onClick={() => openModal(resource)}>Edit</button>
+                                                <button className='delete-resource-button' onClick={() => openDeleteModal(resource)}>Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <div className='pagination'>

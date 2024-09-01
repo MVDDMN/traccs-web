@@ -12,6 +12,7 @@ const RequestArchive = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const itemsPerPage = 9;
 
     useEffect(() => {
@@ -23,13 +24,15 @@ const RequestArchive = () => {
                     date_time: item.date_time // Assuming your API response includes date_time
                 }));
                 setRequestArchives(archivesWithDataTime);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching request archives:", error);
+                setIsLoading(false); // Data is still loaded
             }
         };
 
         fetchRequestArchives();
-        const interval = setInterval(fetchRequestArchives, 1000);
+        const interval = setInterval(fetchRequestArchives, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -74,40 +77,45 @@ const RequestArchive = () => {
                             <span className='tooltip-text'>This page contains all the list of requests history made by the barangays.</span>
                         </a>
                     </div>
-                    <table className='requestarchives-table'>
-                        <thead>
-                            <tr>
-                                <th>Requests ID</th>
-                                <th>Requestor</th>
-                                <th>Barangay</th>
-                                <th>Item Name</th>
-                                <th>Type</th>
-                                <th>Quantity</th>
-                                <th>Responder</th>
-                                <th>Date & Time</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentRequestArchives.map(requestarchive => (
-                                <tr key={requestarchive._id}>
-                                    <td>{requestarchive._id}</td>
-                                    <td>{requestarchive.username}</td>
-                                    <td>{requestarchive.barangay}</td>
-                                    <td>{requestarchive.itemname}</td>
-                                    <td>{requestarchive.type}</td>
-                                    <td>{requestarchive.quantity}</td>
-                                    <td>{requestarchive.responder}</td>
-                                    <td>{requestarchive.date_time ? new Date(requestarchive.date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-'}</td>
-                                    <td>
-                                        <div className='action-button-box'>
-                                            <button className='requestarchives-view-requests-button' onClick={() => openModal(requestarchive)}>View</button>
-                                        </div>
-                                    </td>
+
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='requestarchives-table'>
+                            <thead>
+                                <tr>
+                                    <th>Requests ID</th>
+                                    <th>Requestor</th>
+                                    <th>Barangay</th>
+                                    <th>Item Name</th>
+                                    <th>Type</th>
+                                    <th>Quantity</th>
+                                    <th>Responder</th>
+                                    <th>Date & Time</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentRequestArchives.map(requestarchive => (
+                                    <tr key={requestarchive._id}>
+                                        <td>{requestarchive._id}</td>
+                                        <td>{requestarchive.username}</td>
+                                        <td>{requestarchive.barangay}</td>
+                                        <td>{requestarchive.itemname}</td>
+                                        <td>{requestarchive.type}</td>
+                                        <td>{requestarchive.quantity}</td>
+                                        <td>{requestarchive.responder}</td>
+                                        <td>{requestarchive.date_time ? new Date(requestarchive.date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-'}</td>
+                                        <td>
+                                            <div className='action-button-box'>
+                                                <button className='requestarchives-view-requests-button' onClick={() => openModal(requestarchive)}>View</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <div className='pagination'>

@@ -20,6 +20,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [hovered, setHovered] = useState(false);
 
     const navigate = useNavigate();
 
@@ -192,22 +193,25 @@ const Login = () => {
                             <div className="login-button-box">
                                 <button
                                     onClick={handleLogin}
-                                    className={`login-button ${
-                                        isLoading ? "loading" : ""
-                                    }`}
+                                    className={`login-button ${isLoading ? "loading" : ""
+                                        }`}
                                     disabled={isLoading}
                                 >
                                     {isLoading ? "Loading..." : "Continue"}
                                 </button>
                             </div>
 
-                            <div className="login-terms">
-                                <p>By continuing you agree to our</p>
-                                <p>
-                                    <b>Terms & Conditions</b> and{" "}
-                                    <b>Privacy Policy</b>
-                                </p>
+                            <div className="login-back">
+                                <Link
+                                    to="/"
+                                    className="login-back-button"
+                                    onMouseEnter={() => setHovered(true)}
+                                    onMouseLeave={() => setHovered(false)}
+                                >
+                                    {hovered ? "To Homepage..." : "Go Back"}
+                                </Link>
                             </div>
+
                         </div>
                     </div>
                 </div>

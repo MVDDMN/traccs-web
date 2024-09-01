@@ -1,4 +1,4 @@
-.resourcedonate-content-box {
+.donations-content-box {
     display: inline-flex;
     flex-direction: column;
     height: auto;
@@ -31,6 +31,20 @@
     position: relative;
     display: flex;
     align-items: center;
+}
+
+.loading-message {
+    font-size: 1.5rem;
+    color: #333;
+    text-align: center;
+    align-content: center;
+    height: 100%;
+    animation: fadeInOut 5s infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; color: #0E267C;}
+    50% { opacity: 1; color: #0A1B57;}
 }
 
 .donations-table-title-text {
@@ -111,7 +125,7 @@
 }
 
 /*Modal*/
-.donations-modal { /* Changed from .reports-modal to .donations-modal */
+.donations-modal { 
     position: fixed;
     top: 0;
     left: 0;
@@ -125,17 +139,17 @@
     z-index: 9999;
 }
 
-.donations-modal-content { /* Changed from .reports-modal-content to .donations-modal-content */
+.donations-modal-content { 
     display: inline-flex;
     flex-direction: column;
-    height: 500px;
-    width: 1050px;
+    height: 31em;
+    width: 55%;
     padding: 25px;
     background-color: white;
     border-radius: 5px;
 }
 
-.donations-modal-content-box { /* Changed from .reports-modal-content-box to .donations-modal-content-box */
+.donations-modal-content-box { 
     display: inline-flex;
     flex-direction: column;
     height: 100%;
@@ -239,11 +253,11 @@
 }
 
 .donations-preview-img {
-    max-width: 100%;
+    max-width: 90%;
     max-height: 300px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    cursor: pointer; /* Indicates that the image can be clicked */
+    cursor: pointer; 
 }
 
 .image-modal {
@@ -290,6 +304,7 @@
     display: inline-flex;
     flex-direction: column;
     color: #000;
+    font-size: 14px;
     padding: 5px;
     gap: 10px;
     width: 100%;
@@ -310,10 +325,11 @@
 }
 
 .donations-description-area {
-    height: 50px;
+    height: 5em;
     width: auto;
     border-radius: 5px;
     padding: 10px;
+    overflow-y: auto;
     resize: none;
 }
 

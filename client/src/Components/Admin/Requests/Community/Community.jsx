@@ -12,6 +12,7 @@ const Community = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const itemsPerPage = 9;
 
     useEffect(() => {
@@ -19,13 +20,15 @@ const Community = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/communities`);
                 setCommunities(response.data);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching communities:", error);
+                setIsLoading(false); // Data is loaded
             }
         };
 
         fetchCommunities();
-        const interval = setInterval(fetchCommunities, 1000);
+        const interval = setInterval(fetchCommunities, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -69,36 +72,41 @@ const Community = () => {
                             <span className='tooltip-text'>This page contains all the list of requests made by the community.</span>
                         </a>
                     </div>
-                    <table className='communities-table'>
-                        <thead>
-                            <tr>
-                                <th>Requests ID</th>
-                                <th>Name</th>
-                                <th>Barangay</th>
-                                <th>Item Name</th>
-                                <th>Type</th>
-                                <th>Quantity</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentCommunities.map(community => (
-                                <tr key={community._id}>
-                                    <td>{community._id}</td>
-                                    <td>{community.name}</td>
-                                    <td>{community.barangay}</td>
-                                    <td>{community.itemname}</td>
-                                    <td>{community.type}</td>
-                                    <td>{community.quantity}</td>
-                                    <td>
-                                        <div className='action-button-box'>
-                                            <button className='communities-view-requests-button' onClick={() => openModal(community)}>View</button>
-                                        </div>
-                                    </td>
+
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='communities-table'>
+                            <thead>
+                                <tr>
+                                    <th>Requests ID</th>
+                                    <th>Name</th>
+                                    <th>Barangay</th>
+                                    <th>Item Name</th>
+                                    <th>Type</th>
+                                    <th>Quantity</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentCommunities.map(community => (
+                                    <tr key={community._id}>
+                                        <td>{community._id}</td>
+                                        <td>{community.name}</td>
+                                        <td>{community.barangay}</td>
+                                        <td>{community.itemname}</td>
+                                        <td>{community.type}</td>
+                                        <td>{community.quantity}</td>
+                                        <td>
+                                            <div className='action-button-box'>
+                                                <button className='communities-view-requests-button' onClick={() => openModal(community)}>View</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <div className='pagination'>

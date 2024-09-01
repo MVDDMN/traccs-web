@@ -14,6 +14,7 @@ const Archive = () => {
     const [userType, setUserType] = useState('');
     const [userUsername, setUserUsername] = useState('');
     const [showImageModal, setShowImageModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState('');
 
     // Pagination state
@@ -57,13 +58,15 @@ const Archive = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/archives`);
                 setArchives(response.data);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error('Error fetching archives:', error);
+                setIsLoading(false); // Data is still loaded
             }
         };
 
         fetchArchives();
-        const interval = setInterval(fetchArchives, 1000);
+        const interval = setInterval(fetchArchives, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -243,44 +246,49 @@ const Archive = () => {
                             <span className='tooltip-text'>This page contains all the list of historical reports made by the users.</span>
                         </a>
                     </div>
-                    <table className='archive-table'>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Date and Time</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentArchives.map(archive => (
-                                <tr key={archive._id}>
-                                    <td>{archive._id}</td>
-                                    <td>{archive.name}</td>
-                                    <td>{archive.type}</td>
-                                    <td>{new Date(archive.report_date_time).toLocaleString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        second: '2-digit',
-                                        hour12: true,
-                                        timeZone: 'Asia/Manila'
-                                    })}
-                                    </td>
-                                    <td>{archive.status}</td>
-                                    <td>
-                                        <button onClick={() => handleViewArchive(archive)} className='archive-table-view-button'>
-                                            View Information
-                                        </button>
-                                    </td>
+
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='archive-table'>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Date and Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentArchives.map(archive => (
+                                    <tr key={archive._id}>
+                                        <td>{archive._id}</td>
+                                        <td>{archive.name}</td>
+                                        <td>{archive.type}</td>
+                                        <td>{new Date(archive.report_date_time).toLocaleString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit',
+                                            hour12: true,
+                                            timeZone: 'Asia/Manila'
+                                        })}
+                                        </td>
+                                        <td>{archive.status}</td>
+                                        <td>
+                                            <button onClick={() => handleViewArchive(archive)} className='archive-table-view-button'>
+                                                View Information
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <div className='pagination'>

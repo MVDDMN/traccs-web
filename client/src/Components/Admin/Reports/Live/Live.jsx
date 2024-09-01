@@ -14,6 +14,7 @@ const Live = () => {
     const [userUsername, setUserUsername] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showImageModal, setShowImageModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState('');
 
     useEffect(() => {
@@ -40,13 +41,15 @@ const Live = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/admin`);
                 setReports(response.data);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error('Error fetching reports:', error);
+                setIsLoading(false); // Data is still loaded
             }
         };
 
         fetchReports();
-        const interval = setInterval(fetchReports, 1000);
+        const interval = setInterval(fetchReports, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -274,45 +277,49 @@ const Live = () => {
                         </a>
                     </div>
 
-                    <table className='report-table'>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Date and Time</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentReports.map(report => (
-                                <tr key={report._id}>
-                                    <td>{report._id}</td>
-                                    <td>{report.name}</td>
-                                    <td>{report.type}</td>
-                                    <td>
-                                        {new Date(report.report_date_time).toLocaleString('en-US', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            second: '2-digit',
-                                            hour12: true,
-                                            timeZone: 'Asia/Manila'
-                                        })}
-                                    </td>
-                                    <td>{report.status}</td>
-                                    <td>
-                                        <button onClick={() => handleViewReport(report)} className='live-table-view-button'>
-                                            View Information
-                                        </button>
-                                    </td>
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='report-table'>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Date and Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentReports.map(report => (
+                                    <tr key={report._id}>
+                                        <td>{report._id}</td>
+                                        <td>{report.name}</td>
+                                        <td>{report.type}</td>
+                                        <td>
+                                            {new Date(report.report_date_time).toLocaleString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                second: '2-digit',
+                                                hour12: true,
+                                                timeZone: 'Asia/Manila'
+                                            })}
+                                        </td>
+                                        <td>{report.status}</td>
+                                        <td>
+                                            <button onClick={() => handleViewReport(report)} className='live-table-view-button'>
+                                                View Information
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <div className='pagination'>
@@ -476,7 +483,7 @@ const Live = () => {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className='live-update-modal-button-box'>
                                 <button onClick={denyReport} className='live-deny-modal-button'>Deny</button>
                                 <button onClick={selectedReport.status === 'Responded' ? archiveReport : respondToReport} className='live-update-modal-button'>

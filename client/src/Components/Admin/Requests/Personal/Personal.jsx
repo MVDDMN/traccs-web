@@ -18,6 +18,7 @@ const Personal = () => {
     const [userUsername, setUserUsername] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [requestToDelete, setRequestToDelete] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [formData, setFormData] = useState({
         itemname: '',
         barangay: '',
@@ -52,14 +53,16 @@ const Personal = () => {
                     date_time: formatDate(new Date(request.date_time))
                 }));
                 setRequests(formattedRequests);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching requests:", error);
+                setIsLoading(false); // Data is still loaded
             }
         };
 
         fetchUserData();
         fetchRequests();
-        const interval = setInterval(fetchRequests, 1000);
+        const interval = setInterval(fetchRequests, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -231,37 +234,42 @@ const Personal = () => {
                             <span className='tooltip-text'>This page allows the admin to create and list all of its requests.</span>
                         </a>
                     </div>
-                    <table className='personal-table'>
-                        <thead>
-                            <tr>
-                                <th>Requests ID</th>
-                                <th>Barangay</th>
-                                <th>Item Name</th>
-                                <th>Type</th>
-                                <th>Quantity</th>
-                                <th>Date & Time</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentRequests.map(request => (
-                                <tr key={request._id}>
-                                    <td>{request._id}</td>
-                                    <td>{request.barangay}</td>
-                                    <td>{request.itemname}</td>
-                                    <td>{request.type}</td>
-                                    <td>{request.quantity}</td>
-                                    <td>{request.date_time}</td>
-                                    <td>
-                                        <div className='action-button-box'>
-                                            <button className='personal-view-requests-button' onClick={() => openModal(request)}>Edit</button>
-                                            <button className='personal-delete-requests-button' onClick={() => openDeleteModal(request)}>Delete</button>
-                                        </div>
-                                    </td>
+
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='personal-table'>
+                            <thead>
+                                <tr>
+                                    <th>Requests ID</th>
+                                    <th>Barangay</th>
+                                    <th>Item Name</th>
+                                    <th>Type</th>
+                                    <th>Quantity</th>
+                                    <th>Date & Time</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentRequests.map(request => (
+                                    <tr key={request._id}>
+                                        <td>{request._id}</td>
+                                        <td>{request.barangay}</td>
+                                        <td>{request.itemname}</td>
+                                        <td>{request.type}</td>
+                                        <td>{request.quantity}</td>
+                                        <td>{request.date_time}</td>
+                                        <td>
+                                            <div className='action-button-box'>
+                                                <button className='personal-view-requests-button' onClick={() => openModal(request)}>Edit</button>
+                                                <button className='personal-delete-requests-button' onClick={() => openDeleteModal(request)}>Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <div className='pagination'>

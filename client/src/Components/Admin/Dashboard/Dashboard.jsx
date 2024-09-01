@@ -84,13 +84,16 @@ const Dashboard = () => {
     const [showImageModal, setShowImageModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
     const [locationReportCounts, setLocationReportCounts] = useState({});
+    const [loading, setLoading] = useState(true);
 
     const fetchReports = async () => {
         try {
             const response = await axios.get(`${apiBaseUrl}/api/admin`);
             setReports(response.data);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching reports:', error);
+            setLoading(false);
         }
     };
 
@@ -333,7 +336,17 @@ const Dashboard = () => {
 
             <div className='dashboard-maps-box'>
                 <div className='dashboard-maps-content'>
-                    <MapContainer id="map" center={[14.5591613626185, 121.14011670582923]} zoom={15} scrollWheelZoom={false}>
+                    {loading && (
+                        <div className="loading-overlay">
+                            <div className="loading-message">Loading Map Data...</div>
+                        </div>
+                    )}
+                    <MapContainer
+                        id="map"
+                        center={[14.5591613626185, 121.14011670582923]}
+                        zoom={15}
+                        scrollWheelZoom={false}
+                    >
                         <TileLayer
                             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

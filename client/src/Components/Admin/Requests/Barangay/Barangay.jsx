@@ -16,6 +16,7 @@ const Barangay = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [selectedBarangay, setSelectedBarangay] = useState('All');
+    const [isLoading, setIsLoading] = useState(true);
     const itemsPerPage = 9;
 
     useEffect(() => {
@@ -38,14 +39,16 @@ const Barangay = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/requests`);
                 setRequests(response.data);
+                setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching requests:", error);
+                setIsLoading(false); // Data is still loaded
             }
         };
 
         fetchUserData();
         fetchRequests();
-        const interval = setInterval(fetchRequests, 1000);
+        const interval = setInterval(fetchRequests, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -152,38 +155,43 @@ const Barangay = () => {
                             </select>
                         </div>
                     </div>
-                    <table className='barangay-table'>
-                        <thead>
-                            <tr>
-                                <th>Request ID</th>
-                                <th>Barangay</th>
-                                <th>Item Name</th>
-                                <th>Type</th>
-                                <th>Quantity</th>
-                                <th>Date & Time</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentRequests.map(request => (
-                                <tr key={request._id}>
-                                    <td>{request._id}</td>
-                                    <td>{request.barangay}</td>
-                                    <td>{request.itemname}</td>
-                                    <td>{request.type}</td>
-                                    <td>{request.quantity}</td>
-                                    <td>{request.date_time}</td>
-                                    <td>
-                                        {userBarangay !== request.barangay && (
-                                            <div className='action-button-box'>
-                                                <button className='barangay-view-requests-button' onClick={() => openModal(request._id)}>View</button>
-                                            </div>
-                                        )}
-                                    </td>
+
+                    {isLoading ? (
+                        <div className='loading-message'>Loading table, please wait...</div>
+                    ) : (
+                        <table className='barangay-table'>
+                            <thead>
+                                <tr>
+                                    <th>Request ID</th>
+                                    <th>Barangay</th>
+                                    <th>Item Name</th>
+                                    <th>Type</th>
+                                    <th>Quantity</th>
+                                    <th>Date & Time</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentRequests.map(request => (
+                                    <tr key={request._id}>
+                                        <td>{request._id}</td>
+                                        <td>{request.barangay}</td>
+                                        <td>{request.itemname}</td>
+                                        <td>{request.type}</td>
+                                        <td>{request.quantity}</td>
+                                        <td>{request.date_time}</td>
+                                        <td>
+                                            {userBarangay !== request.barangay && (
+                                                <div className='action-button-box'>
+                                                    <button className='barangay-view-requests-button' onClick={() => openModal(request._id)}>View</button>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
                 <div className='pagination'>
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
