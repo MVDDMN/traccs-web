@@ -23,10 +23,13 @@ router.post("/respondtoreport", async (req, res) => {
             return res.status(404).json({ message: "Report not found" });
         }
 
+        // Manually adjust for UTC+8 (Manila) time
+        const localDateTime = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // Add 8 hours for UTC+8
+
         // Update the report details
         report.status = "Responded";
         report.responder = responder;
-        report.respond_date_time = new Date().toISOString().replace('Z', '+08:00');
+        report.respond_date_time = localDateTime.toISOString(); // Store the adjusted time in ISO format
 
         // Save the updated report
         await report.save();
@@ -39,6 +42,7 @@ router.post("/respondtoreport", async (req, res) => {
     }
 });
 
+
 // Report Module - Send report to history
 router.post("/archivereport", async (req, res) => {
     const { reportId } = req.body;
@@ -48,15 +52,19 @@ router.post("/archivereport", async (req, res) => {
             return res.status(404).json("Report not found");
         }
 
-        // Ensure the report_date_time is in ISO format
-        const reportDateTimeISO = new Date(report.report_date_time).toISOString();
+        // Manually adjust for UTC+8 (Manila) time
+        const reportDateTime = new Date(report.report_date_time);
+        const reportDateTimeLocal = new Date(reportDateTime.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours for UTC+8
 
-        // Move the report to the archive table
+        const completionDateTimeUTC = new Date();
+        const completionDateTimeLocal = new Date(completionDateTimeUTC.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours for UTC+8
+
+        // Move the report to the archive table with adjusted local time
         const archivedReport = new archiveModel({
             ...report.toObject(),
-            report_date_time: reportDateTimeISO.replace('Z', '+08:00'),
+            report_date_time: reportDateTimeLocal.toISOString(), // Store the adjusted time in ISO format
             status: "Archived",
-            completion_date_time: new Date().toISOString().replace('Z', '+08:00'),
+            completion_date_time: completionDateTimeLocal.toISOString(), // Store the adjusted time in ISO format
         });
 
         // Save the new entry
@@ -90,7 +98,7 @@ router.post("/deny", async (req, res) => {
             ...report.toObject(),
             status: "Denied",
             responder: responder,
-            completion_date_time: new Date().toISOString().replace('Z', '+08:00'),
+            completion_date_time: new Date().toISOString(),
         });
 
         // Save the new entry

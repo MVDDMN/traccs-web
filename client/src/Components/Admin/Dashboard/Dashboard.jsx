@@ -374,7 +374,7 @@ const Dashboard = () => {
                                                     minute: '2-digit',
                                                     second: '2-digit',
                                                     hour12: true,
-                                                    timeZone: 'Asia/Manila'
+                                                    timeZone: 'UTC'
                                                 })}
                                             </p>
                                             <button onClick={() => handleViewReport(report)} className="map-report-button">
@@ -458,12 +458,12 @@ const Dashboard = () => {
                                     <div className='dashboard-reports-text-box'>
                                         <a className='dashboard-reports-title-text'>
                                             Report Date & Time:
-                                            <b className='dashboard-reports-content-text'>{new Date(selectedReport.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
+                                            <b className='dashboard-reports-content-text'>{new Date(selectedReport.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'UTC' })}</b>
                                         </a>
                                         {selectedReport.respond_date_time && (
                                             <a className='dashboard-reports-title-text'>
                                                 Respond Date & Time:
-                                                <b className='dashboard-reports-content-text'>{new Date(selectedReport.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
+                                                <b className='dashboard-reports-content-text'>{new Date(selectedReport.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'UTC' })}</b>
                                             </a>
                                         )}
                                     </div>

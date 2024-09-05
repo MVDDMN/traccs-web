@@ -144,25 +144,25 @@ router.get('/analytics/report-frequency', async (req, res) => {
 router.get('/analytics/report-stats', async (req, res) => {
     try {
         const totalReports = await reportsModel.countDocuments();
-
         const reports = await reportsModel.find({});
 
         const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth() + 1;
-        const currentDate = today.getDate();
+        const todayISO = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' format
 
         let reportsThisMonth = 0;
         let reportsToday = 0;
 
         reports.forEach(report => {
             const reportDate = new Date(report.report_date_time);
+            const reportISO = reportDate.toISOString().split('T')[0]; // Normalize report date
 
-            if (reportDate.getFullYear() === currentYear && reportDate.getMonth() + 1 === currentMonth) {
+            // Check if it's the same month
+            if (reportDate.getFullYear() === today.getFullYear() && reportDate.getMonth() === today.getMonth()) {
                 reportsThisMonth++;
             }
 
-            if (reportDate.getFullYear() === currentYear && reportDate.getMonth() + 1 === currentMonth && reportDate.getDate() === currentDate) {
+            // Check if it's the same day
+            if (reportISO === todayISO) {
                 reportsToday++;
             }
         });
@@ -177,6 +177,7 @@ router.get('/analytics/report-stats', async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 });
+
 
 // Analytics Module - Report frequency per hour
 router.get('/analytics/report-frequency-by-hour', async (req, res) => {

@@ -308,7 +308,7 @@ const HistoryMap = () => {
                                                 minute: '2-digit',
                                                 second: '2-digit',
                                                 hour12: true,
-                                                timeZone: 'Asia/Manila'
+                                                timeZone: 'UTC'
                                             })}
                                         </p>
                                         <button onClick={() => handleViewReport(entry)} className="map-report-button">
@@ -390,15 +390,15 @@ const HistoryMap = () => {
                                     <div className='historymap-reports-text-box'>
                                         <a className='historymap-reports-title-text'>
                                             Report Date & Time:
-                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timezone: 'Asia/Manila' })}</b>
+                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
                                         </a>
                                         <a className='historymap-reports-title-text'>
                                             Respond Date & Time:
-                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timezone: 'Asia/Manila' })}</b>
+                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
                                         </a>
                                         <a className='historymap-reports-title-text'>
                                             Completion Date & Time:
-                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.completion_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timezone: 'Asia/Manila' })}</b>
+                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.completion_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
                                         </a>
 
                                     </div>

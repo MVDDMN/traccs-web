@@ -143,8 +143,8 @@ const Live = () => {
         try {
             const reportToArchive = {
                 reportId: selectedReport._id,
-                report_date_time: new Date(selectedReport.report_date_time).toISOString().replace('Z', '+08:00'),
-                completion_date_time: new Date().toISOString().replace('Z', '+08:00'),
+                report_date_time: new Date(selectedReport.report_date_time).toISOString(),
+                completion_date_time: new Date().toISOString(),
             };
 
             await axios.post(`${apiBaseUrl}/api/archivereport`, reportToArchive);
@@ -306,7 +306,7 @@ const Live = () => {
                                                 minute: '2-digit',
                                                 second: '2-digit',
                                                 hour12: true,
-                                                timeZone: 'Asia/Manila'
+                                                timeZone: 'UTC'
                                             })}
                                         </td>
                                         <td>{report.status}</td>
@@ -404,7 +404,7 @@ const Live = () => {
                                                             minute: '2-digit',
                                                             second: '2-digit',
                                                             hour12: true,
-                                                            timeZone: 'Asia/Manila'
+                                                            timeZone: 'UTC'
                                                         }
                                                     )
                                                 }
@@ -424,7 +424,7 @@ const Live = () => {
                                                                 minute: '2-digit',
                                                                 second: '2-digit',
                                                                 hour12: true,
-                                                                timeZone: 'Asia/Manila'
+                                                                timeZone: 'UTC'
                                                             }
                                                         )
                                                     }
