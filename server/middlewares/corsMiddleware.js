@@ -2,7 +2,7 @@ const cors = require("cors");
 require('dotenv').config();
 
 const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? [process.env.PROD_BASE_URL].filter(Boolean)
+    ? [process.env.PROD_BASE_URL, process.env.PROD_ALT_URL].filter(Boolean)
     : [process.env.DEV_BASE_URL, process.env.DEV_ALT_URL].filter(Boolean);
 
 const corsMiddleware = cors({
