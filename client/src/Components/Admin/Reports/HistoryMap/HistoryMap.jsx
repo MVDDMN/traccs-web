@@ -201,7 +201,7 @@ const HistoryMap = () => {
         };
 
         fetchHistoryData();
-        const interval = setInterval(fetchHistoryData, 30000);
+        const interval = setInterval(fetchHistoryData, 5000);
 
         return () => clearInterval(interval);
     }, []);
