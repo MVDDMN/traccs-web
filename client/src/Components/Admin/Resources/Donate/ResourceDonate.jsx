@@ -605,18 +605,19 @@ const ResourceDonate = () => {
                                                         +
                                                     </label>
 
+                                                    {formValues.image && (
+                                                        <div className="donations-image-preview">
+                                                            <img
+                                                                src={`data:image/jpeg;base64,${formValues.image}`}
+                                                                alt="Uploaded"
+                                                                className="donations-preview-img"
+                                                                onClick={handleImageClick}
+                                                            />
+                                                        </div>
+                                                    )}
+
                                                 </div>
 
-                                                {formValues.image && (
-                                                    <div className="donations-image-preview">
-                                                        <img
-                                                            src={`data:image/jpeg;base64,${formValues.image}`}
-                                                            alt="Uploaded"
-                                                            className="donations-preview-img"
-                                                            onClick={handleImageClick}
-                                                        />
-                                                    </div>
-                                                )}
                                             </div>
 
                                         </div>
