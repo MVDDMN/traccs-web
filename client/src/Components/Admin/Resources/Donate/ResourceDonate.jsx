@@ -25,6 +25,8 @@ const ResourceDonate = () => {
         type: '',
         donationAmount: '',
         description: '',
+        updateDescription: '',
+        status: '',
         selectedBarangay: '',
         image: '',
     });
@@ -100,7 +102,9 @@ const ResourceDonate = () => {
             type: donation.type,
             donationAmount: donation.donationAmount,
             description: donation.description,
+            updateDescription: donation.updateDescription,
             selectedBarangay: donation.selectedBarangay,
+            status: donation.status,
             image: donation.image,
         });
         setIsEditModalOpen(true);
@@ -118,34 +122,49 @@ const ResourceDonate = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
+    
+        // Validate the updateDescription field
+        if (!formValues.updateDescription || formValues.updateDescription.trim() === '') {
+            alert("Please provide a status description.");
+            return;
+        }
+    
         // Define the maximum allowed image size in bytes (e.g., 10MB)
         const maxImageSize = 10 * 1024 * 1024; // 10MB
-
+    
         // Check if the image size exceeds the maximum allowed size
         if (formValues.image) {
             const base64Length = formValues.image.length;
             const padding = (formValues.image.charAt(base64Length - 2) === "=") ? 2 : ((formValues.image.charAt(base64Length - 1) === "=") ? 1 : 0);
             const imageSize = (base64Length * 3 / 4) - padding;
-
+    
             if (imageSize > maxImageSize) {
                 alert("The image size is too large. Please upload an image smaller than 10MB.");
                 return;
             }
         }
-
+    
         try {
-            await axios.put(`${apiBaseUrl}/api/donations/${selectedDonation._id}`, formValues);
-            await logAdminAction('Edit', { donationId: selectedDonation._id, updatedData: formValues }, 'Updated donation details');
+            // Set status to "Updated"
+            const updatedFormValues = {
+                ...formValues,
+                status: 'Updated',
+            };
+    
+            await axios.put(`${apiBaseUrl}/api/donations/${selectedDonation._id}`, updatedFormValues);
+            await logAdminAction('Edit', { donationId: selectedDonation._id, updatedData: updatedFormValues }, 'Updated donation details');
+    
+            // Update the local state with the new status
             const updatedDonations = donations.map(donation =>
-                donation._id === selectedDonation._id ? { ...donation, ...formValues } : donation
+                donation._id === selectedDonation._id ? { ...donation, ...updatedFormValues } : donation
             );
             setDonations(updatedDonations);
+    
             closeEditModal();
         } catch (error) {
             console.error("Error updating donation:", error);
         }
-    };
+    };    
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -254,7 +273,9 @@ const ResourceDonate = () => {
                                         <td>{donation.donationAmount}</td>
                                         <td>
                                             <div className='action-button-box'>
-                                                <button className='view-donations-button' onClick={() => handleEditDonation(donation)}>Update</button>
+                                                {donation.status !== 'Updated' && (
+                                                    <button className='view-donations-button' onClick={() => handleEditDonation(donation)}>Update</button>
+                                                )}
                                                 <button className='view-donations-button' onClick={() => handleViewDonation(donation)}>View</button>
                                             </div>
                                         </td>
@@ -321,6 +342,10 @@ const ResourceDonate = () => {
                                                     <b className='donations-content-text'>{selectedDonation.contactNumber}</b>
                                                 </a>
                                             </div>
+                                            <div className='donations-description-box'>
+                                                <a className='description-title-text'>Description</a>
+                                                <textarea className='donations-description-area' value={selectedDonation.description} readOnly />
+                                            </div>
 
                                         </div>
 
@@ -350,9 +375,20 @@ const ResourceDonate = () => {
                                                     <b className='donations-content-text'>{selectedDonation.selectedBarangay}</b>
                                                 </a>
                                             </div>
+                                            <div className='donations-text-box'>
+                                                <a className='donations-title-text'>
+                                                    Status:
+                                                    <b className='donations-content-text'>{selectedDonation.status}</b>
+                                                </a>
+                                            </div>
                                             <div className='donations-description-box'>
-                                                <a className='description-title-text'>Description</a>
-                                                <textarea className='donations-description-area' value={selectedDonation.description} readOnly />
+                                                <a className='description-title-text'>Status Description</a>
+                                                <textarea
+                                                    name="updateDescription"
+                                                    value={selectedDonation.updateDescription}
+                                                    className='donations-description-area'
+                                                    readOnly
+                                                />
                                             </div>
 
                                         </div>
@@ -445,6 +481,11 @@ const ResourceDonate = () => {
                                                     </a>
                                                 </div>
 
+                                                <div className='donations-description-box'>
+                                                    <a className='description-title-text'>Description</a>
+                                                    <textarea className='donations-description-area' value={selectedDonation.description} readOnly />
+                                                </div>
+
                                             </div>
 
                                             <div className='donations-divider-box'>
@@ -477,9 +518,24 @@ const ResourceDonate = () => {
                                                     </a>
                                                 </div>
 
+                                                {(selectedDonation.status &&
+                                                    <div className='donations-text-box'>
+                                                        <a className='donations-title-text'>
+                                                            Status:
+                                                            <b className='donations-content-text'>{selectedDonation.status}</b>
+                                                        </a>
+                                                    </div>
+                                                )}
+
                                                 <div className='donations-description-box'>
-                                                    <a className='description-title-text'>Description</a>
-                                                    <textarea className='donations-description-area' value={selectedDonation.description} readOnly />
+                                                    <a className='description-title-text'>Status Description</a>
+                                                    <textarea
+                                                        name="updateDescription"
+                                                        value={formValues.updateDescription}
+                                                        onChange={(e) => setFormValues({ ...formValues, updateDescription: e.target.value })}
+                                                        className='donations-description-area'
+                                                        maxLength={100}
+                                                    />
                                                 </div>
 
                                             </div>

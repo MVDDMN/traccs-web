@@ -142,7 +142,7 @@
 .donations-modal-content { 
     display: inline-flex;
     flex-direction: column;
-    height: 31em;
+    height: 34em;
     width: 55%;
     padding: 25px;
     background-color: white;
@@ -201,13 +201,13 @@
 .donations-division-container {
     display: inline-flex;
     flex-direction: row;
-    gap: 5px;
+    gap: 10px;
 }
 
 .donations-divider-box {
     display: inline-flex;
     flex-direction: column;
-    width: 33%;
+    width: 32%;
 }
 
 .donations-divider-box-image {
@@ -292,12 +292,6 @@
     font-size: 30px;
     color: white;
     cursor: pointer;
-}
-
-.donations-text-box {
-    display: inline-flex;
-    flex-direction: row;
-    width: 100%;
 }
 
 .donations-title-text {

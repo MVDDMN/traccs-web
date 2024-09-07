@@ -9,6 +9,8 @@ const donateSchema = new mongoose.Schema({
     type: String,
     donationAmount: String,
     description: String,
+    updateDescription: String,
+    status: String,
     selectedBarangay: String,
     image: String,
 })
