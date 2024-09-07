@@ -122,22 +122,6 @@ const ResourceDonate = () => {
         // Define the maximum allowed image size in bytes (e.g., 10MB)
         const maxImageSize = 10 * 1024 * 1024; // 10MB
 
-        // Validation logic
-        if (
-            formValues.firstName.trim() === '' ||
-            formValues.lastName.trim() === '' ||
-            formValues.email.trim() === '' ||
-            formValues.contactNumber.trim() === '' ||
-            formValues.donationType.trim() === '' ||
-            formValues.type.trim() === '' ||
-            formValues.donationAmount.trim() === '' ||
-            formValues.description.trim() === '' ||
-            formValues.selectedBarangay.trim() === ''
-        ) {
-            alert("All fields must be filled out properly.");
-            return;
-        }
-
         // Check if the image size exceeds the maximum allowed size
         if (formValues.image) {
             const base64Length = formValues.image.length;
