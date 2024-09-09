@@ -1,6 +1,6 @@
 const mongoose = require ("mongoose")
 
-const donateSchema = new mongoose.Schema({
+const resourcearchiveSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     email: String,
@@ -9,13 +9,10 @@ const donateSchema = new mongoose.Schema({
     type: String,
     donationAmount: String,
     description: String,
-    updateDescription: String,
-    status: String,
     selectedBarangay: String,
-    image: String,
-    admin: String
+    admin: String,
 }, { timestamps: true });
 
-const donateModel = mongoose.model("donations", donateSchema)
+const resourcearchiveModel = mongoose.model("resourcearchive", resourcearchiveSchema)
 
-module.exports = donateModel
+module.exports = resourcearchiveModel

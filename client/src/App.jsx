@@ -29,6 +29,7 @@ import Live from './Components/Admin/Reports/Live/Live.jsx';
 import Resource from './Components/Admin/Resources/Resources.jsx';
 import ResourceTable from './Components/Admin/Resources/ResourceTable/ResourceTable.jsx';
 import ResourceDonate from './Components/Admin/Resources/Donate/ResourceDonate.jsx';
+import ResourceArchive from './Components/Admin/Resources/ResourceHistory/ResourceHistory.jsx';
 
 /*Request Imports*/
 import Request from './Components/Admin/Requests/Request.jsx';
@@ -50,6 +51,7 @@ import Users from './Components/Admin/Accounts/Users/Users.jsx';
 
 /*Log Imports*/
 import Logs from './Components/Admin/ActivityLog/Logs.jsx';
+import ResourceHistory from './Components/Admin/Resources/ResourceHistory/ResourceHistory.jsx';
 
 function App() {
 
@@ -101,6 +103,7 @@ function App() {
                       <Route index element={<ResourceTable />} />
                       <Route path="resourcetable" element={<ResourceTable />} />
                       <Route path="resourcedonate" element={<ResourceDonate />} />
+                      <Route path="resourcearchive" element={<ResourceHistory />} />
                     </Route>
 
                     <Route path="request" element={<Request />}>

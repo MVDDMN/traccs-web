@@ -7,6 +7,7 @@ import accidenticon from '../../Assets/accident.png';
 import policeicon from '../../Assets/police.png';
 import medicalicon from '../../Assets/medical.png';
 import hazardicon from '../../Assets/hazard.png';
+import assistanceicon from '../../Assets/assistance.png';
 import usericon from '../../Assets/user.png';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
@@ -17,6 +18,7 @@ import firemapicon from '../../Assets/map/fire.png';
 import hazardmapicon from '../../Assets/map/hazard.png';
 import medicalmapicon from '../../Assets/map/medical.png';
 import policemapicon from '../../Assets/map/police.png';
+import assistancemapicon from '../../Assets/map/assistance.png'
 import defaultmapicon from '../../Assets/location.png';
 
 import 'leaflet/dist/leaflet.css';
@@ -50,6 +52,11 @@ const hazardMapIcon = new L.Icon({
     iconSize: [25, 25],
 });
 
+const assistanceMapIcon = new L.Icon({
+    iconUrl: assistancemapicon,
+    iconSize: [25, 25],
+});
+
 const defaultMapIcon = new L.Icon({
     iconUrl: defaultmapicon,
     iconSize: [25, 25],
@@ -67,6 +74,8 @@ const getMapIcon = (type) => {
             return medicalMapIcon;
         case 'Hazard':
             return hazardMapIcon;
+        case 'Assistance':
+            return assistanceMapIcon;
         default:
             return defaultMapIcon;
     }
@@ -327,6 +336,16 @@ const Dashboard = () => {
                             <div className='accident-content'>
                                 <a className='accident-title'>Medical</a>
                                 <b className='accident-total'>{reportCounts['Medical'] || 0}</b>
+                            </div>
+                        </div>
+                        <div
+                            className={`accident-frame ${filter === 'Assistance' ? 'selected-frame' : ''}`}
+                            onClick={() => handleFilterChange('Assistance')}
+                        >
+                            <img className='accident-icon' src={assistanceicon} />
+                            <div className='accident-content'>
+                                <a className='accident-title'>Assistance</a>
+                                <b className='accident-total'>{reportCounts['Assistance'] || 0}</b>
                             </div>
                         </div>
 

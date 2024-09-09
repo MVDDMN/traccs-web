@@ -15,6 +15,7 @@ const Resources = () => {
 
                         <Link to="resourcetable"><a className='resource-button'>My Resources</a></Link>
                         <Link to="resourcedonate"><a className='resource-button'>Donations</a></Link>
+                        <Link to="resourcearchive"><a className='resource-button'>Donations History</a></Link>
 
                     </div>
 

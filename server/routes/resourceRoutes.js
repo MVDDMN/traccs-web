@@ -1,6 +1,7 @@
 const express = require("express");
 const resourcesModel = require('../models/resources');
 const donateModel = require('../models/donate');
+const resourcearchiveModel = require('../models/resourcearchive');
 const router = express.Router();
 
 // Resource Module - Show resources
@@ -98,6 +99,53 @@ router.put('/donations/:id', async (req, res) => {
     } catch (err) {
         console.error("Error updating donation:", err);
         res.status(500).json("Internal server error");
+    }
+});
+
+// Archive a donation
+router.post('/resourcearchive', async (req, res) => {
+    try {
+        // Create a new entry in the resourcearchive collection
+        const archiveData = new resourcearchiveModel({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            contactNumber: req.body.contactNumber,
+            donationType: req.body.donationType,
+            type: req.body.type,
+            donationAmount: req.body.donationAmount,
+            description: req.body.description,
+            selectedBarangay: req.body.selectedBarangay,
+            admin: req.body.admin,
+        });
+
+        await archiveData.save();
+
+        res.status(200).json({ message: 'Donation archived successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to archive donation', error });
+    }
+});
+
+// Delete a donation
+router.delete('/donations/:id', async (req, res) => {
+    try {
+        const donationId = req.params.id;
+        await donateModel.findByIdAndDelete(donationId);
+
+        res.status(200).json({ message: 'Donation deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete donation', error });
+    }
+});
+
+router.get('/resourcehistory', async (req, res) => {
+    try {
+        const resources = await resourcearchiveModel.find(); // Fetch all records, sorted by date
+        res.status(200).json(resources);
+    } catch (error) {
+        console.error("Error fetching resource history:", error);
+        res.status(500).json({ message: 'Server error. Unable to retrieve resource history.' });
     }
 });
 

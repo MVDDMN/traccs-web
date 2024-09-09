@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import './ResourceDonate.css';
 
@@ -107,6 +107,7 @@ const ResourceDonate = () => {
             selectedBarangay: donation.selectedBarangay,
             status: donation.status,
             image: donation.image,
+            admin: donation.admin,
         });
         setIsEditModalOpen(true);
     };
@@ -130,6 +131,9 @@ const ResourceDonate = () => {
             return;
         }
 
+        // Store admin as responder
+        const admin = userUsername;
+
         // Define the maximum allowed image size in bytes (e.g., 10MB)
         const maxImageSize = 10 * 1024 * 1024; // 10MB
 
@@ -148,10 +152,11 @@ const ResourceDonate = () => {
         try {
             setIsButtonLoading(true); // Set isButtonLoading to true when the form submission starts
 
-            // Set status to "Updated"
+            // Set status to "Recorded"
             const updatedFormValues = {
                 ...formValues,
-                status: 'Updated',
+                status: 'Recorded',
+                admin: admin,
             };
 
             await axios.put(`${apiBaseUrl}/api/donations/${selectedDonation._id}`, updatedFormValues);
@@ -166,6 +171,42 @@ const ResourceDonate = () => {
             closeEditModal();
         } catch (error) {
             console.error("Error updating donation:", error);
+        } finally {
+            setIsButtonLoading(false);
+        }
+    };
+
+    const handleDeleteDonation = async () => {
+        if (!selectedDonation) return;
+
+        try {
+            setIsButtonLoading(true);
+
+            await axios.post(`${apiBaseUrl}/api/resourcearchive`, {
+                firstName: selectedDonation.firstName,
+                lastName: selectedDonation.lastName,
+                email: selectedDonation.email,
+                contactNumber: selectedDonation.contactNumber,
+                donationType: selectedDonation.donationType,
+                type: selectedDonation.type,
+                donationAmount: selectedDonation.donationAmount,
+                description: selectedDonation.description,
+                selectedBarangay: selectedDonation.selectedBarangay,
+                admin: userUsername, // Store the admin who deleted it
+            });
+
+            await axios.delete(`${apiBaseUrl}/api/donations/${selectedDonation._id}`);
+
+            const updatedDonations = donations.filter(donation => donation._id !== selectedDonation._id);
+            setDonations(updatedDonations);
+
+            // Log the deletion
+            await logAdminAction('Delete', { donationId: selectedDonation._id }, 'Deleted donation and archived it');
+
+            // Close the edit modal
+            closeEditModal();
+        } catch (error) {
+            console.error("Error deleting and archiving donation:", error);
         } finally {
             setIsButtonLoading(false);
         }
@@ -257,12 +298,11 @@ const ResourceDonate = () => {
                             <thead>
                                 <tr>
                                     <th>Donation ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
+                                    <th>Contact No.</th>
                                     <th>Email</th>
                                     <th>Donation Type</th>
-                                    <th>Type</th>
                                     <th>Donation Amount</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -270,18 +310,19 @@ const ResourceDonate = () => {
                                 {currentDonations.map(donation => (
                                     <tr key={donation._id}>
                                         <td>{donation._id}</td>
-                                        <td>{donation.firstName}</td>
-                                        <td>{donation.lastName}</td>
+                                        <td>{donation.contactNumber}</td>
                                         <td>{donation.email}</td>
                                         <td>{donation.donationType}</td>
-                                        <td>{donation.type}</td>
                                         <td>{donation.donationAmount}</td>
+                                        <td>{donation.status ? donation.status : 'Not Updated'}</td>
                                         <td>
                                             <div className='action-button-box'>
-                                                {donation.status !== 'Updated' && (
+                                                {donation.status !== 'Recorded' && (
                                                     <button className='view-donations-button' onClick={() => handleEditDonation(donation)}>Update</button>
                                                 )}
+                                                {donation.status == 'Recorded' && (
                                                 <button className='view-donations-button' onClick={() => handleViewDonation(donation)}>View</button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -324,23 +365,16 @@ const ResourceDonate = () => {
                                                 </a>
                                             </div>
 
-                                            {(selectedDonation.firstName &&
+                                            {(selectedDonation.firstName || selectedDonation.lastName) &&
                                                 <div className='donations-text-box'>
                                                     <a className='donations-title-text'>
-                                                        First Name:
-                                                        <b className='donations-content-text'>{selectedDonation.firstName}</b>
+                                                        Name:
+                                                        <b className='donations-content-text'>
+                                                            {selectedDonation.firstName} {selectedDonation.lastName}
+                                                        </b>
                                                     </a>
                                                 </div>
-                                            )}
-
-                                            {(selectedDonation.lastName &&
-                                                <div className='donations-text-box'>
-                                                    <a className='donations-title-text'>
-                                                        Last Name:
-                                                        <b className='donations-content-text'>{selectedDonation.lastName}</b>
-                                                    </a>
-                                                </div>
-                                            )}
+                                            }
 
                                             {(selectedDonation.donationType &&
                                                 <div className='donations-text-box'>
@@ -360,6 +394,15 @@ const ResourceDonate = () => {
                                                 </div>
                                             )}
 
+                                            {(selectedDonation.selectedBarangay &&
+                                                <div className='donations-text-box'>
+                                                    <a className='donations-title-text'>
+                                                        Barangay:
+                                                        <b className='donations-content-text'>{selectedDonation.selectedBarangay}</b>
+                                                    </a>
+                                                </div>
+                                            )}
+
                                             <div className='donations-description-box'>
                                                 <a className='description-title-text'>Description</a>
                                                 <textarea className='donations-description-area' value={selectedDonation.description} readOnly />
@@ -368,6 +411,15 @@ const ResourceDonate = () => {
                                         </div>
 
                                         <div className='donations-divider-box'>
+
+                                            {(selectedDonation.admin &&
+                                                <div className='donations-text-box'>
+                                                    <a className='donations-title-text'>
+                                                        Updated By:
+                                                        <b className='donations-content-text'>{selectedDonation.admin}</b>
+                                                    </a>
+                                                </div>
+                                            )}
 
                                             {(selectedDonation.donationType &&
                                                 <div className='donations-text-box'>
@@ -392,15 +444,6 @@ const ResourceDonate = () => {
                                                     <a className='donations-title-text'>
                                                         Donation Amount:
                                                         <b className='donations-content-text'>{selectedDonation.donationAmount}</b>
-                                                    </a>
-                                                </div>
-                                            )}
-
-                                            {(selectedDonation.selectedBarangay &&
-                                                <div className='donations-text-box'>
-                                                    <a className='donations-title-text'>
-                                                        Selected Barangay:
-                                                        <b className='donations-content-text'>{selectedDonation.selectedBarangay}</b>
                                                     </a>
                                                 </div>
                                             )}
@@ -486,23 +529,16 @@ const ResourceDonate = () => {
                                                     </a>
                                                 </div>
 
-                                                {(selectedDonation.firstName &&
+                                                {(selectedDonation.firstName || selectedDonation.lastName) &&
                                                     <div className='donations-text-box'>
                                                         <a className='donations-title-text'>
-                                                            First Name:
-                                                            <b className='donations-content-text'>{selectedDonation.firstName}</b>
+                                                            Name:
+                                                            <b className='donations-content-text'>
+                                                                {selectedDonation.firstName} {selectedDonation.lastName}
+                                                            </b>
                                                         </a>
                                                     </div>
-                                                )}
-
-                                                {(selectedDonation.lastName &&
-                                                    <div className='donations-text-box'>
-                                                        <a className='donations-title-text'>
-                                                            Last Name:
-                                                            <b className='donations-content-text'>{selectedDonation.lastName}</b>
-                                                        </a>
-                                                    </div>
-                                                )}
+                                                }
 
                                                 {(selectedDonation.email &&
                                                     <div className='donations-text-box'>
@@ -518,6 +554,15 @@ const ResourceDonate = () => {
                                                         <a className='donations-title-text'>
                                                             Contact Number:
                                                             <b className='donations-content-text'>{selectedDonation.contactNumber}</b>
+                                                        </a>
+                                                    </div>
+                                                )}
+
+                                                {(selectedDonation.selectedBarangay &&
+                                                    <div className='donations-text-box'>
+                                                        <a className='donations-title-text'>
+                                                            Selected Barangay:
+                                                            <b className='donations-content-text'>{selectedDonation.selectedBarangay}</b>
                                                         </a>
                                                     </div>
                                                 )}
@@ -554,15 +599,6 @@ const ResourceDonate = () => {
                                                         <a className='donations-title-text'>
                                                             Donation Amount:
                                                             <b className='donations-content-text'>{selectedDonation.donationAmount}</b>
-                                                        </a>
-                                                    </div>
-                                                )}
-
-                                                {(selectedDonation.selectedBarangay &&
-                                                    <div className='donations-text-box'>
-                                                        <a className='donations-title-text'>
-                                                            Selected Barangay:
-                                                            <b className='donations-content-text'>{selectedDonation.selectedBarangay}</b>
                                                         </a>
                                                     </div>
                                                 )}
@@ -623,6 +659,17 @@ const ResourceDonate = () => {
                                         </div>
 
                                         <div className='update-donation-button-box'>
+                                            {!isButtonLoading && (
+                                                <button
+                                                    type="button"
+                                                    className={`update-donation-button ${isButtonLoading ? '' : 'delete'}`}
+                                                    onClick={handleDeleteDonation}
+                                                    disabled={isButtonLoading}
+                                                >
+                                                    Delete Donation
+                                                </button>
+                                            )}
+
                                             <button
                                                 type="submit"
                                                 className={`update-donation-button ${isButtonLoading ? 'loading' : ''}`}
@@ -645,7 +692,3 @@ const ResourceDonate = () => {
 };
 
 export default ResourceDonate;
-
-
-
-

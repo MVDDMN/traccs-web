@@ -64,7 +64,8 @@ const Live = () => {
         Accident: true,
         Police: true,
         Medical: true,
-        Hazard: true
+        Hazard: true,
+        Assistance: true
     });
     const [selectedMonths, setSelectedMonths] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);

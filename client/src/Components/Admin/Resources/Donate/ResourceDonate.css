@@ -236,7 +236,7 @@
 }
 
 .donations-image-input {
-    display: none; /* Hides the actual file input */
+    display: none;
 }
 
 .donations-image-label {
@@ -314,7 +314,7 @@
     color: #000;
     font-size: 14px;
     padding: 5px;
-    gap: 10px;
+    gap: 5px;
     width: 100%;
 }
 
@@ -339,6 +339,11 @@
     padding: 10px;
     overflow-y: auto;
     resize: none;
+}
+
+.donations-description-area::placeholder {
+    color: red;
+    opacity: 0.5;
 }
 
 .donation-input-box {
@@ -372,7 +377,8 @@
     flex-direction: row;
     justify-content: right;
     align-items: last baseline;
-    gap: 20px;
+    padding: 2px;
+    gap: 10px;
     height: auto;
     width: 100%;
 }
@@ -402,6 +408,14 @@
     background-color: #0A1B57;
     cursor: not-allowed;
     opacity: 0.9;
+}
+
+.update-donation-button.delete {
+    background-color: red;
+}
+
+.update-donation-button.delete:hover {
+    background-color: rgb(117, 2, 2);
 }
 
 .update-donation-button.loading::after {
