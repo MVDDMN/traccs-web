@@ -1,8 +1,8 @@
 .download-container {
     display: inline-flex;
     flex-direction: column;
-    height: 100%;
-    width: 100%;
+    height: auto;
+    width: auto;
 }
 
 .download-content {
@@ -29,15 +29,24 @@
 .download-section {
     display: inline-flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: 50%;
+}
+
+.download-info-box {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
     gap: 75px;
-    height: 800px;
-    width: 800px;
 }
 
 .download-info {
     color: #000;
     font-size: 34px;
-    padding-top: 100px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -52,7 +61,6 @@
     padding-top: 100px;
     display: inline-flex;
     flex-direction: column;
-    height: 900px;
     width: 700px;
 }
 
@@ -81,28 +89,36 @@
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
-    .download-section {
-        height: 800px;
-        width: 700px;
-    }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
-    .download-section {
-        height: 800px;
-        width: 600px;
-    }
 }
 
 /* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
-    .download-section {
-        height: 700px;
-        width: 500px;
-    }
     .download-img {
-        height: 800px;
+        height: 700px;
         width: 600px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .download-info {
+        font-size: 12px;
+    }
+
+    .download-btn {
+        width: 150px;
+        border: 2px solid #0E267C;
+        padding: 10px;
+        font-size: 10px;
+        gap:10px;
+    }
+
+    .download-img {
+        height: 250px;
+        width: 200px;
     }
 }

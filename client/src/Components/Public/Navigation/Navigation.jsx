@@ -1,33 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './Navigation.css';
 
 const Navigation = () => {
   return (
     <div className="public-nav-cont">
-
       <div className="public-nav-list">
-
         <div className='public-title-cont'>
           <a>TRACCS</a>
         </div>
 
         <div className='public-button-cont'>
-
           <div className='public-button-sect1'>
-            <Link to="/">Home</Link>
-            <Link to="/about">About Us</Link>
-            <Link to="/contact">Contact Us</Link>
-            <Link to="/donate">Donate</Link>
+            <NavLink to="/" end className={({ isActive }) => isActive ? "public-active-link" : "public-nav-text"}>Home</NavLink>
+            <NavLink to="/about" className={({ isActive }) => isActive ? "public-active-link" : "public-nav-text"}>About Us</NavLink>
+            <NavLink to="/contact" className={({ isActive }) => isActive ? "public-active-link" : "public-nav-text"}>Contact Us</NavLink>
+            <NavLink to="/donate" className={({ isActive }) => isActive ? "public-active-link" : "public-nav-text"}>Donate</NavLink>
           </div>
 
           <div className='public-button-sect2'>
-            <Link to="/download" className='public-download-btn'>Download TRACCS</Link>
-            <Link to="/login" className='public-login-btn'>Login</Link>
+            <NavLink to="/download" className="public-download-btn">Download TRACCS</NavLink>
+            <NavLink to="/login" className="public-login-btn">Login</NavLink>
           </div>
-
         </div>
-
       </div>
 
       <div className='public-title-app-cont'>
@@ -40,7 +35,6 @@ const Navigation = () => {
           <a>S</a><b>ystem</b>
         </div>
       </div>
-
     </div>
   );
 }

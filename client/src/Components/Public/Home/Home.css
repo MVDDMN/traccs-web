@@ -1,13 +1,13 @@
 .home-container {
     display: inline-flex;
     flex-direction: column;
-    height: 100vh;
-    width: 100%;
+    height: auto;
+    width: auto;
 }
 
 .home-title-bg {
     background-image: url('../../Assets/homebg.png');
-    height: 100%;
+    height: 100vh;
     background-size: cover;
     background-repeat: no-repeat;
     display: inline-flex;
@@ -27,7 +27,7 @@
 
 .home-tagline {
     color: #FFF;
-    font-size: 50px;
+    font-size: 3em;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -52,5 +52,20 @@
 @media (max-width: 1300px) {
     .home-tagline {
         font-size: 35px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .home-title-bg {
+        height: 300px;
+        width: auto;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .home-tagline {
+        font-size: 1em;
+        text-align: center;
     }
 }

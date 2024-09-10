@@ -174,6 +174,33 @@
     }
 }
 
+.login-error-box {
+    display: inline-flex;
+    flex-direction: column;
+    background-color: rgb(255, 109, 109);
+    border: 1px solid red;
+    border-radius: 5px;
+    height: auto;
+    width: 100%;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: none;
+    transition: opacity 0.5s ease, transform 0.3s ease-in-out;
+    visibility: hidden;
+}
+
+.login-error-box.show {
+    opacity: 1;
+    transform: scale(1);
+    animation: popIn 0.3s ease forwards;
+    visibility: visible;
+}
+
+.login-error-box label {
+    padding: 5px;
+    color: white;
+}
+
 .login-back {
     display: inline-flex;
     flex-direction: column;
@@ -221,6 +248,7 @@
     .login-textfield-box {
         width: 535px;
     }
+    
 }
 
 /* For screen sizes 1600px and below */
@@ -252,6 +280,9 @@
     }
     .login-terms p {
         font-size: 14px;
+    }
+    .login-error-box {
+        width: 99%;
     }
 }
 
@@ -292,5 +323,12 @@
     }
     .login-terms p {
         font-size: 10px;
+    }
+    .login-error-box label {
+        font-size: 8px;
+        padding: 5px;
+    }
+    .login-error-box {
+        width: 96%;
     }
 }

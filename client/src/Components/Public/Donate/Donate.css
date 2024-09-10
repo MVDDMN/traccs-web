@@ -22,6 +22,8 @@
 .donate-content {
     display: inline-flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: auto;
     width: auto;
 }
@@ -30,8 +32,9 @@
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    height: 325px;
-    width: 600px;
+    justify-content: center;
+    height: auto;
+    width: 50%;
     background-color: white;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
@@ -42,7 +45,7 @@
     flex-direction: column;
     height: auto;
     width: auto;
-    padding: 40px;
+    padding: 20px;
     gap: 20px;
 }
 
@@ -86,4 +89,14 @@
 .donate-download-btn:hover {
     background-color: #0A1B57;
     color: #fff;
+}
+
+@media (max-width: 768px) {
+    .donate-content-container {
+        width: 90%;
+    }
+    .donate-download-btn {
+        font-size: 10px;
+        width: 100px;
+    }
 }

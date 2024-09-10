@@ -51,3 +51,22 @@
     line-height: normal;
     text-align: center;
 }
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .about-title {
+        font-size: 16px;
+    }
+
+    .about-heading {
+        font-size: 14px;
+    }
+
+    .about-text {
+        font-size: 12px;
+    }
+
+    .about-title-bg {
+        background-size: 100% 25%;
+    }
+}

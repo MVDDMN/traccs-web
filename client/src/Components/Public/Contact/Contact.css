@@ -18,9 +18,9 @@
 }
 
 .contact-content {
-    padding: 30px;
-    height: 700px;
-    width: 400px;
+    padding: 20px;
+    height: 75%;
+    width: 20%;
     background-color: #fff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
@@ -29,10 +29,10 @@
 }
 
 .contact-content-info {
-   display: inline-flex;
-   flex-direction: column;
-   align-items: center;
-   gap: 50px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
 }
 
 .contact-title-text {
@@ -56,16 +56,6 @@
 .contact-item img{
     width: 25px;
     height: 25px;
-}
-
-.contact-map img{
-    display: inline-flex;
-    flex-direction: row;
-}
-
-.contact-map img{
-    width: 400px;
-    height: 300px;
 }
 
 /* Media Queries for Responsiveness */
@@ -108,5 +98,11 @@
     .contact-map img{
         width: 400px;
         height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-content {
+        width: 80%;
     }
 }

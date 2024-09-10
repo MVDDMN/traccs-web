@@ -1,67 +1,89 @@
+/* General styles */
 .public-nav-cont {
     width: auto;
     height: auto;
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     background-color: #fff;
 }
 
 .public-nav-list {
-    display: inline-flex;
-    flex-direction: horizontal;
+    display: flex;
+    flex-direction: row;
     padding: 20px;
     gap: 20px;
-    height: 60px;
     align-items: center;
-    width: auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .public-title-cont a {
-    display: inline-flex;
     font-size: 32px;
     font-weight: bolder;
     color: #0A1B57;
-    margin-left: 40px;
 }
 
-/*Section 1*/
+/* Section 1 */
 .public-button-cont {
     display: flex;
+    flex: 1;
     justify-content: space-between;
-    width: 100%;
     align-items: center;
 }
 
 .public-button-sect1 {
-    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 .public-button-sect2 {
-    margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    width: 100%;
+    gap: 10px;
 }
 
-.public-button-sect1 a {
-    display: inline-flex;
+.public-nav-text {
     padding: 10px 20px;
     text-decoration: none;
+    width: 100px;
+    text-align: center;
     border-radius: 5px;
     color: #667085;
+    transition: 0.1s ease-in-out;
 }
 
-.public-button-sect1 a:hover {
+.public-active-link {
+    padding: 10px 20px;
+    text-decoration: none;
+    width: 100px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: bold;
     color: #0E267C;
-    font-weight: bold
+    transition: 0.1s ease-in-out;
+}
+
+.public-nav-text:hover {
+    color: #0E267C;
+    font-weight: bold;
+    transition: 0.1s ease-in-out;
+}
+
+/* Button styles */
+.public-download-btn, .public-login-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    border: 2px solid #0E267C;
 }
 
 .public-download-btn {
-    display: inline-block;
-    padding: 10px 10px;
     background-color: #fff;
     color: #0E267C;
-    text-decoration: none;
-    border-radius: 5px;
-    border: 2px solid #0E267C;
-    margin-right: 50px;
 }
 
 .public-download-btn:hover {
@@ -70,45 +92,102 @@
 }
 
 .public-login-btn {
-    display: inline-block;
-    padding: 10px 10px;
     background-color: #0E267C;
     color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-right: 50px;
-    width: 50px;
-    text-align: center;
 }
 
 .public-login-btn:hover {
     background-color: #0A1B57;
 }
 
-/*Section 2*/
-.public-title-app-cont{
-    padding: 20px;
+/* Section 2 */
+.public-title-app-cont {
+    padding: 10px 20px;
     background-color: #0E267C;
-    display: inline-flex;
-    flex-direction: horizontal;
+    width: auto;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    height: 30px;
-    width: auto;
+    text-align: center;
 }
 
-.public-title-app-cont a{
-    display: inline-flex;
-    font-size: 32px;
-    font-weight: bolder;
-    color: #fff;
-}
-
-.public-title-app-cont b{
-    display: inline-flex;
+.public-title-app a {
     font-size: 24px;
     font-weight: bolder;
-    color: #D5652B;
-    margin: 5px;
+    color: #fff;
+    margin: 0 5px;
 }
 
+.public-title-app b {
+    font-size: 20px;
+    color: #D5652B;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .public-nav-text {
+        font-size: 12px;
+        width: 80px;
+    }
+
+    .public-active-link {
+        font-size: 12px;
+        width: 80px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .public-nav-list {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .public-button-sect1 { 
+        align-content: center;
+    }
+
+    .public-button-sect2 {
+        justify-content: center;
+        align-self: center;
+    }
+
+    .public-button-cont {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .public-button-sect1 {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .public-button-sect2 {
+        margin-top: 10px;
+        gap: 10px;
+    }
+
+    .public-login-btn {
+        display: none;
+    }
+
+    .public-title-app a {
+        font-size: 20px;
+    }
+
+    .public-title-app b {
+        font-size: 18px;
+    }
+
+}

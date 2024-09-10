@@ -1,8 +1,8 @@
 .error-container {
     display: inline-flex;
     flex-direction: column;
-    height: 100vh;
-    width: 100%;
+    height: auto;
+    width: auto;
 }
 
 .error-title-bg {
@@ -127,5 +127,38 @@
     .error-msg-image {
         height: 400px;
         width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .error-content {
+        padding: 10px;
+    }
+
+    .error-msg {
+        font-size: 50px;
+    }
+
+    .error-msg-text b {
+        font-size: 24px;
+    }
+    
+    .error-msg-mini {
+        font-size: 12px;
+    }
+
+    .error-btn-cont {
+        width: 120px;
+    }
+    .error-home-btn {
+        font-size: 10px;
+    }
+
+    .error-btn-cont2 {
+        width: 120px;
+    }
+
+    .error-image-box {
+        display: none;
     }
 }

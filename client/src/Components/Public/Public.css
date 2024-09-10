@@ -1,13 +1,14 @@
 .public-app-cont {
-    width: 100%;
+    width: auto;
     height: auto;
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
 }
 
 .public-module-cont{
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     height: auto;
+    width: 100%;
     background-color: #D9D9D9;
 }

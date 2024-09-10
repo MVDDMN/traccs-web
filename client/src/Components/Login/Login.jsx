@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import usericon from "../Assets/email.png";
@@ -21,8 +21,22 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [hovered, setHovered] = useState(false);
+    const [error, setError] = useState("");
+    const [errorVisible, setErrorVisible] = useState(false);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (error) {
+            setErrorVisible(true);
+            const timer = setTimeout(() => {
+                setErrorVisible(false);
+                setError("");
+            }, 5000); // Error message duration
+
+            return () => clearTimeout(timer); // Cleanup timeout on unmount or error change
+        }
+    }, [error]);
 
     const logLoginAttempt = async (status, description) => {
         const logEntry = {
@@ -49,15 +63,16 @@ const Login = () => {
     };
 
     const handleLogin = async () => {
-        setIsLoading(true); // Start loading
+        setIsLoading(true);
+        setError(""); // Clear any previous errors
 
         if (!validateUsername(username) || !validatePassword(password)) {
-            alert("• Invalid username or password.");
+            setError("Invalid username or password.");
             await logLoginAttempt(
                 "Failure",
                 "Invalid username or password format."
             );
-            setIsLoading(false); // Stop loading
+            setIsLoading(false);
             return;
         }
 
@@ -67,6 +82,7 @@ const Login = () => {
                 { username, password },
                 { withCredentials: true }
             );
+
             if (response.data.message === "Success") {
                 await logLoginAttempt(
                     "Success",
@@ -74,18 +90,24 @@ const Login = () => {
                 );
                 navigate("/admin");
                 sessionStorage.setItem("userId", response.data.userId);
+                setError(""); // Clear error on successful login
             } else {
-                alert("• Invalid username or password.");
+                setError("Invalid username or password.");
                 await logLoginAttempt(
                     "Failure",
                     "Invalid username or password."
                 );
             }
         } catch (error) {
-            alert("• Invalid username or password.");
+            if (error.response) {
+                setError("Invalid username or password.");
+            } else if (error.request) {
+                setError("The server is currently down. Please try again later.");
+            } else {
+                setError("An unexpected error occurred. Please try again.");
+            }
             await logLoginAttempt("Failure", "Error during login request.");
         } finally {
-            // Clear input fields and stop loading after the login attempt
             setUsername("");
             setPassword("");
             setIsLoading(false);
@@ -199,6 +221,10 @@ const Login = () => {
                                 >
                                     {isLoading ? "Loading..." : "Continue"}
                                 </button>
+                            </div>
+
+                            <div className={`login-error-box ${errorVisible ? 'show' : 'hide'}`}>
+                                <label>{error}</label>
                             </div>
 
                             <div className="login-back">
