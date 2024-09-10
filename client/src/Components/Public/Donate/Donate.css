@@ -75,7 +75,7 @@
 
 .donate-download-btn {
     display: inline-block;
-    padding: 10px 10px;
+    padding: 10px;
     width: 140px;
     font-weight: 600;
     text-align: center;
@@ -98,5 +98,16 @@
     .donate-download-btn {
         font-size: 10px;
         width: 100px;
+    }
+    .donation-title {
+        font-size: 18px;
+    }
+    .donation-description {
+        font-size: 12px;
+    }
+    .donate-download-btn {
+        font-size: 8px;
+        padding: 10px;
+        width: 80px;
     }
 }

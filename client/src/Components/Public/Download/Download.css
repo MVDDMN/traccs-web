@@ -40,7 +40,7 @@
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    padding: 20px;
+    padding: 50px;
     gap: 75px;
 }
 
@@ -106,7 +106,11 @@
 @media (max-width: 768px) {
 
     .download-info {
-        font-size: 12px;
+        font-size: 10px;
+    }
+
+    .download-info-box {
+        padding: 20px;
     }
 
     .download-btn {
@@ -118,7 +122,7 @@
     }
 
     .download-img {
-        height: 250px;
-        width: 200px;
+        height: 200px;
+        width: 150px;
     }
 }

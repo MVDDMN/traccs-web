@@ -102,6 +102,16 @@
 }
 
 @media (max-width: 768px) {
+
+    .contact-item img{
+        width: 20px;
+        height: 20px;
+    }
+    
+    .contact-item a{
+        font-size: 12px;
+    }
+
     .contact-content {
         width: 80%;
     }
