@@ -1,51 +1,45 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import download from '../../Assets/download.png';
 import './Download.css';
 
 const Download = () => {
+    // Set the URL based on the environment: localhost for development, public URL for production
+    const selectedUrl = import.meta.env.DEV ? import.meta.env.VITE_LOCAL_URL : import.meta.env.VITE_PUBLIC_URL_1;
+
+    const handleDownload = () => {
+        const fileURL = `${selectedUrl}/traccs-mobile.apk`;
+        const a = document.createElement('a');
+        a.href = fileURL;
+        a.download = 'traccs-mobile.apk';  // Set the default file name
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
 
     return (
         <div className="download-container">
-
             <div className='download-content'>
-
                 <div className='download-box'>
-
                     <div className='download-section'>
-
                         <div className='download-info-box'>
-                            <a className="download-info">
+                            <p className="download-info">
                                 Stay one step ahead in emergencies with <span className="highlight">TRACCS!</span> Download the app today and
-                                ensure you and your community in Taytay, Rizal,
-                                are always prepared, connected, and ready to respond when it matters most.
-                            </a>
+                                ensure you and your community in Taytay, Rizal, are always prepared, connected, and ready to respond when it matters most.
+                            </p>
 
-                            <a 
-                                href="https://nationalueduph-my.sharepoint.com/:u:/g/personal/delacruzkp_students_national-u_edu_ph/EUofShllJmRGoJIp_P6lTu4BTNdJsUbWd5RMzBzj8HXMzw?e=ETzYI9" 
-                                className='download-btn' 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                            >
+                            <button className='download-btn' onClick={handleDownload}>
                                 DOWNLOAD TRACCS NOW!
-                            </a>
-
+                            </button>
                         </div>
-
                     </div>
 
                     <div className='download-section'>
-                        <img src={download} className="download-img" />
+                        <img src={download} className="download-img" alt="Download Icon" />
                     </div>
-
-
                 </div>
-
             </div>
-
         </div>
     );
-
 };
 
 export default Download;
