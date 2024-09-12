@@ -91,11 +91,11 @@ function Admin({ routes }) {
     fetchNewReports();
 
     // Set up intervals
-    const userDataInterval = setInterval(fetchUserData, 1000); // 10 seconds
+    const userDataInterval = setInterval(fetchUserData, 5000);
     const notificationsInterval = setInterval(() => {
       fetchNotifications();
       fetchNewReports();
-    }, 1000); // 1 seconds
+    }, 5000);
 
     // Cleanup intervals when the component unmounts
     return () => {

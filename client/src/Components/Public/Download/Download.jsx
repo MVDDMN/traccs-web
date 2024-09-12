@@ -2,12 +2,13 @@ import React from 'react';
 import download from '../../Assets/download.png';
 import './Download.css';
 
+//Apk isn't being picked up by this we need to fix it
+
 const Download = () => {
-    // Set the URL based on the environment: localhost for development, public URL for production
-    const selectedUrl = import.meta.env.DEV ? import.meta.env.VITE_LOCAL_URL : import.meta.env.VITE_PUBLIC_URL_1;
+    // Use a relative path since the APK is now in the public folder
+    const fileURL = '/traccs-mobile.apk';
 
     const handleDownload = () => {
-        const fileURL = `${selectedUrl}/traccs-mobile.apk`;
         const a = document.createElement('a');
         a.href = fileURL;
         a.download = 'traccs-mobile.apk';  // Set the default file name

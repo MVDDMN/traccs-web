@@ -18,7 +18,7 @@ import firemapicon from '../../Assets/map/fire.png';
 import hazardmapicon from '../../Assets/map/hazard.png';
 import medicalmapicon from '../../Assets/map/medical.png';
 import policemapicon from '../../Assets/map/police.png';
-import assistancemapicon from '../../Assets/map/assistance.png'
+import assistancemapicon from '../../Assets/map/assistance.png';
 import defaultmapicon from '../../Assets/location.png';
 
 import 'leaflet/dist/leaflet.css';
@@ -253,7 +253,7 @@ const Dashboard = () => {
 
     const renderCircles = () => {
         return Object.entries(locationReportCounts).map(([location, data], index) => {
-            const [lat, lng] = location.split(',').map(Number);
+            const [lat, lng] = location.split(',').map(Number); //Change must be within a certain radius
             const intensity = Math.min(1, data.count / 10); // Adjust as needed
             const radius = data.count * 50; // Increase circle radius based on count
 
@@ -368,7 +368,7 @@ const Dashboard = () => {
                     >
                         <TileLayer
                             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                         />
                         <MarkerClusterGroup>
                             {filteredReports.map(report => (
