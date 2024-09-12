@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Navigation.css';
 
 const Navigation = () => {
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setDrawerOpen(prevState => !prevState);
+  };
+  
   return (
     <div className="public-nav-cont">
       <div className="public-nav-list">
         <div className='public-title-cont'>
           <a>TRACCS</a>
         </div>
-
-        <div className='public-button-cont'>
+        <button className="menu-toggle" onClick={toggleDrawer}>
+          ☰
+        </button>
+        <div className={`public-button-cont ${drawerOpen ? 'open' : ''}`}>
           <div className='public-button-sect1'>
             <NavLink to="/" end className={({ isActive }) => isActive ? "public-active-link" : "public-nav-text"}>Home</NavLink>
             <NavLink to="/about" className={({ isActive }) => isActive ? "public-active-link" : "public-nav-text"}>About Us</NavLink>
