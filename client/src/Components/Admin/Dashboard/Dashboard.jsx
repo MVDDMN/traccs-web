@@ -9,7 +9,8 @@ import medicalicon from '../../Assets/medical.png';
 import hazardicon from '../../Assets/hazard.png';
 import assistanceicon from '../../Assets/assistance.png';
 import usericon from '../../Assets/user.png';
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import maplegends from '../../Assets/Legends.png';
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
 // Map icons
@@ -94,6 +95,7 @@ const Dashboard = () => {
     const [selectedImage, setSelectedImage] = useState('');
     const [locationReportCounts, setLocationReportCounts] = useState({});
     const [loading, setLoading] = useState(true);
+    const [autoTrack, setAutoTrack] = useState(false);
 
     const fetchReports = async () => {
         try {
@@ -127,7 +129,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchReports();
-        const interval = setInterval(fetchReports, 10000);
+        const interval = setInterval(fetchReports, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -252,10 +254,42 @@ const Dashboard = () => {
     }, [reports]);
 
     const renderCircles = () => {
-        return Object.entries(locationReportCounts).map(([location, data], index) => {
-            const [lat, lng] = location.split(',').map(Number); //Change must be within a certain radius
+        const combinedLocations = {};
+
+        const combineLocations = (lat, lng, radius) => {
+            for (const [key, value] of Object.entries(combinedLocations)) {
+                const [combinedLat, combinedLng] = key.split(',').map(Number);
+                const distance = Math.sqrt(Math.pow(lat - combinedLat, 2) + Math.pow(lng - combinedLng, 2));
+
+                if (distance <= radius) {
+                    return key; // Return existing location key if within radius
+                }
+            }
+
+            return null; // No nearby location found
+        };
+
+        Object.entries(locationReportCounts).forEach(([location, data]) => {
+            const [lat, lng] = location.split(',').map(Number);
+            const radius = 0.0002; // Adjust this to define your radius for combining locations
+
+            const existingKey = combineLocations(lat, lng, radius);
+
+            if (existingKey) {
+                combinedLocations[existingKey].count += data.count;
+            } else {
+                combinedLocations[location] = { lat, lng, count: data.count };
+            }
+        });
+
+        return Object.entries(combinedLocations).map(([location, data], index) => {
+            const [lat, lng] = location.split(',').map(Number);
             const intensity = Math.min(1, data.count / 10); // Adjust as needed
-            const radius = data.count * 50; // Increase circle radius based on count
+
+            // Set a maximum circle radius to prevent excessively large circles
+            const baseRadius = 50;
+            const maxRadius = 150; // Maximum radius you want for the circles
+            const radius = Math.min(baseRadius * data.count, maxRadius);
 
             return (
                 <Circle
@@ -265,11 +299,49 @@ const Dashboard = () => {
                     pathOptions={{
                         color: 'transparent',
                         fillColor: 'red',
-                        fillOpacity: intensity
+                        fillOpacity: intensity,
                     }}
-
                 />
             );
+        });
+    };
+
+    // Custom hook to move the map
+    const FlyToLatestReport = ({ reports }) => {
+        const map = useMap();
+
+        useEffect(() => {
+            if (reports.length > 0) {
+                const latestReport = reports[reports.length - 1];
+                const [lat, lng] = latestReport.location.split(',').map(Number);
+                map.flyTo([lat, lng], 18); // Adjust zoom level as needed
+            }
+        }, [reports, map]);
+
+        return null;
+    };
+
+    // Function to toggle auto-tracking
+    const toggleAutoTrack = () => {
+        setAutoTrack(prevState => !prevState);
+    };
+
+    const createClusterCustomIcon = (cluster) => {
+        const count = cluster.getChildCount();
+        let c = ' marker-cluster-';
+
+        if (count < 5) {
+            c += 'small';
+        } else if (count < 10) {
+            c += 'medium';
+        } else {
+            c += 'large';
+        }
+
+        return new L.DivIcon({
+            html: `<div><span>${count}</span></div>`,
+            className: 'marker-cluster' + c,
+            iconSize: new L.Point(40, 40),
         });
     };
 
@@ -360,6 +432,14 @@ const Dashboard = () => {
                             <div className="loading-message">Loading Map Data...</div>
                         </div>
                     )}
+                    <div className="dashboard-controls">
+                        <button onClick={toggleAutoTrack} className="toggle-button">
+                            {autoTrack ? 'Disable' : 'Enable'} Auto-Tracking
+                        </button>
+                    </div>
+                    <div className="map-legends">
+                        <img src={maplegends} alt="Map Legends" />
+                    </div>
                     <MapContainer
                         id="map"
                         center={[14.5591613626185, 121.14011670582923]}
@@ -370,7 +450,11 @@ const Dashboard = () => {
                             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                         />
-                        <MarkerClusterGroup>
+                        {autoTrack && <FlyToLatestReport reports={reports} />}
+                        <MarkerClusterGroup
+                            iconCreateFunction={createClusterCustomIcon}
+                        >
+
                             {filteredReports.map(report => (
                                 <Marker
                                     key={report._id}

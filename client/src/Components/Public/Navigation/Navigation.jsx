@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Navigation.css';
 
@@ -9,6 +9,19 @@ const Navigation = () => {
   const toggleDrawer = () => {
     setDrawerOpen(prevState => !prevState);
   };
+
+  const closeDrawerOnScroll = () => {
+    if (drawerOpen) {
+      setDrawerOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', closeDrawerOnScroll);
+    return () => {
+      window.removeEventListener('scroll', closeDrawerOnScroll);
+    };
+  }, [drawerOpen]);
   
   return (
     <div className="public-nav-cont">

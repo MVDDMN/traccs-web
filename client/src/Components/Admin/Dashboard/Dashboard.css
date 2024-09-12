@@ -1,6 +1,7 @@
 .dashboard-container {
     display: inline-flex;
     flex-direction: column;
+    position: relative;
     height: 100%;
     width: 100%;
 }
@@ -146,7 +147,51 @@
     justify-content: center;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.7); /* Slightly transparent background */
-    z-index: 10;
+    z-index: 2000;
+}
+
+.dashboard-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.toggle-button {
+    background-color: #0E267C;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    width: 90px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-button:hover {
+    background-color: #0A1B57;
+}
+
+.map-legends {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: #0A1B57;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    width: auto;
+    height: auto;
+}
+
+.map-legends img {
+    width: auto;
+    height: 10em;
+    display: block;
 }
 
 /*Report Modal*/
