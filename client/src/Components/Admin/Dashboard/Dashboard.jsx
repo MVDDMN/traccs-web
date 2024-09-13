@@ -438,7 +438,9 @@ const Dashboard = () => {
                         </button>
                     </div>
                     <div className="map-legends">
-                        <img src={maplegends} alt="Map Legends" />
+                        <div className='map-legends-box'>
+                            <img src={maplegends} alt="Map Legends" />
+                        </div>
                     </div>
                     <MapContainer
                         id="map"

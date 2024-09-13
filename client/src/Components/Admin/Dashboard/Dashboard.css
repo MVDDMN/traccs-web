@@ -177,15 +177,19 @@
 
 .map-legends {
     position: absolute;
-    bottom: 35px;
-    left: 20px;
+    bottom: 40px;
+    left: 10px;
     z-index: 1000;
-    background-color: #0A1B57;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     width: auto;
-    height: 7em;
+    height: auto;
+}
+
+.map-legends-box {
+    background-color: #0A1B57;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    height: 110px;
 }
 
 .map-legends img {
