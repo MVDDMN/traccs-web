@@ -106,6 +106,48 @@
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
 }
 
+.year-dropdown-box {
+    position: relative;
+    display: inline-block;
+}
+
+.year-dropdown-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0E267C;
+    height: 40px;
+    width: 150px;
+    color: white;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.year-dropdown-button:hover {
+    background-color: #0A1B57;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+.year-dropdown-content {
+    display: inline-flex;
+    flex-direction: column;
+    position: absolute; /* Positioned absolutely within the relative parent */
+    top: 100%; /* Place the dropdown directly below the button */
+    left: 0;
+    height: auto;
+    border-radius: 0 0 5px 5px;
+    padding-bottom: 5px;
+    gap: 5px;
+    width: 150px;
+    z-index: 1;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+}
+
 .report-table-container {
     display: inline-flex;
     flex-direction: column;

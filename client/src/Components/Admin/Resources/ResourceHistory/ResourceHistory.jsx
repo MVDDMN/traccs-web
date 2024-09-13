@@ -65,10 +65,10 @@ const ResourceHistory = () => {
             <div className='history-table-container'>
                 <div className='history-table-box'>
                     <div className='history-table-title-box'>
-                        <a className='history-table-title-text'>Donations History</a>
+                        <a className='history-table-title-text'>Revoked Donations</a>
                         <a className='donations-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page contains all the removed donations by the administrator.</span>
+                            <span className='tooltip-text'>This page contains all the donations revoked by the administrator saved as history while not keeping some private details.</span>
                         </a>
                     </div>
                     {isLoading ? (

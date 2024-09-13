@@ -16,6 +16,7 @@ const Live = () => {
     const [showImageModal, setShowImageModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState('');
+    const [selectedYears, setSelectedYears] = useState([]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -74,12 +75,17 @@ const Live = () => {
     // Pagination calculations
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
     const filteredReports = reports.filter(report => {
         const reportDate = new Date(report.report_date_time);
         const reportMonth = reportDate.toLocaleString('default', { month: 'long' });
+        const reportYear = reportDate.getFullYear();
 
-        return selectedTypes[report.type] && (selectedMonths.length === 0 || selectedMonths.includes(reportMonth));
+        return selectedTypes[report.type] &&
+            (selectedMonths.length === 0 || selectedMonths.includes(reportMonth)) &&
+            (selectedYears.length === 0 || selectedYears.includes(reportYear));
     });
+
     const currentReports = filteredReports.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
 
@@ -224,6 +230,25 @@ const Live = () => {
         setShowImageModal(true);
     };
 
+    const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
+
+    const years = Array.from(new Set(reports.map(report => new Date(report.report_date_time).getFullYear())));
+
+    const toggleYearDropdown = () => {
+        setYearDropdownOpen(!yearDropdownOpen);
+    };
+
+    const handleYearChange = (event) => {
+        const { value, checked } = event.target;
+
+        if (checked) {
+            setSelectedYears([...selectedYears, parseInt(value)]);
+        } else {
+            setSelectedYears(selectedYears.filter(year => year !== parseInt(value)));
+        }
+    };
+
+
     return (
         <div className='report-content-box'>
 
@@ -266,6 +291,26 @@ const Live = () => {
                         </div>
                     )}
                 </div>
+
+                <div className="year-dropdown-box">
+                    <button onClick={toggleYearDropdown} className="year-dropdown-button">Sort by Year</button>
+                    {yearDropdownOpen && (
+                        <div className="year-dropdown-content">
+                            {years.map(year => (
+                                <label key={year}>
+                                    <input
+                                        type="checkbox"
+                                        value={year}
+                                        checked={selectedYears.includes(year)}
+                                        onChange={handleYearChange}
+                                    />
+                                    {year}
+                                </label>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
             </div>
 
             <div className='report-table-container'>

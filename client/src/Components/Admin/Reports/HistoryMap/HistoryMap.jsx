@@ -68,25 +68,8 @@ const months = [
     'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSelectedMonths }) => {
+const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSelectedMonths, selectedYears, setSelectedYears, years }) => {
     const map = useMap();
-
-    const handleCheckboxChange = (event) => {
-        const { name, checked } = event.target;
-        setSelectedTypes(prevTypes => ({
-            ...prevTypes,
-            [name]: checked
-        }));
-    };
-
-    const handleMonthChange = (event) => {
-        const { value, checked } = event.target;
-        if (checked) {
-            setSelectedMonths([...selectedMonths, value]);
-        } else {
-            setSelectedMonths(selectedMonths.filter(month => month !== value));
-        }
-    };
 
     useEffect(() => {
         const filterDiv = L.DomUtil.create('div', 'filter-control');
@@ -95,28 +78,72 @@ const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSel
         <div class="filter-content-box">
             <div class="type-dropdown-box">
                 <button id="type-dropdown-button" class="type-dropdown-button" style="margin-right: 10px;">Sort by Type</button>
-                <div id="type-dropdown-content" class="type-dropdown-content" style="display: none; width: 94%;">
-                    ${Object.keys(selectedTypes).map(type => `
-                        <label>
-                            <input type="checkbox" name="${type}" ${selectedTypes[type] ? 'checked' : ''} onChange="handleCheckboxChange">
-                            ${type}
-                        </label>
-                    `).join('')}
-                </div>
+                <div id="type-dropdown-content" class="type-dropdown-content" style="display: none; width: 94%;"></div>
             </div>
             <div class="month-dropdown-box">
-                <button id="month-dropdown-button" class="month-dropdown-button">Sort by Month</button>
-                <div id="month-dropdown-content" class="month-dropdown-content" style="display: none; width: 99%;">
-                    ${months.map(month => `
-                        <label>
-                            <input type="checkbox" value="${month}" ${selectedMonths.includes(month) ? 'checked' : ''} onChange="handleMonthChange">
-                            ${month}
-                        </label>
-                    `).join('')}
-                </div>
+                <button id="month-dropdown-button" class="month-dropdown-button" style="margin-right: 10px;">Sort by Month</button>
+                <div id="month-dropdown-content" class="month-dropdown-content" style="display: none; width: 93%;"></div>
+            </div>
+            <div class="year-dropdown-box">
+                <button id="year-dropdown-button" class="year-dropdown-button">Sort by Year</button>
+                <div id="year-dropdown-content" class="year-dropdown-content" style="display: none; width: 99%;"></div>
             </div>
         </div>
         `;
+
+        // Populate the dropdown content dynamically
+        const typeDropdownContent = filterDiv.querySelector('#type-dropdown-content');
+        Object.keys(selectedTypes).forEach(type => {
+            const label = L.DomUtil.create('label', '', typeDropdownContent);
+            const checkbox = L.DomUtil.create('input', '', label);
+            checkbox.type = 'checkbox';
+            checkbox.name = type;
+            checkbox.checked = selectedTypes[type];
+            checkbox.addEventListener('change', (event) => {
+                const { name, checked } = event.target;
+                setSelectedTypes(prevTypes => ({
+                    ...prevTypes,
+                    [name]: checked
+                }));
+            });
+            label.appendChild(document.createTextNode(type));
+        });
+
+        const monthDropdownContent = filterDiv.querySelector('#month-dropdown-content');
+        months.forEach(month => {
+            const label = L.DomUtil.create('label', '', monthDropdownContent);
+            const checkbox = L.DomUtil.create('input', '', label);
+            checkbox.type = 'checkbox';
+            checkbox.value = month;
+            checkbox.checked = selectedMonths.includes(month);
+            checkbox.addEventListener('change', (event) => {
+                const { value, checked } = event.target;
+                if (checked) {
+                    setSelectedMonths([...selectedMonths, value]);
+                } else {
+                    setSelectedMonths(selectedMonths.filter(m => m !== value));
+                }
+            });
+            label.appendChild(document.createTextNode(month));
+        });
+
+        const yearDropdownContent = filterDiv.querySelector('#year-dropdown-content');
+        years.forEach(year => {
+            const label = L.DomUtil.create('label', '', yearDropdownContent);
+            const checkbox = L.DomUtil.create('input', '', label);
+            checkbox.type = 'checkbox';
+            checkbox.value = year;
+            checkbox.checked = selectedYears.includes(year);
+            checkbox.addEventListener('change', (event) => {
+                const { value, checked } = event.target;
+                if (checked) {
+                    setSelectedYears([...selectedYears, parseInt(value)]);
+                } else {
+                    setSelectedYears(selectedYears.filter(y => y !== parseInt(value)));
+                }
+            });
+            label.appendChild(document.createTextNode(year));
+        });
 
         const toggleContent = (id) => {
             const content = filterDiv.querySelector(`#${id}`);
@@ -129,15 +156,7 @@ const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSel
 
         L.DomEvent.on(filterDiv.querySelector('#type-dropdown-button'), 'click', () => toggleContent('type-dropdown-content'));
         L.DomEvent.on(filterDiv.querySelector('#month-dropdown-button'), 'click', () => toggleContent('month-dropdown-content'));
-
-        const checkboxes = filterDiv.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(checkbox => {
-            if (checkbox.name) {
-                L.DomEvent.on(checkbox, 'change', handleCheckboxChange);
-            } else {
-                L.DomEvent.on(checkbox, 'change', handleMonthChange);
-            }
-        });
+        L.DomEvent.on(filterDiv.querySelector('#year-dropdown-button'), 'click', () => toggleContent('year-dropdown-content'));
 
         const control = L.control({ position: 'topright' });
         control.onAdd = () => filterDiv;
@@ -146,7 +165,7 @@ const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSel
         return () => {
             map.removeControl(control);
         };
-    }, [map, selectedTypes, setSelectedTypes, selectedMonths, setSelectedMonths]);
+    }, [map, selectedTypes, setSelectedTypes, selectedMonths, setSelectedMonths, selectedYears, setSelectedYears, years]);
 
     return null;
 };
@@ -164,11 +183,14 @@ const HistoryMap = () => {
         Hazard: true
     });
     const [selectedMonths, setSelectedMonths] = useState(months);
+    const [selectedYears, setSelectedYears] = useState([]);
     const componentRef = useRef();
     const [userType, setUserType] = useState('');
     const [userUsername, setUserUsername] = useState('');
     const [showImageModal, setShowImageModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
+
+    const years = Array.from(new Set(historyData.map(entry => new Date(entry.report_date_time).getFullYear())));
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -213,8 +235,12 @@ const HistoryMap = () => {
             const entryMonthName = months[entryDate.getMonth()];
             return selectedMonths.includes(entryMonthName);
         });
-        setFilteredData(filteredByMonth);
-    }, [selectedTypes, selectedMonths, historyData]);
+        const filteredByYear = selectedYears.length === 0 ? filteredByMonth : filteredByMonth.filter(entry => {
+            const entryYear = new Date(entry.report_date_time).getFullYear();
+            return selectedYears.includes(entryYear);
+        });
+        setFilteredData(filteredByYear);
+    }, [selectedTypes, selectedMonths, selectedYears, historyData]);
 
     const handleViewReport = (history) => {
         setSelectedHistory(history);
@@ -284,12 +310,12 @@ const HistoryMap = () => {
                     <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <FilterControl selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes} selectedMonths={selectedMonths} setSelectedMonths={setSelectedMonths} />
+                    <FilterControl selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes} selectedMonths={selectedMonths} setSelectedMonths={setSelectedMonths} selectedYears={selectedYears} setSelectedYears={setSelectedYears} years={years} />
                     <MarkerClusterGroup>
                         {filteredData.map((entry, index) => (
                             <Marker
                                 key={entry._id}
-                                position={[parseFloat(entry.location.split(',')[0]), parseFloat(entry.location.split(',')[1])]}
+                                position={[parseFloat(entry.location.split(',')[0]), parseFloat(entry.location.split(',')[1])] }
                                 icon={getMapIcon(entry.type)}
                             >
                                 <Popup>
@@ -470,4 +496,3 @@ const HistoryMap = () => {
 };
 
 export default HistoryMap;
-

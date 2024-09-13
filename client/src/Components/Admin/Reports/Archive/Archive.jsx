@@ -16,6 +16,7 @@ const Archive = () => {
     const [showImageModal, setShowImageModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState('');
+    const [selectedYears, setSelectedYears] = useState([]);
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -77,7 +78,11 @@ const Archive = () => {
     const filteredArchives = archives.filter(archive => {
         const archiveDate = new Date(archive.report_date_time);
         const archiveMonth = archiveDate.toLocaleString('default', { month: 'long' });
-        return selectedTypes[archive.type] && (selectedMonths.length === 0 || selectedMonths.includes(archiveMonth));
+        const archiveYear = archiveDate.getFullYear();
+
+        return selectedTypes[archive.type] &&
+            (selectedMonths.length === 0 || selectedMonths.includes(archiveMonth)) &&
+            (selectedYears.length === 0 || selectedYears.includes(archiveYear));
     });
     const currentArchives = filteredArchives.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredArchives.length / itemsPerPage);
@@ -193,6 +198,25 @@ const Archive = () => {
         setShowImageModal(true);
     };
 
+    const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
+
+    const years = Array.from(new Set(archives.map(archive => new Date(archive.report_date_time).getFullYear())));
+
+    const toggleYearDropdown = () => {
+        setYearDropdownOpen(!yearDropdownOpen);
+    };
+
+    const handleYearChange = (event) => {
+        const { value, checked } = event.target;
+
+        if (checked) {
+            setSelectedYears([...selectedYears, parseInt(value)]);
+        } else {
+            setSelectedYears(selectedYears.filter(year => year !== parseInt(value)));
+        }
+    };
+
+
     return (
         <div className='archive-content-box'>
 
@@ -235,6 +259,26 @@ const Archive = () => {
                         </div>
                     )}
                 </div>
+
+                <div className="year-dropdown-box">
+                    <button onClick={toggleYearDropdown} className="year-dropdown-button">Sort by Year</button>
+                    {yearDropdownOpen && (
+                        <div className="year-dropdown-content">
+                            {years.map(year => (
+                                <label key={year}>
+                                    <input
+                                        type="checkbox"
+                                        value={year}
+                                        checked={selectedYears.includes(year)}
+                                        onChange={handleYearChange}
+                                    />
+                                    {year}
+                                </label>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
             </div>
 
             <div className='archive-table-container'>
