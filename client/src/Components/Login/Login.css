@@ -178,6 +178,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -289,6 +290,7 @@
         transform: scale(0.5);
         opacity: 0;
     }
+
     100% {
         transform: scale(1);
         opacity: 1;
@@ -302,23 +304,28 @@
     padding: 10px;
     overflow-y: auto;
     text-align: justify;
-    border-radius: 20px 0 0 20px ;
+    border-radius: 20px 0 0 20px;
     background-color: lightgray;
 }
 
 /* Scrollbar styles */
 .terms-text-container::-webkit-scrollbar {
-    width: 10px; /* Adjust scrollbar width */
+    width: 10px;
+    /* Adjust scrollbar width */
 }
 
 .terms-text-container::-webkit-scrollbar-track {
-    background-color: lightgray; /* Same as the container background */
-    border-radius: 20px; /* Optional: matches container border radius */
+    background-color: lightgray;
+    /* Same as the container background */
+    border-radius: 20px;
+    /* Optional: matches container border radius */
 }
 
 .terms-text-container::-webkit-scrollbar-thumb {
-    background-color: darkgray; /* Scrollbar color */
-    border-radius: 10px; /* Rounded scrollbar */
+    background-color: darkgray;
+    /* Scrollbar color */
+    border-radius: 10px;
+    /* Rounded scrollbar */
 }
 
 .terms-title {
@@ -368,7 +375,7 @@
 .terms-button-container {
     display: flex;
     justify-content: space-between;
-    align-items: center; 
+    align-items: center;
     width: 100%;
     padding: 5px;
 }
@@ -402,61 +409,159 @@
     background-color: #0A1B57;
 }
 
+/*Forgot Password Modal*/
+.login-forgot-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top */
+}
+
+.login-forgot-modal {
+    background-color: white;
+    border-radius: 10px;
+    width: 20%;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-forgot-modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-forgot-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-forgot-input {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.login-forgot-modal-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0E267C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-forgot-modal-button:hover {
+    background-color: #0A1B57;
+}
+
+.login-forgot-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.login-forgot-close-button-box {
+    display: flex;
+    flex-direction: row;
+}
+
+.login-forgot-close-button {
+    flex-direction: row;
+    background: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-forgot-close-button:hover {
+    background-color: gray;
+}
+
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
+
     .wave-top svg,
     .wave-bottom svg {
         width: 100%;
         height: auto;
     }
+
     .login-title-text {
         font-size: 70px;
     }
+
     .login-title-acronym {
         font-size: 22px;
     }
+
     /*Section 2 Right Side*/
     .login-icons {
-        height: 150px ;
+        height: 150px;
         width: 150px;
     }
+
     .login-textfield-box {
         width: 535px;
     }
-    
+
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
+
     .wave-top svg,
     .wave-bottom svg {
         width: 100%;
         height: auto;
     }
+
     .login-title-box {
         gap: 10px;
     }
+
     .login-title-text {
         font-size: 60px;
     }
+
     .login-title-acronym {
         font-size: 20px;
     }
+
     /*Section 2 Right Side*/
     .login-icons {
-        height: 120px ;
+        height: 120px;
         width: 120px;
     }
+
     .login-textfield-box {
         width: 465px;
     }
+
     .login-message-box a {
         font-size: 14px;
     }
+
     .login-terms p {
         font-size: 14px;
     }
+
     .login-error-box {
         width: 98%;
     }
@@ -464,46 +569,58 @@
 
 /* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
+
     .wave-top svg,
     .wave-bottom svg {
         width: 100%;
         height: auto;
     }
+
     .login-title-box {
         gap: 5px;
     }
+
     .login-title-text {
         font-size: 50px;
     }
+
     .login-title-acronym {
         font-size: 16px;
     }
+
     /*Section 2 Right Side*/
     .login-content-box {
         gap: 70px;
     }
+
     .login-message-box a {
         font-size: 12px;
     }
+
     .login-icons {
-        height: 100px ;
+        height: 100px;
         width: 100px;
     }
+
     .login-textfield-box {
         width: 365px;
     }
+
     .login-button {
         height: 40px;
         width: 385px;
         padding: 5px;
     }
+
     .login-terms p {
         font-size: 10px;
     }
+
     .login-error-box label {
 
         padding: 5px;
     }
+
     .login-error-box {
         width: 94%;
     }

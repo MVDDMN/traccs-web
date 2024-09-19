@@ -25,6 +25,11 @@ const Login = () => {
     const [errorVisible, setErrorVisible] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(true); // Modal is open on page load
     const [agreed, setAgreed] = useState(false); // State to track agreement
+    const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+    const [email, setEmail] = useState("");
+    const [otp, setOtp] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [step, setStep] = useState(1); // 1: Email input, 2: OTP input, 3: Reset password
 
     const navigate = useNavigate();
 
@@ -116,6 +121,62 @@ const Login = () => {
         }
     };
 
+    const handleSendOTP = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${apiBaseUrl}/api/send-forgot-otp`, { email });
+            if (response.data.success) {
+                setStep(2); // Move to OTP input step
+                setError(""); // Clear previous errors
+            } else {
+                setError("Failed to send OTP. Try again.");
+            }
+        } catch (err) {
+            setError("Error E-mail address does not exist.");
+        } finally {
+            setIsLoading(false);
+        }
+    };    
+
+    const handleVerifyOTP = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${apiBaseUrl}/api/verify-otp`, { email, otp });
+            if (response.data.success) {
+                setStep(3); // Move to password reset step
+                setError(""); // Clear previous errors
+            } else {
+                setError("Invalid OTP. Try again.");
+            }
+        } catch (err) {
+            setError("Error verifying OTP.");
+        } finally {
+            setIsLoading(false);
+        }
+    };    
+
+    const handleResetPassword = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${apiBaseUrl}/api/reset-password`, {
+                email,
+                password: newPassword,  // Send as "password" in the request
+                otp
+            });
+            if (response.data.success) {
+                setError("Password reset successfully.");
+                setIsForgotPasswordOpen(false);
+                setStep(1); // Reset steps for next use
+            } else {
+                setError("Failed to reset password.");
+            }
+        } catch (err) {
+            setError("Error resetting password.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
     return (
         <div className="login-container">
             <div className="login-box">
@@ -224,9 +285,11 @@ const Login = () => {
                                     {isLoading ? "Loading..." : "Continue"}
                                 </button>
                             </div>
-                            
+
                             <div className="login-forgot-button-box">
-                                <button className="login-forgot-button">Forgot Password?</button>
+                                <button className="login-forgot-button" onClick={() => setIsForgotPasswordOpen(true)}>
+                                    Forgot Password?
+                                </button>
                             </div>
 
 
@@ -351,11 +414,76 @@ const Login = () => {
                                 Proceed to Login
                             </button>
                         </div>
-                        
+
                     </div>
                 </div>
             )}
 
+            {isForgotPasswordOpen && (
+                <div className="login-forgot-container">
+                    <div className="login-forgot-modal">
+                        <div className="login-forgot-modal-content">
+                            <div className="login-forgot-close-button-box">
+                                <button
+                                    onClick={() => setIsForgotPasswordOpen(false)}
+                                    className="login-forgot-close-button"
+                                >
+                                    X
+                                </button>
+                            </div>
+
+                            <h2 className="login-forgot-title">Forgot Password</h2>
+
+                            {step === 1 && (
+                                <div className="login-forgot-step">
+                                    <input
+                                        type="email"
+                                        className="login-forgot-input"
+                                        placeholder="Enter your email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                    <small>Input your existing Email address to reset password.</small>
+                                    <button onClick={handleSendOTP} className="login-forgot-modal-button" disabled={isLoading}>
+                                        {isLoading ? "Sending OTP..." : "Send OTP"}
+                                    </button>
+                                </div>
+                            )}
+                            {step === 2 && (
+                                <div className="login-forgot-step">
+                                    <input
+                                        type="text"
+                                        className="login-forgot-input"
+                                        placeholder="Enter OTP"
+                                        value={otp}
+                                        onChange={(e) => setOtp(e.target.value)}
+                                    />
+                                    <small>Input your OTP sent to your Email address to reset password.</small>
+                                    <button onClick={handleVerifyOTP} className="login-forgot-modal-button" disabled={isLoading}>
+                                        {isLoading ? "Verifying OTP..." : "Verify OTP"}
+                                    </button>
+                                </div>
+                            )}
+                            {step === 3 && (
+                                <div className="login-forgot-step">
+                                    <input
+                                        type="password"
+                                        className="login-forgot-input"
+                                        placeholder="Enter new password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                    />
+                                    <small>Input your new password sent to your reset password.</small>
+                                    <button onClick={handleResetPassword} className="login-forgot-modal-button" disabled={isLoading}>
+                                        {isLoading ? "Resetting Password..." : "Reset Password"}
+                                    </button>
+                                </div>
+                            )}
+                            {error && <div className="login-forgot-error">{error}</div>}
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     );

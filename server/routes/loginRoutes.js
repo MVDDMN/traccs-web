@@ -107,6 +107,86 @@ router.post('/create-admin', async (req, res) => {
     }
 });
 
+router.post('/send-forgot-otp', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // Verify if the email is valid
+        const user = await adminModel.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'User with this email not found.' });
+        }
+
+        // Generate OTP and send email as before
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const mailOptions = {
+            from: process.env.OUTLOOK_USER,
+            to: email,
+            subject: 'Your OTP Code',
+            text: `Your OTP code is ${otp}. Please do not share this code with anyone.`,
+        };
+
+        // Store OTP in the database and send it via email
+        await OtpModel.create({ email, otp });
+        await transporter.sendMail(mailOptions);
+        res.json({ success: true, message: 'OTP sent to your email.' });
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        res.status(500).json({ success: false, message: 'Failed to send OTP.' });
+    }
+});
+
+
+// Route to verify OTP
+router.post('/verify-otp', async (req, res) => {
+    const { email, otp } = req.body;
+    try {
+        const otpRecord = await OtpModel.findOne({ email }).sort({ createdAt: -1 });
+        if (!otpRecord || otpRecord.otp !== otp) {
+            return res.status(400).json({ success: false, message: 'Invalid OTP.' });
+        }
+        res.json({ success: true });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Error verifying OTP.' });
+    }
+});
+
+//Forget Password
+router.post('/reset-password', async (req, res) => {
+    const { email, password, otp } = req.body;
+
+    try {
+        // Step 1: Verify that the OTP is valid and has not expired
+        const otpRecord = await OtpModel.findOne({ email }).sort({ createdAt: -1 });
+        if (!otpRecord || otpRecord.otp !== otp) {
+            return res.status(400).json({ success: false, message: 'Invalid or expired OTP.' });
+        }
+
+        // Step 2: Find the user by email
+        const user = await adminModel.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'User not found.' });
+        }
+
+        // Step 3: Hash the new password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Step 4: Update the user's password field
+        user.password = hashedPassword;
+        await user.save();
+
+        // Step 5: Clear the OTP after successful password reset
+        await OtpModel.deleteOne({ _id: otpRecord._id });
+
+        // Step 6: Send success response
+        res.json({ success: true, message: 'Password reset successfully.' });
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        res.status(500).json({ success: false, message: 'Error resetting password.' });
+    }
+});
+
 // Login Module - Login
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;
