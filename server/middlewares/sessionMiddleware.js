@@ -1,15 +1,16 @@
 const session = require("express-session");
 
 const sessionMiddleware = session({
-    secret: 'secret',
+    secret: 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     rolling: true,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1800000,
-        sameSite: 'None'
-    }
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        httpOnly: true,
+    },
 });
 
 module.exports = sessionMiddleware;

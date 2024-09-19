@@ -224,6 +224,11 @@ const Login = () => {
                                     {isLoading ? "Loading..." : "Continue"}
                                 </button>
                             </div>
+                            
+                            <div className="login-forgot-button-box">
+                                <button className="login-forgot-button">Forgot Password?</button>
+                            </div>
+
 
                             <div className={`login-error-box ${errorVisible ? 'show' : 'hide'}`}>
                                 <label>{error}</label>
@@ -316,6 +321,7 @@ const Login = () => {
                             <input
                                 type="checkbox"
                                 id="agree"
+                                className="terms-checkbox"
                                 checked={agreed}
                                 onChange={() => setAgreed(!agreed)}
                             />

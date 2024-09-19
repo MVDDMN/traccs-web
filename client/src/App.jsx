@@ -12,6 +12,8 @@ import Error from './Components/Public/Error/Error.jsx';
 
 /*Login Imports*/
 import Login from './Components/Login/Login.jsx';
+import Loading from './Components/Loading/Loading.jsx';
+import Setup from './Components/Setup/Setup.jsx';
 
 /*Admin Imports*/
 import Admin from './Components/Admin/Admin.jsx';
@@ -80,6 +82,8 @@ function App() {
 
           {/* Login Routes */}
           <Route path="/login" element={<Login />} />
+          <Route path="/loading" element={<Loading />} />
+          <Route path="/setup" element={<Setup />} />
 
           {/* Admin Routes */}
           <Route

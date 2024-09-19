@@ -1,0 +1,26 @@
+/* Loading.css */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.loading-spinner {
+    font-size: 18px;
+    color: #333;
+}
+
+.loading-error-message {
+    color: red;
+    font-size: 16px;
+}
+
+.loading-visible {
+    display: block;
+}
+
+.loading-hidden {
+    display: none;
+}

@@ -42,7 +42,7 @@ const Navigation = () => {
 
           <div className='public-button-sect2'>
             <NavLink to="/download" className="public-download-btn">Download TRACCS</NavLink>
-            <NavLink to="/login" className="public-login-btn">Login</NavLink>
+            <NavLink to="/loading" className="public-login-btn">Login</NavLink>
           </div>
         </div>
       </div>
