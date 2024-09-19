@@ -51,7 +51,6 @@ import Users from './Components/Admin/Accounts/Users/Users.jsx';
 
 /*Log Imports*/
 import Logs from './Components/Admin/ActivityLog/Logs.jsx';
-import ResourceHistory from './Components/Admin/Resources/ResourceHistory/ResourceHistory.jsx';
 
 function App() {
 
@@ -103,7 +102,7 @@ function App() {
                       <Route index element={<ResourceTable />} />
                       <Route path="resourcetable" element={<ResourceTable />} />
                       <Route path="resourcedonate" element={<ResourceDonate />} />
-                      <Route path="resourcearchive" element={<ResourceHistory />} />
+                      <Route path="resourcearchive" element={<ResourceArchive />} />
                     </Route>
 
                     <Route path="request" element={<Request />}>

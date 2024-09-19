@@ -8,7 +8,7 @@ const usersSchema = new mongoose.Schema({
     password: String,
     status: String,
     IdImage: [String]
-})
+}, { timestamps: true });
 
 const usersModel = mongoose.model("users", usersSchema)
 

@@ -321,11 +321,25 @@
 
 .terms-button-container {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center; 
     width: 100%;
     padding: 5px;
-    justify-content: last baseline;
-    align-items: last baseline;
+}
+
+.terms-home {
+    text-decoration: none;
+    padding: 6px 30px;
+    border-radius: 5px;
+    color: #0E267C;
+    font-size: 12px;
+    border: 2px solid #0E267C;
+    transition: 0.2s ease-in;
+}
+
+.terms-home:hover {
+    background-color: #0A1B57;
+    color: white;
 }
 
 .terms-button {

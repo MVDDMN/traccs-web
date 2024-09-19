@@ -306,12 +306,12 @@ const Login = () => {
                             </p>
 
                         </div>
-                        
+
                         <p className="terms-alert-text">
                             By checking the box below, you acknowledge that you have read, understood,
                             and agree to the terms and conditions set forth above.
                         </p>
-                        
+
                         <div className="terms-agree">
                             <input
                                 type="checkbox"
@@ -322,8 +322,16 @@ const Login = () => {
 
                             <label htmlFor="agree" className="terms-agree-msg">I agree to the terms and conditions</label>
                         </div>
-                        
+
                         <div className="terms-button-container">
+
+                            <Link
+                                to="/"
+                                className="terms-home"
+                            >
+                                Go to Home
+                            </Link>
+
                             <button
                                 className="terms-button"
                                 onClick={() => {
@@ -337,6 +345,7 @@ const Login = () => {
                                 Proceed to Login
                             </button>
                         </div>
+                        
                     </div>
                 </div>
             )}
