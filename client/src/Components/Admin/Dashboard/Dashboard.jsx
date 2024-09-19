@@ -55,7 +55,7 @@ const hazardMapIcon = new L.Icon({
 
 const assistanceMapIcon = new L.Icon({
     iconUrl: assistancemapicon,
-    iconSize: [25, 25],
+    iconSize: [35, 35],
 });
 
 const defaultMapIcon = new L.Icon({

@@ -13,6 +13,8 @@ import firemapicon from '../../../Assets/map/fire.png';
 import hazardmapicon from '../../../Assets/map/hazard.png';
 import medicalmapicon from '../../../Assets/map/medical.png';
 import policemapicon from '../../../Assets/map/police.png';
+import assistancemapicon from '../../../Assets/map/assistance.png';
+import defaultmapicon from '../../../Assets/location.png';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -46,6 +48,16 @@ const hazardMapIcon = new L.Icon({
     iconSize: [25, 25],
 });
 
+const assistanceMapIcon = new L.Icon({
+    iconUrl: assistancemapicon,
+    iconSize: [35, 35],
+});
+
+const defaultMapIcon = new L.Icon({
+    iconUrl: defaultmapicon,
+    iconSize: [25, 25],
+});
+
 const getMapIcon = (type) => {
     switch (type) {
         case 'Fire':
@@ -58,8 +70,10 @@ const getMapIcon = (type) => {
             return medicalMapIcon;
         case 'Hazard':
             return hazardMapIcon;
+        case 'Assistance':
+            return assistanceMapIcon;
         default:
-            return customIcon;
+            return defaultMapIcon;
     }
 };
 
@@ -180,7 +194,8 @@ const HistoryMap = () => {
         Accident: true,
         Police: true,
         Medical: true,
-        Hazard: true
+        Hazard: true,
+        Assistance: true
     });
     const [selectedMonths, setSelectedMonths] = useState(months);
     const [selectedYears, setSelectedYears] = useState([]);
