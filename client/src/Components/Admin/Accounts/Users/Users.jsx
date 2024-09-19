@@ -18,6 +18,7 @@ const Users = () => {
     const [showImageModal, setShowImageModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [isEmailSending, setIsEmailSending] = useState(false);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -70,27 +71,33 @@ const Users = () => {
     };
 
     const handleToggleStatus = async () => {
-        let newStatus;
-
-        if (!selectedUser.status || selectedUser.status === '') {
-            newStatus = 'Unverified';
-        } else {
-            newStatus = selectedUser.status === 'Verified' ? 'Unverified' : 'Verified';
-        }
+        const newStatus = selectedUser.status === 'Verified' ? 'Unverified' : 'Verified';
+        setIsEmailSending(true); // Set loading state
 
         try {
+            // Prepare email content based on the new status
+            const emailMessage = newStatus === 'Verified'
+                ? `Hello ${selectedUser.fullName},\n\nYour account has been verified. Thank you!`
+                : `Hello ${selectedUser.fullName},\n\nYour account has been unverified. If you have any questions, please contact support.`;
+
+            // Send verification email first
+            await axios.post(`${apiBaseUrl}/api/users/${selectedUser._id}/send-verification-email`, { message: emailMessage });
+
+            // Now update the user status after email is sent
             const updatedUser = await axios.put(`${apiBaseUrl}/api/users/${selectedUser._id}/status`, { status: newStatus });
             setSelectedUser(updatedUser.data);
         } catch (error) {
-            console.error("Error updating user status:", error);
+            console.error("Error updating user status or sending email:", error);
+        } finally {
+            setIsEmailSending(false); // Reset loading state
         }
     };
+
 
     const handleImageClick = (img) => {
         setSelectedImage(img);
         setShowImageModal(true);
     };
-
 
     return (
         <div className="accounts-content-box">
@@ -149,7 +156,7 @@ const Users = () => {
                             </tbody>
                         </table>
                     )}
-                    
+
                 </div>
 
                 <div className='pagination'>
@@ -167,7 +174,13 @@ const Users = () => {
                         <div className='users-modal-content-box'>
 
                             <div className='close-modal-button-box'>
-                                <button onClick={() => setShowViewModal(false)} className='close-modal-button'>X</button>
+                                <button
+                                    onClick={() => setShowViewModal(false)}
+                                    className='close-modal-button'
+                                    disabled={isEmailSending} // Disable when email is sending
+                                >
+                                    X
+                                </button>
                             </div>
 
                             <div className='users-title-box'>
@@ -247,8 +260,12 @@ const Users = () => {
                             </div>
 
                             <div className='users-button-box'>
-                                <button onClick={handleToggleStatus} className='users-button'>
-                                    {selectedUser.status === 'Verified' ? 'Unverify' : 'Verify'}
+                                <button
+                                    onClick={handleToggleStatus}
+                                    className='users-button'
+                                    disabled={isEmailSending}
+                                >
+                                    {isEmailSending ? 'Sending...' : selectedUser.status === 'Verified' ? 'Unverify' : 'Verify'}
                                 </button>
                             </div>
                         </div>

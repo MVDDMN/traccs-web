@@ -293,6 +293,18 @@
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
 }
 
+.users-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none; 
+}
+
+.close-modal-button:disabled {
+    cursor: not-allowed; /* Change the cursor to indicate the button is disabled */
+    opacity: 0.5; /* Optionally reduce opacity for visual feedback */
+    pointer-events: none; /* Prevent any mouse events */
+}
+
 /*View Image Modal*/
 .image-modal {
     display: inline-flex;

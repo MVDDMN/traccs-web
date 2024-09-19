@@ -2,7 +2,42 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const adminModel = require('../models/admin');
 const usersModel = require('../models/users');
+const nodemailer = require("nodemailer");
 const router = express.Router();
+
+// Nodemailer transporter setup using Outlook with environment variables
+const transporter = nodemailer.createTransport({
+    service: 'hotmail', // Use 'hotmail' for Outlook
+    auth: {
+        user: process.env.OUTLOOK_USER, // Email from .env
+        pass: process.env.OUTLOOK_PASS  // Password or App Password from .env
+    }
+});
+
+// Account Module - Send verification email
+router.post('/users/:id/send-verification-email', async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await usersModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const mailOptions = {
+            from: process.env.OUTLOOK_USER,
+            to: user.email,
+            subject: 'Account Status Update',
+            text: req.body.message // Use the message from the request body
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: 'Verification email sent successfully' });
+    } catch (error) {
+        console.error("Error sending email:", error);
+        res.status(500).json({ message: 'Error sending verification email', error });
+    }
+});
 
 // Accounts Module - Show admins
 router.get("/administrators", async (req, res) => {
