@@ -17,7 +17,7 @@ router.get("/administrators", async (req, res) => {
 // Accounts Module - Add admin
 router.post('/administrators', async (req, res) => {
     try {
-        const { name, email, username, password, barangay, type } = req.body;
+        const { name, email, username, password, barangay, type, contact } = req.body; // Include contact
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,7 +28,8 @@ router.post('/administrators', async (req, res) => {
             username,
             password: hashedPassword,
             barangay,
-            type
+            type,
+            contact // Save contact
         });
 
         await newAdmin.save();
@@ -42,7 +43,7 @@ router.post('/administrators', async (req, res) => {
 // Accounts Module - Update admin
 router.put('/administrators/:id', async (req, res) => {
     const adminId = req.params.id;
-    const { name, email, username, password, barangay, type } = req.body;
+    const { name, email, username, password, barangay, type, contact } = req.body; // Include contact
 
     try {
         const admin = await adminModel.findById(adminId);
@@ -60,6 +61,7 @@ router.put('/administrators/:id', async (req, res) => {
         admin.username = username || admin.username;
         admin.barangay = barangay || admin.barangay;
         admin.type = type || admin.type;
+        admin.contact = contact || admin.contact; // Correct the typo
 
         const updatedAdmin = await admin.save();
 
@@ -72,16 +74,16 @@ router.put('/administrators/:id', async (req, res) => {
 
 // Account Module - Check Duplicates
 router.post('/check-duplicate', async (req, res) => {
-    const { username, email } = req.body;
+    const { username, email, contact } = req.body; // Include contact for potential duplication check
 
     try {
-        // Check if either username or email exists
+        // Check if either username, email, or contact exists
         const existingAdmin = await adminModel.findOne({
-            $or: [{ username }, { email }]
+            $or: [{ username }, { email }, { contact }] // Check for duplicates
         });
 
         if (existingAdmin) {
-            return res.status(400).json({ message: 'Username or email already exists' });
+            return res.status(400).json({ message: 'Username, email, or contact already exists' });
         }
 
         return res.status(200).json({ message: 'Available' });
@@ -119,7 +121,7 @@ router.get("/users", async (req, res) => {
 router.put('/users/:id/status', async (req, res) => {
     try {
         const userId = req.params.id;
-        const newStatus = req.body.status;  // e.g., "Verified" or "Unverified"
+        const newStatus = req.body.status; // e.g., "Verified" or "Unverified"
 
         const updatedUser = await usersModel.findByIdAndUpdate(
             userId,
@@ -148,6 +150,5 @@ router.delete('/users/:id', async (req, res) => {
         res.status(500).json({ message: 'Error deleting user', error });
     }
 });
-
 
 module.exports = router;

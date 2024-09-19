@@ -7,7 +7,8 @@ import {
     validateUsername,
     validatePassword,
     validateBarangay,
-    validateType
+    validateType,
+    validateContact
 } from './inputValidation';
 
 // Determine the base URL based on the environment
@@ -20,7 +21,15 @@ const Admins = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    const [formData, setFormData] = useState({ name: '', email: '', username: '', password: '', barangay: '', type: '' });
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        username: '',
+        password: '',
+        barangay: '',
+        type: '',
+        contact: '+63' // Initialize contact with a valid default value
+    });
     const [selectedAdminId, setSelectedAdminId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const itemsPerPage = 8;
@@ -72,6 +81,8 @@ const Admins = () => {
         errors.password = validatePassword(formData.password);
         errors.barangay = validateBarangay(formData.barangay);
         errors.type = validateType(formData.type);
+        errors.contact = validateContact(formData.contact);
+
         setErrors(errors);
         return Object.values(errors).every((error) => error === "");
     };
@@ -105,24 +116,21 @@ const Admins = () => {
     const handleAddEditAdmin = async () => {
         if (validateForm()) {
             try {
-                // Skip duplicate check if in edit mode
                 let duplicateCheckPassed = true;
 
                 if (!isEditMode) {
-                    // Check if username or email already exists (only for adding)
                     const duplicateCheckResponse = await axios.post(`${apiBaseUrl}/api/check-duplicate`, {
                         username: formData.username,
-                        email: formData.email
+                        email: formData.email,
+                        contact: formData.contact
                     });
 
                     if (duplicateCheckResponse.status !== 200) {
-                        // If duplicates are found, set the error and prevent further actions
                         duplicateCheckPassed = false;
                         setErrors({ ...errors, username: 'Username or email already exists' });
                     }
                 }
 
-                // Proceed if duplicate check passed or if editing
                 if (duplicateCheckPassed) {
                     if (isEditMode) {
                         await axios.put(`${apiBaseUrl}/api/administrators/${selectedAdminId}`, formData);
@@ -133,11 +141,10 @@ const Admins = () => {
                     }
 
                     setIsModalOpen(false);
-                    setFormData({ name: '', email: '', username: '', password: '', barangay: '', type: '' });
+                    setFormData({ name: '', email: '', username: '', password: '', barangay: '', type: '', contact: '+63' }); // Reset contact to '+63'
                 }
             } catch (error) {
                 if (error.response && error.response.status === 400 && !isEditMode) {
-                    // Display duplicate error message
                     setErrors({ ...errors, username: 'Username or email already exists' });
                 } else {
                     console.error("Error adding/editing admin:", error);
@@ -159,7 +166,7 @@ const Admins = () => {
 
     const handleEditClick = (admin) => {
         setSelectedAdminId(admin._id);
-        setFormData({ name: admin.name, email: admin.email, username: admin.username, password: '', barangay: admin.barangay, type: admin.type });
+        setFormData({ name: admin.name, email: admin.email, username: admin.username, password: '', barangay: admin.barangay, type: admin.type, contact: admin.contact }); // Set contact for editing
         setIsEditMode(true);
         setIsModalOpen(true);
     };
@@ -177,7 +184,7 @@ const Admins = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setShowDeleteModal(false);
-        setFormData({ name: '', email: '', username: '', password: '', barangay: '', type: '' });
+        setFormData({ name: '', email: '', username: '', password: '', barangay: '', type: '', contact: '+63' }); // Reset contact to '+63'
         setSelectedAdminId(null);
         setErrors({});
     };
@@ -227,6 +234,7 @@ const Admins = () => {
                                     <th>E-mail</th>
                                     <th>Type</th>
                                     <th>Barangay</th>
+                                    <th>Created At</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -238,6 +246,18 @@ const Admins = () => {
                                         <td>{admin.email}</td>
                                         <td>{admin.type}</td>
                                         <td>{admin.barangay}</td>
+                                        <td>
+                                            {new Date
+                                                (admin.createdAt).toLocaleDateString
+                                                ('en-US',
+                                                    {
+                                                        month: 'long',
+                                                        day: 'numeric',
+                                                        year: 'numeric'
+                                                    }
+                                                )
+                                            }
+                                        </td>
                                         <td>
                                             <div className='action-button-box'>
                                                 <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Edit</button>
@@ -301,6 +321,25 @@ const Admins = () => {
                                                 onBlur={() => setErrors({ ...errors, email: validateEmail(formData.email) })}
                                             />
                                         </div>
+                                        <div className='request-text-box'>
+                                            <label className='request-label'>Contact Number:</label>
+                                            <div className="contact-input-group">
+                                                <span className="contact-prefix">+63</span>
+                                                <input
+                                                    type="tel"
+                                                    name="contact"
+                                                    className="request-input"
+                                                    value={formData.contact ? formData.contact.replace(/^\+63/, '') : ''} // Safeguard against undefined
+                                                    onChange={(e) => {
+                                                        const newValue = e.target.value.replace(/^0+/, '');
+                                                        setFormData({ ...formData, contact: `+63${newValue}` });
+                                                    }}
+                                                    maxLength={10} // Limit to 10 digits
+                                                    placeholder="9xxxxxxxxx"
+                                                />
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div className='request-content-cont'>
                                         <div className='request-text-box'>
@@ -367,6 +406,7 @@ const Admins = () => {
                                         {errors.name && <div className="error">{errors.name}</div>}
                                         {errors.username && <div className="error">{errors.username}</div>}
                                         {errors.email && <div className="error">{errors.email}</div>}
+                                        {errors.contact && <div className="error">{errors.contact}</div>}
                                         {errors.password && <div className="error">{errors.password}</div>}
                                         {errors.barangay && <div className="error">{errors.barangay}</div>}
                                         {errors.type && <div className="error">{errors.type}</div>}
@@ -401,4 +441,3 @@ const Admins = () => {
 };
 
 export default Admins;
-

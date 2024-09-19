@@ -114,6 +114,7 @@ const Users = () => {
                                     <th>User ID</th>
                                     <th>Name</th>
                                     <th>E-mail</th>
+                                    <th>Created At</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -124,6 +125,18 @@ const Users = () => {
                                         <td>{user._id}</td>
                                         <td>{user.fullName}</td>
                                         <td>{user.email}</td>
+                                        <td>
+                                            {new Date
+                                                (user.createdAt).toLocaleDateString
+                                                ('en-US',
+                                                    {
+                                                        month: 'long',
+                                                        day: 'numeric',
+                                                        year: 'numeric'
+                                                    }
+                                                )
+                                            }
+                                        </td>
                                         <td>{user.status}</td>
                                         <td>
                                             <div className='action-button-box'>

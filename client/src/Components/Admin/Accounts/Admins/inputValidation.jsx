@@ -28,7 +28,6 @@ export const validatePassword = (password) => {
         return "• Password is required";
     }
 
-    // Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
 
     if (password.length < 8) {
@@ -46,8 +45,7 @@ export const validatePassword = (password) => {
     if (!/[@$!%*?&]/.test(password)) {
         return "• Password must contain at least one special character (@, $, !, %, *, ?, &)";
     }
-    
-    // If the password passes all the checks
+
     return "";
 };
 
@@ -64,5 +62,16 @@ export const validateType = (type) => {
         return "• Type is required";
     }
     // Add additional validation logic if needed
+    return "";
+};
+
+// New contact validation function
+export const validateContact = (contact) => {
+    if (!contact) {
+        return "• Contact number is required";
+    }
+    if (!/^\+63[0-9]{10}$/.test(contact)) {
+        return "• Contact number must start with +63 and be followed by 10 digits";
+    }
     return "";
 };
