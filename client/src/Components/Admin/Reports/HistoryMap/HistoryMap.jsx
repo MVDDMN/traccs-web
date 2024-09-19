@@ -308,7 +308,7 @@ const HistoryMap = () => {
             <div className='history-maps-content'>
                 <MapContainer id="history-map" center={[14.5591613626185, 121.14011670582923]} zoom={15} scrollWheelZoom={false}>
                     <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     />
                     <FilterControl selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes} selectedMonths={selectedMonths} setSelectedMonths={setSelectedMonths} selectedYears={selectedYears} setSelectedYears={setSelectedYears} years={years} />
                     <MarkerClusterGroup>

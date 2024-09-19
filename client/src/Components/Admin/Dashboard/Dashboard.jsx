@@ -96,6 +96,7 @@ const Dashboard = () => {
     const [locationReportCounts, setLocationReportCounts] = useState({});
     const [loading, setLoading] = useState(true);
     const [autoTrack, setAutoTrack] = useState(false);
+    const [showCircles, setShowCircles] = useState(true);
 
     const fetchReports = async () => {
         try {
@@ -271,7 +272,7 @@ const Dashboard = () => {
 
         Object.entries(locationReportCounts).forEach(([location, data]) => {
             const [lat, lng] = location.split(',').map(Number);
-            const radius = 0.0002; // Adjust this to define your radius for combining locations
+            const radius = 0.001; // Adjust this to define your radius for combining locations
 
             const existingKey = combineLocations(lat, lng, radius);
 
@@ -436,6 +437,9 @@ const Dashboard = () => {
                         <button onClick={toggleAutoTrack} className="toggle-button">
                             {autoTrack ? 'Disable' : 'Enable'} Auto-Tracking
                         </button>
+                        <button onClick={() => setShowCircles(prev => !prev)} className="toggle-button">
+                            {showCircles ? 'Hide' : 'Show'} Heatmap
+                        </button>
                     </div>
                     <div className="map-legends">
                         <div className='map-legends-box'>
@@ -490,7 +494,7 @@ const Dashboard = () => {
                                 </Marker>
                             ))}
                         </MarkerClusterGroup>
-                        {renderCircles()}
+                        {showCircles && renderCircles()}
                     </MapContainer>
                 </div>
             </div>

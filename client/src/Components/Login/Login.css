@@ -83,6 +83,7 @@
     display: inline-flex;
     flex-direction: column;
     text-align: left;
+    position: relative;
     height: 100%;
     width: 100%;
     gap: 20px;
@@ -175,18 +176,19 @@
 }
 
 .login-error-box {
-    display: inline-flex;
-    flex-direction: column;
+    position: absolute;
+    bottom: 40px;
     background-color: rgb(255, 109, 109);
     border: 1px solid red;
     border-radius: 5px;
     height: auto;
-    width: 100%;
+    width: 98%;
     opacity: 0;
+    padding: 5px;
     transform: scale(0.9);
-    animation: none;
     transition: opacity 0.5s ease, transform 0.3s ease-in-out;
     visibility: hidden;
+    z-index: 1000;
 }
 
 .login-error-box.show {
@@ -224,6 +226,120 @@
     color: #0E267C;
     padding-right: 1em;
     padding-left: 5px;
+}
+
+/*Terms and Conditions*/
+.terms-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.terms-modal-content {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    height: 70%;
+    width: 35%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.terms-text-container {
+    display: flex;
+    flex-direction: column;
+    height: 30em;
+    padding: 10px;
+    overflow-y: auto;
+    text-align: justify;
+    border-radius: 20px 0 0 20px ;
+    background-color: lightgray;
+}
+
+/* Scrollbar styles */
+.terms-text-container::-webkit-scrollbar {
+    width: 10px; /* Adjust scrollbar width */
+}
+
+.terms-text-container::-webkit-scrollbar-track {
+    background-color: lightgray; /* Same as the container background */
+    border-radius: 20px; /* Optional: matches container border radius */
+}
+
+.terms-text-container::-webkit-scrollbar-thumb {
+    background-color: darkgray; /* Scrollbar color */
+    border-radius: 10px; /* Rounded scrollbar */
+}
+
+.terms-title {
+    text-align: center;
+}
+
+.terms-alert-text {
+    font-size: 14px;
+    font-weight: 600;
+    width: 98%;
+    text-align: justify;
+}
+
+.terms-agree {
+    display: flex;
+    width: 40%;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: lightgray;
+    border: 1px solid #0E267C;
+    border-radius: 5px;
+}
+
+.terms-agree-msg {
+    font-size: 14px;
+}
+
+.terms-button-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 5px;
+    justify-content: last baseline;
+    align-items: last baseline;
+}
+
+.terms-button {
+    padding: 10px 20px;
+    background-color: #0E267C;
+    width: 11em;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.terms-button:hover {
+    background-color: #0A1B57;
 }
 
 /* Media Queries for Responsiveness */
@@ -282,7 +398,7 @@
         font-size: 14px;
     }
     .login-error-box {
-        width: 99%;
+        width: 98%;
     }
 }
 
@@ -325,10 +441,10 @@
         font-size: 10px;
     }
     .login-error-box label {
-        font-size: 8px;
+
         padding: 5px;
     }
     .login-error-box {
-        width: 96%;
+        width: 94%;
     }
 }

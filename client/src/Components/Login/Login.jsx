@@ -23,6 +23,8 @@ const Login = () => {
     const [hovered, setHovered] = useState(false);
     const [error, setError] = useState("");
     const [errorVisible, setErrorVisible] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(true); // Modal is open on page load
+    const [agreed, setAgreed] = useState(false); // State to track agreement
 
     const navigate = useNavigate();
 
@@ -242,6 +244,104 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+
+            {isModalOpen && (
+                <div className="terms-modal">
+                    <div className="terms-modal-content">
+
+                        <div className="terms-text-container">
+                            <h2 className="terms-title">Terms and Conditions</h2>
+
+                            <h3>1. Introduction</h3>
+                            <p>
+                                Welcome to TRACCS. By accessing and using this platform,
+                                you agree to comply with and be bound by the following terms and conditions of use.
+                                Please read them carefully. If you do not agree to any part of these terms,
+                                you should refrain from using this application.
+                            </p>
+
+                            <h3>2. User Responsibilities</h3>
+                            <p>
+                                As a user, you agree to use this platform for lawful purposes only.
+                                You are responsible for ensuring that your activities comply with all applicable laws,
+                                regulations, and guidelines. Any breach of these laws or terms may result in the
+                                suspension or termination of your account.
+                            </p>
+
+                            <h3>3. Account Security</h3>
+                            <p>
+                                You are responsible for maintaining the confidentiality
+                                of your login credentials and any activities that occur under your account.
+                                TRACCS will not be liable for any loss or damage arising from your failure to safeguard your credentials.
+                                Should you suspect unauthorized use of your account, please contact our support team immediately.
+                            </p>
+
+                            <h3>4. Data Privacy</h3>
+                            <p>
+                                We are committed to protecting your privacy.
+                                By agreeing to these terms, you acknowledge that you have read and understood our Privacy Policy,
+                                which governs the collection, use, and disclosure of your personal information.
+                            </p>
+
+                            <h3>5. Limitation of Liability</h3>
+                            <p>
+                                TRACCS is provided "as is" and "as available." We make no warranties,
+                                expressed or implied, regarding the accuracy, reliability, or availability of the platform.
+                                In no event shall TRACCS or its affiliates be liable for any indirect, incidental,
+                                or consequential damages arising from the use or inability to use the platform.
+                            </p>
+
+                            <h3>6. Modifications to Terms</h3>
+                            <p>
+                                We reserve the right to update or modify these terms at any time without prior notice.
+                                Continued use of the platform after any changes indicates your acceptance of the new terms.
+                            </p>
+
+                            <h3>7. Governing Law</h3>
+                            <p>
+                                These terms shall be governed and construed in accordance with the laws of
+                                Philippines, without regard to its conflict of law provisions.
+                                Any disputes arising out of or in connection with the use of this platform shall be subject
+                                to the exclusive jurisdiction of the courts in Taytay, Rizal.
+                            </p>
+
+                        </div>
+                        
+                        <p className="terms-alert-text">
+                            By checking the box below, you acknowledge that you have read, understood,
+                            and agree to the terms and conditions set forth above.
+                        </p>
+                        
+                        <div className="terms-agree">
+                            <input
+                                type="checkbox"
+                                id="agree"
+                                checked={agreed}
+                                onChange={() => setAgreed(!agreed)}
+                            />
+
+                            <label htmlFor="agree" className="terms-agree-msg">I agree to the terms and conditions</label>
+                        </div>
+                        
+                        <div className="terms-button-container">
+                            <button
+                                className="terms-button"
+                                onClick={() => {
+                                    if (agreed) {
+                                        setIsModalOpen(false); // Close modal if agreed
+                                    } else {
+                                        alert('Please agree to the terms and conditions');
+                                    }
+                                }}
+                            >
+                                Proceed to Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
         </div>
     );
 };
