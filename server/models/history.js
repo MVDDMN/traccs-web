@@ -1,4 +1,4 @@
-const mongoose = require ("mongoose")
+const mongoose = require("mongoose");
 
 const historySchema = new mongoose.Schema({
     name: String,
@@ -9,9 +9,9 @@ const historySchema = new mongoose.Schema({
     location: String,
     address: String,
     status: String,
-    report_date_time: String,
-    respond_date_time: String,
-    completion_date_time: String,
+    report_date_time: { type: Date },
+    respond_date_time: { type: Date },
+    completion_date_time: { type: Date },
     images: [String],
     description: {
         fire_type: String,
@@ -33,6 +33,6 @@ const historySchema = new mongoose.Schema({
     },
 },{ timestamps: true });
 
-const historyModel = mongoose.model("histories", historySchema)
+const historyModel = mongoose.model("histories", historySchema);
 
-module.exports = historyModel
+module.exports = historyModel;

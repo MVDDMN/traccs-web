@@ -116,10 +116,10 @@
 
 .barangay-table th,
 .barangay-table td {
-    padding: 8px;
+    padding: 10px;
     text-align: left;
     border-bottom: 2px solid #ddd;
-    height: 32px;
+    height: 34px;
 }
 
 .barangay-table th {
@@ -144,7 +144,7 @@
     justify-content: center;
     align-items: center;
     background-color: #0E267C;
-    height: 40px;
+    height: 35px;
     width: 75px;
     color: white;
     border: none;
@@ -293,10 +293,10 @@
     .barangay-table th,
     .barangay-table td {
         padding: 6px;
-        height: 23px;
+        height: 35px;
     }
     .barangay-view-requests-button {
-        height: 37px;
+        height: 35px;
         width: 75px;
     }
 }
@@ -308,7 +308,7 @@
     }
     .barangay-table th,
     .barangay-table td {
-        padding: 3px;
+        padding: 5px;
         height: 20px;
     }
     .barangay-view-requests-button {
@@ -327,8 +327,8 @@
     }
     .barangay-table th,
     .barangay-table td {
-        padding: 2px;
-        height: 15px;
+        padding: 3px;
+        height: 17px;
         font-size: 12px;
     }
     .barangay-view-requests-button {

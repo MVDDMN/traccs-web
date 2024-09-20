@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './RequestsStats.css';
-import usericon from '../../../../../Assets/user.png';
+import usericon from '../../../../Assets/user.png';
 
 // Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'

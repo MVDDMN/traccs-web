@@ -51,7 +51,7 @@ router.get('/analytics/barangay-summary', async (req, res) => {
 // Analytics Module - Summary of Reports by Type
 router.get('/analytics/report-summary', async (req, res) => {
     try {
-        const reportSummary = await reportsModel.aggregate([
+        const reportSummary = await historyModel.aggregate([
             {
                 $group: {
                     _id: "$type",
@@ -112,7 +112,7 @@ router.get('/analytics/report-frequency', async (req, res) => {
             {
                 $group: {
                     _id: {
-                        month: { $month: { $dateFromString: { dateString: "$report_date_time" } } },
+                        month: { $month: "$report_date_time" }, // No need for $dateFromString
                         type: "$type"
                     },
                     count: { $sum: 1 },
@@ -140,11 +140,27 @@ router.get('/analytics/report-frequency', async (req, res) => {
     }
 });
 
-// Analytics Module - Report Stats
+// Analytics Module - Report Stats with Year Filtering and Available Years
 router.get('/analytics/report-stats', async (req, res) => {
     try {
-        const totalReports = await reportsModel.countDocuments();
-        const reports = await reportsModel.find({});
+        const { year } = req.query; // Fetch year from query params
+        let reportsQuery = {}; // Initialize query object
+
+        if (year) {
+            // If a year is provided, filter by that year
+            const yearStart = `${year}-01-01T00:00:00.000+00:00`;
+            const yearEnd = `${year}-12-31T23:59:59.999+00:00`;
+            reportsQuery = {
+                report_date_time: {
+                    $gte: yearStart,
+                    $lte: yearEnd
+                }
+            };
+        }
+
+        // Fetch reports filtered by the year (if provided)
+        const totalReports = await historyModel.countDocuments(reportsQuery);
+        const reports = await historyModel.find(reportsQuery);
 
         const today = new Date();
         const todayISO = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' format
@@ -153,24 +169,47 @@ router.get('/analytics/report-stats', async (req, res) => {
         let reportsToday = 0;
 
         reports.forEach(report => {
-            const reportDate = new Date(report.report_date_time);
+            const reportDate = new Date(report.report_date_time); // Convert the string date into a Date object
             const reportISO = reportDate.toISOString().split('T')[0]; // Normalize report date
 
-            // Check if it's the same month
-            if (reportDate.getFullYear() === today.getFullYear() && reportDate.getMonth() === today.getMonth()) {
+            // Check if it's the same month as today
+            if (
+                reportDate.getFullYear() === today.getFullYear() &&
+                reportDate.getMonth() === today.getMonth()
+            ) {
                 reportsThisMonth++;
             }
 
-            // Check if it's the same day
+            // Check if it's the same day as today
             if (reportISO === todayISO) {
                 reportsToday++;
             }
         });
 
+        // Find all distinct years from the reports for year dropdown
+        const availableYears = await historyModel.aggregate([
+            {
+                $addFields: {
+                    year: { $substr: ['$report_date_time', 0, 4] } // Extract year from the string date
+                }
+            },
+            {
+                $group: {
+                    _id: '$year'
+                }
+            },
+            {
+                $sort: { _id: -1 } // Sort in descending order to get the most recent years first
+            }
+        ]);
+
+        const years = availableYears.map(yearData => yearData._id); // Map to get an array of years
+
         res.json({
             totalReports,
             reportsThisMonth,
-            reportsToday
+            reportsToday,
+            availableYears: years // Return available years
         });
     } catch (error) {
         console.error('Error fetching report stats:', error);
@@ -178,75 +217,57 @@ router.get('/analytics/report-stats', async (req, res) => {
     }
 });
 
-
 // Analytics Module - Report frequency per hour
 router.get('/analytics/report-frequency-by-hour', async (req, res) => {
     try {
-        // Fetch the report date and type from the database
-        const reports = await historyModel.find({}, 'report_date_time type');
-
-        const hourFrequency = Array(24).fill(0);
-        const reportTypesByHour = Array(24).fill().map(() => []);
-
-        reports.forEach(report => {
-            const reportDate = new Date(report.report_date_time);
-            const hour = reportDate.getHours();
-            hourFrequency[hour]++;
-
-            // Collect unique report types for each hour
-            if (!reportTypesByHour[hour].includes(report.type)) {
-                reportTypesByHour[hour].push(report.type);
+        // Use MongoDB aggregation to extract hours directly from the report_date_time field
+        const reportFrequency = await historyModel.aggregate([
+            {
+                $group: {
+                    _id: {
+                        hour: { $hour: "$report_date_time" }, // Extract the hour directly
+                        type: "$type"
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    hour: "$_id.hour",
+                    type: "$_id.type",
+                    count: 1
+                }
+            },
+            {
+                $sort: {
+                    hour: 1
+                }
             }
-        });
+        ]);
 
-        // Create labels in 12-hour format
-        const labels = hourFrequency.map((_, index) => {
+        // Create labels in 12-hour format for the raw time
+        const labels = Array.from({ length: 24 }, (_, index) => {
             const hour12 = index % 12 || 12; // Convert to 12-hour format
             const period = index < 12 ? 'AM' : 'PM'; // AM/PM period
             return `${hour12}:00 ${period}`;
         });
 
-        const data = hourFrequency;
-
-        // Respond with labels, data, and report types
-        res.json({ labels, data, reportTypes: reportTypesByHour });
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});
-
-// Analytics Module - Report frequency for Peak hours
-router.get('/analytics/report-frequency-by-peak', async (req, res) => {
-    try {
-        const reports = await historyModel.find({}, 'report_date_time');
-
+        // Map the aggregated results into the hourly frequency array
         const hourFrequency = Array(24).fill(0);
-
-        reports.forEach(report => {
-            const reportDate = new Date(report.report_date_time);
-            const hour = reportDate.getHours();
-            hourFrequency[hour]++;
+        reportFrequency.forEach(report => {
+            hourFrequency[report.hour] = report.count;
         });
 
-        // Find the maximum frequency and corresponding hours
-        const maxFrequency = Math.max(...hourFrequency);
-        const peakHours = hourFrequency
-            .map((frequency, index) => frequency === maxFrequency ? index : null)
-            .filter(index => index !== null);
-
-        // Convert peak hours to 12-hour format
-        const peakHourLabels = peakHours.map(hour => {
-            const hour12 = hour % 12 || 12; // Convert to 12-hour format
-            const period = hour < 12 ? 'AM' : 'PM'; // AM/PM period
-            return `${hour12}:00 ${period}`;
+        res.json({
+            labels,
+            data: hourFrequency,
+            reportTypes: reportFrequency.map(r => r.type),
         });
-
-        res.json({ peakHourLabels, maxFrequency });
     } catch (err) {
         res.status(500).send(err);
     }
 });
-
 
 // Analytics Module - Requests Stats
 router.get('/analytics/requests-stats', async (req, res) => {

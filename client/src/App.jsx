@@ -44,7 +44,6 @@ import Personal from './Components/Admin/Requests/Personal/Personal.jsx';
 import Analytics from './Components/Admin/Analytics/Analytics.jsx';
 import AnalyticsReports from './Components/Admin/Analytics/Report/AnalyticsReports.jsx';
 import AnalyticsRequests from './Components/Admin/Analytics/Request/AnalyticsRequests.jsx';
-import AnalyticsSummary from './Components/Admin/Analytics/Summary/AnalyticsSummary.jsx';
 
 /*Account Imports*/
 import Accounts from './Components/Admin/Accounts/Accounts.jsx';
@@ -118,8 +117,7 @@ function App() {
                     </Route>
 
                     <Route path="analytics" element={<Analytics />}>
-                      <Route index element={<AnalyticsSummary/>} /> 
-                      <Route path="analyticssummary" element={<AnalyticsSummary/>} />
+                      <Route index element={<AnalyticsReports/>} />
                       <Route path="analyticsreports" element={<AnalyticsReports/>} />
                       <Route path="analyticsrequests" element={<AnalyticsRequests/>} />
                     </Route>

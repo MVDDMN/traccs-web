@@ -9,9 +9,9 @@ const reportsSchema = new mongoose.Schema({
     location: String,
     address: String,
     status: String,
-    report_date_time: String,
-    respond_date_time: String,
-    completion_date_time: String,
+    report_date_time: { type: Date },
+    respond_date_time: { type: Date },
+    completion_date_time: { type: Date },
     images: [String],
     description: {
         fire_type: String,
@@ -32,7 +32,7 @@ const reportsSchema = new mongoose.Schema({
         additional_description: String,
         deny_description: String
     },
-},{ timestamps: true });
+}, { timestamps: true });
 
 const reportsModel = mongoose.model("reports", reportsSchema);
 
