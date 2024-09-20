@@ -97,6 +97,10 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [autoTrack, setAutoTrack] = useState(false);
     const [showCircles, setShowCircles] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
+    const [denyDescription, setDenyDescription] = useState('');
+
 
     const fetchReports = async () => {
         try {
@@ -155,8 +159,19 @@ const Dashboard = () => {
     };
 
     const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedReport(null);
+        if (!isSubmitting) {
+            setIsModalOpen(false);
+            setSelectedReport(null);
+        }
+    };
+
+    const openDenyModal = () => {
+        setIsDenyModalOpen(true);
+    };
+
+    const closeDenyModal = () => {
+        setIsDenyModalOpen(false);
+        setDenyDescription('');
     };
 
     const logAdminAction = async (action, adminData, description) => {
@@ -178,42 +193,69 @@ const Dashboard = () => {
     };
 
     const respondToReport = async () => {
+        setIsSubmitting(true);
         try {
             await axios.post(`${apiBaseUrl}/api/respondtoreport`, { reportId: selectedReport._id, responder: userBarangay });
-            setIsResponded(true);
-            await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
-            closeModal();
 
-            // Refetch reports here
-            fetchReports();
+            setIsResponded(true);
+
+            // Update the local state to reflect the changes immediately
+            setReports(prevReports => prevReports.map(report =>
+                report._id === selectedReport._id ? { ...report, status: 'Responded', responder: userBarangay } : report
+            ));
+
+            await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
+
+            closeModal();
         } catch (error) {
             console.error('Error responding to report:', error);
-        }
-    };
-
-    const archiveReport = async () => {
-        try {
-            await axios.post(`${apiBaseUrl}/api/archivereport`, { reportId: selectedReport._id });
-            await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
-            closeModal();
-
-            // Refetch reports here
-            fetchReports();
-        } catch (error) {
-            console.error('Error archiving report:', error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     const denyReport = async () => {
+        setIsSubmitting(true);
         try {
-            await axios.post(`${apiBaseUrl}/api/deny`, { reportId: selectedReport._id, responder: userBarangay });
-            await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
-            closeModal();
+            await axios.post(`${apiBaseUrl}/api/deny`, {
+                reportId: selectedReport._id,
+                responder: userBarangay,
+                deny_description: denyDescription // Send deny description to backend
+            });
 
-            // Refetch reports here
-            fetchReports();
+            // Update the local state to reflect the changes immediately
+            setReports(prevReports => prevReports.map(report =>
+                report._id === selectedReport._id ? { ...report, status: 'Denied', responder: userBarangay } : report
+            ));
+
+            await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
+
+            closeDenyModal(); // Close the deny description modal
+            closeModal(); // Close the main modal
         } catch (error) {
             console.error('Error denying report:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const archiveReport = async () => {
+        setIsSubmitting(true);
+        try {
+            await axios.post(`${apiBaseUrl}/api/archivereport`, { reportId: selectedReport._id });
+
+            // Update the local state to reflect the changes immediately
+            setReports(prevReports => prevReports.map(report =>
+                report._id === selectedReport._id ? { ...report, status: 'Archived' } : report
+            ));
+
+            await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
+
+            closeModal();
+        } catch (error) {
+            console.error('Error archiving report:', error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -514,12 +556,42 @@ const Dashboard = () => {
                 </div>
             )}
 
+            {isDenyModalOpen && (
+                <div className="dashboard-deny-modal">
+                    <div className="dashboard-deny-modal-content">
+                        <h3 className="dashboard-deny-modal-title">Provide a reason for denying the report</h3>
+                        <textarea
+                            value={denyDescription}
+                            onChange={(e) => setDenyDescription(e.target.value)}
+                            placeholder="Enter deny description"
+                            rows={5}
+                            className="dashboard-deny-modal-textarea"
+                        />
+                        <div className="dashboard-deny-modal-buttons">
+                            <button onClick={closeDenyModal} disabled={isSubmitting} className="dashboard-deny-modal-cancel-button">
+                                Cancel
+                            </button>
+                            <button onClick={denyReport} disabled={isSubmitting || !denyDescription} className="dashboard-deny-modal-submit-button">
+                                {isSubmitting ? 'Processing...' : 'Submit Deny Reason'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {isModalOpen && (
                 <div className="dashboard-reports-modal">
                     <div className="dashboard-reports-modal-content">
                         <div className='dashboard-reports-modal-content-box'>
+
                             <div className='dashboard-close-modal-button-box'>
-                                <button onClick={closeModal} className='dashboard-close-modal-button'>X</button>
+                                <button
+                                    onClick={closeModal}
+                                    className='dashboard-close-modal-button'
+                                    disabled={isSubmitting}
+                                >
+                                    X
+                                </button>
                             </div>
 
                             <div className='dashboard-reports-title-box'>
@@ -640,9 +712,19 @@ const Dashboard = () => {
                             <div className='dashboard-update-modal-button-box'>
                                 {(!selectedReport.responder || selectedReport.responder === userBarangay) && (
                                     <>
-                                        <button onClick={denyReport} className='dashboard-deny-modal-button'>Deny</button>
-                                        <button onClick={isResponded ? archiveReport : respondToReport} className='dashboard-update-modal-button'>
-                                            {isResponded ? 'Done' : 'Respond'}
+                                        <button
+                                            onClick={openDenyModal}
+                                            className='dashboard-deny-modal-button'
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? 'Processing...' : 'Deny'}
+                                        </button>
+                                        <button
+                                            onClick={isResponded ? archiveReport : respondToReport}
+                                            className='dashboard-update-modal-button'
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? 'Processing...' : isResponded ? 'Done' : 'Respond'}
                                         </button>
                                     </>
                                 )}

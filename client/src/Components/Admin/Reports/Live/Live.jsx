@@ -17,6 +17,9 @@ const Live = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState('');
     const [selectedYears, setSelectedYears] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
+    const [denyDescription, setDenyDescription] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -107,9 +110,21 @@ const Live = () => {
     };
 
     const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedReport(null);
+        if (!isSubmitting) {
+            setIsModalOpen(false);
+            setSelectedReport(null);
+        }
     };
+
+    const openDenyModal = () => {
+        setIsDenyModalOpen(true);
+    };
+
+    const closeDenyModal = () => {
+        setIsDenyModalOpen(false);
+        setDenyDescription(''); // Clear deny description on close
+    };
+
 
     const logAdminAction = async (action, adminData, description) => {
         const logEntry = {
@@ -130,23 +145,26 @@ const Live = () => {
     };
 
     const respondToReport = async () => {
+        setIsSubmitting(true); // Start loading state
         try {
             await axios.post(`${apiBaseUrl}/api/respondtoreport`, { reportId: selectedReport._id, responder: userBarangay });
             await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
 
             // Update the status of the selected report in the state
-            const updatedReports = reports.map(report =>
-                report._id === selectedReport._id ? { ...report, status: 'Responded' } : report
-            );
-            setReports(updatedReports);
+            setReports(prevReports => prevReports.map(report =>
+                report._id === selectedReport._id ? { ...report, status: 'Responded', responder: userBarangay } : report
+            ));
 
-            closeModal();
+            closeModal(); // Close modal after successful response
         } catch (error) {
             console.error('Error responding to report:', error);
+        } finally {
+            setIsSubmitting(false); // End loading state
         }
     };
 
     const archiveReport = async () => {
+        setIsSubmitting(true); // Start loading state
         try {
             const reportToArchive = {
                 reportId: selectedReport._id,
@@ -158,24 +176,40 @@ const Live = () => {
             await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
 
             // Update the status of the selected report in the state
-            const updatedReports = reports.map(report =>
+            setReports(prevReports => prevReports.map(report =>
                 report._id === selectedReport._id ? { ...report, status: 'Done' } : report
-            );
-            setReports(updatedReports);
+            ));
 
-            closeModal();
+            closeModal(); // Close modal after successful response
         } catch (error) {
             console.error('Error archiving report:', error);
+        } finally {
+            setIsSubmitting(false); // End loading state
         }
     };
 
     const denyReport = async () => {
+        setIsSubmitting(true); // Start loading state
         try {
-            await axios.post(`${apiBaseUrl}/api/deny`, { reportId: selectedReport._id, responder: userBarangay });
+            await axios.post(`${apiBaseUrl}/api/deny`, {
+                reportId: selectedReport._id,
+                responder: userBarangay,
+                deny_description: denyDescription // Send deny description
+            });
+
             await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
-            closeModal();
+
+            // Update the status in the state to reflect the changes
+            setReports(prevReports => prevReports.map(report =>
+                report._id === selectedReport._id ? { ...report, status: 'Denied', responder: userBarangay } : report
+            ));
+
+            closeDenyModal(); // Close deny modal after submission
+            closeModal(); // Close main modal
         } catch (error) {
             console.error('Error denying report:', error);
+        } finally {
+            setIsSubmitting(false); // End loading state
         }
     };
 
@@ -386,12 +420,37 @@ const Live = () => {
                 </div>
             )}
 
+            {isDenyModalOpen && (
+                <div className="live-deny-modal">
+                    <div className="live-deny-modal-content">
+                        <h3 className="live-deny-modal-title">Provide a reason for denying the report</h3>
+                        <textarea
+                            value={denyDescription}
+                            onChange={(e) => setDenyDescription(e.target.value)}
+                            placeholder="Enter deny description"
+                            rows={5}
+                            className="live-deny-modal-textarea"
+                        />
+                        <div className="live-deny-modal-buttons">
+                            <button onClick={closeDenyModal} disabled={isSubmitting} className="live-deny-modal-cancel-button">
+                                Cancel
+                            </button>
+                            <button onClick={denyReport} disabled={isSubmitting || !denyDescription} className="live-deny-modal-submit-button">
+                                {isSubmitting ? 'Processing...' : 'Submit Deny Reason'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {isModalOpen && (
                 <div className="live-reports-modal">
                     <div className="live-reports-modal-content">
                         <div className='live-reports-modal-content-box'>
                             <div className='live-close-modal-button-box'>
-                                <button onClick={closeModal} className='live-close-modal-button'>X</button>
+                                <button onClick={closeModal} className='live-close-modal-button' disabled={isSubmitting}>
+                                    X
+                                </button>
                             </div>
 
                             <div className='live-reports-title-box'>
@@ -533,9 +592,20 @@ const Live = () => {
                             <div className='live-update-modal-button-box'>
                                 {(!selectedReport.responder || selectedReport.responder === userBarangay) && (
                                     <>
-                                        <button onClick={denyReport} className='live-deny-modal-button'>Deny</button>
-                                        <button onClick={selectedReport.status === 'Responded' ? archiveReport : respondToReport} className='live-update-modal-button'>
-                                            {selectedReport.status === 'Responded' ? 'Done' : 'Respond'}
+                                        <button
+                                            onClick={openDenyModal}
+                                            className='live-deny-modal-button'
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? 'Processing...' : 'Deny'}
+                                        </button>
+
+                                        <button
+                                            onClick={selectedReport.status === 'Responded' ? archiveReport : respondToReport}
+                                            className='live-update-modal-button'
+                                            disabled={isSubmitting}  // Disable during submission
+                                        >
+                                            {isSubmitting ? 'Processing...' : selectedReport.status === 'Responded' ? 'Done' : 'Respond'}
                                         </button>
                                     </>
                                 )}

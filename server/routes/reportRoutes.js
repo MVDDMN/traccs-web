@@ -83,7 +83,7 @@ router.post("/archivereport", async (req, res) => {
 
 // Report Module -  Deny report
 router.post("/deny", async (req, res) => {
-    const { reportId, responder } = req.body;
+    const { reportId, responder, deny_description } = req.body;
 
     // Manually adjust for UTC+8 (Manila) time
     const localDateTime = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
@@ -95,12 +95,17 @@ router.post("/deny", async (req, res) => {
 
         // Update the report status to "Denied"
         report.status = "Denied";
+        report.description.deny_description = deny_description; // Store deny description
 
         // Move the report to the archive table
         const archivedReport = new archiveModel({
             ...report.toObject(),
             status: "Denied",
             responder: responder,
+            description: {
+                ...report.description,
+                deny_description // Include deny description in archive
+            },
             respond_date_time: localDateTime.toISOString(),
             completion_date_time: localDateTime.toISOString(),
         });

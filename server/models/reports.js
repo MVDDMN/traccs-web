@@ -29,7 +29,8 @@ const reportsSchema = new mongoose.Schema({
         hazard_type: String,
         assistance_type: String,
         urgency_level: String,
-        additional_description: String
+        additional_description: String,
+        deny_description: String
     },
 },{ timestamps: true });
 

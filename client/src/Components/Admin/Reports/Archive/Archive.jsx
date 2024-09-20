@@ -67,7 +67,7 @@ const Archive = () => {
         };
 
         fetchArchives();
-        const interval = setInterval(fetchArchives, 5000);
+        const interval = setInterval(fetchArchives, 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -496,6 +496,7 @@ const Archive = () => {
                                                 {selectedArchive.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedArchive.description.medical_emergency_type}</p>}
                                                 {selectedArchive.description.consciousness && <p><b>Consciousness:</b> {selectedArchive.description.consciousness}</p>}
                                                 {selectedArchive.description.hazard_type && <p><b>Hazard Type:</b> {selectedArchive.description.hazard_type}</p>}
+                                                {selectedArchive.description.deny_description && <p><b>Deny Description:</b> {selectedArchive.description.deny_description}</p>}
                                                 <p><b>Additional Description:</b> {selectedArchive.description.additional_description}</p>
                                             </div>
                                         </div>

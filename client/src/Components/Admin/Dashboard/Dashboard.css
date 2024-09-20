@@ -146,12 +146,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.7); /* Slightly transparent background */
+    background-color: rgba(255, 255, 255, 0.7);
+    /* Slightly transparent background */
     z-index: 2000;
 }
 
 .dashboard-controls {
-    display: flex; /* Use flexbox for layout */
+    display: flex;
+    /* Use flexbox for layout */
     position: absolute;
     top: 10px;
     right: 10px;
@@ -165,11 +167,14 @@
     background-color: #0E267C;
     color: white;
     border: none;
-    padding: 5px 15px; /* Adjust padding */
-    width: 100px; /* Set a fixed width */
+    padding: 5px 15px;
+    /* Adjust padding */
+    width: 100px;
+    /* Set a fixed width */
     border-radius: 5px;
     cursor: pointer;
-    font-size: 10px; /* Adjust font size */
+    font-size: 10px;
+    /* Adjust font size */
     text-align: center;
     transition: background-color 0.3s ease;
 }
@@ -192,7 +197,7 @@
     flex-direction: column;
     background-color: #0A1B57;
     border-radius: 5px;
-    padding: 15px;
+    padding: 5px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     height: auto;
 }
@@ -202,6 +207,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
     width: 100%;
 }
 
@@ -211,7 +217,10 @@
     font-size: 16px;
     text-align: center;
     font-weight: bolder;
+    justify-content: center;
     margin-bottom: 10px;
+    border-bottom: 1px solid white;
+    width: 100%;
 }
 
 .map-legends img {
@@ -252,10 +261,16 @@
     width: auto;
 }
 
+.dashboard-close-modal-button-box {
+    display: flex;
+    flex-direction: column;
+}
+
 .dashboard-close-modal-button {
     background: none;
     border: none;
     padding: 0;
+    width: 1em;
     cursor: pointer;
     color: black;
     border-radius: 10px;
@@ -264,6 +279,12 @@
 
 .dashboard-close-modal-button:hover {
     color: gray;
+}
+
+.dashboard-close-modal-button:disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .dashboard-reports-title-box {
@@ -415,6 +436,12 @@
     background-color: #0A1B57;
 }
 
+.dashboard-update-modal-button:disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .dashboard-deny-modal-button {
     background-color: red;
     height: 50px;
@@ -436,13 +463,104 @@
     background-color: darkred;
 }
 
+.dashboard-deny-modal-button:disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 /*End of Report Modal*/
+
+/* Deny Modal Overlay */
+.dashboard-deny-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000; /* Ensure it's on top */
+}
+
+/* Deny Modal Content */
+.dashboard-deny-modal-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 30%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title Styling */
+.dashboard-deny-modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Textarea Styling */
+.dashboard-deny-modal-textarea {
+    width: 95%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    resize: none;
+    margin-bottom: 15px;
+}
+
+/* Buttons Container */
+.dashboard-deny-modal-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Cancel Button Styling */
+.dashboard-deny-modal-cancel-button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dashboard-deny-modal-cancel-button:hover {
+    background-color: darkred;
+}
+
+/* Submit Button Styling */
+.dashboard-deny-modal-submit-button {
+    background-color: #0E267C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dashboard-deny-modal-submit-button:hover {
+    background-color: #0A1B57;
+}
+
+/* Disable Buttons While Submitting */
+.dashboard-deny-modal-cancel-button:disabled,
+.dashboard-deny-modal-submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .accident-frame {
-        width: 170px;;
+        width: 170px;
+        ;
         height: auto;
         margin-bottom: 10px;
     }

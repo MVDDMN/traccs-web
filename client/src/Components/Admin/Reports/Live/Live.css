@@ -134,8 +134,10 @@
 .year-dropdown-content {
     display: inline-flex;
     flex-direction: column;
-    position: absolute; /* Positioned absolutely within the relative parent */
-    top: 100%; /* Place the dropdown directly below the button */
+    position: absolute;
+    /* Positioned absolutely within the relative parent */
+    top: 100%;
+    /* Place the dropdown directly below the button */
     left: 0;
     height: auto;
     border-radius: 0 0 5px 5px;
@@ -169,7 +171,7 @@
 .report-table-title-box {
     position: relative;
     display: flex;
-    align-items: center;    
+    align-items: center;
 }
 
 .report-table-title-text {
@@ -341,6 +343,12 @@
     color: gray;
 }
 
+.live-close-modal-button:disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .live-reports-title-box {
     display: inline-flex;
     flex-direction: column;
@@ -488,6 +496,12 @@
     background-color: #0A1B57;
 }
 
+.live-update-modal-button:disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .live-deny-modal-button {
     background-color: red;
     height: 50px;
@@ -509,7 +523,99 @@
     background-color: darkred;
 }
 
+.live-deny-modal-button:disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /*End of Live Report Modal*/
+
+/* Deny Modal Overlay */
+.live-deny-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+/* Deny Modal Content */
+.live-deny-modal-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 30%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title Styling */
+.live-deny-modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Textarea Styling */
+.live-deny-modal-textarea {
+    width: 95%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    resize: none;
+    margin-bottom: 15px;
+}
+
+/* Buttons Container */
+.live-deny-modal-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Cancel Button Styling */
+.live-deny-modal-cancel-button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.live-deny-modal-cancel-button:hover {
+    background-color: darkred;
+}
+
+/* Submit Button Styling */
+.live-deny-modal-submit-button {
+    background-color: #0E267C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.live-deny-modal-submit-button:hover {
+    background-color: #0A1B57;
+}
+
+/* Disable Buttons While Submitting */
+.live-deny-modal-cancel-button:disabled,
+.live-deny-modal-submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
 
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
@@ -523,6 +629,7 @@
         height: 10px;
         padding: 6px;
     }
+
     .tooltip-text::after {
         margin-left: -4px;
     }
