@@ -443,6 +443,10 @@ const Dashboard = () => {
                     </div>
                     <div className="map-legends">
                         <div className='map-legends-box'>
+                            <div className='map-legends-title-box'>
+                                <label className='map-legends-title'>Legends</label>
+                            </div>
+
                             <img src={maplegends} alt="Map Legends" />
                         </div>
                     </div>
@@ -634,10 +638,14 @@ const Dashboard = () => {
                             </div>
 
                             <div className='dashboard-update-modal-button-box'>
-                                <button onClick={denyReport} className='dashboard-deny-modal-button'>Deny</button>
-                                <button onClick={isResponded ? archiveReport : respondToReport} className='dashboard-update-modal-button'>
-                                    {isResponded ? 'Done' : 'Respond'}
-                                </button>
+                                {(!selectedReport.responder || selectedReport.responder === userBarangay) && (
+                                    <>
+                                        <button onClick={denyReport} className='dashboard-deny-modal-button'>Deny</button>
+                                        <button onClick={isResponded ? archiveReport : respondToReport} className='dashboard-update-modal-button'>
+                                            {isResponded ? 'Done' : 'Respond'}
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

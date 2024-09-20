@@ -531,10 +531,14 @@ const Live = () => {
                             </div>
 
                             <div className='live-update-modal-button-box'>
-                                <button onClick={denyReport} className='live-deny-modal-button'>Deny</button>
-                                <button onClick={selectedReport.status === 'Responded' ? archiveReport : respondToReport} className='live-update-modal-button'>
-                                    {selectedReport.status === 'Responded' ? 'Done' : 'Respond'}
-                                </button>
+                                {(!selectedReport.responder || selectedReport.responder === userBarangay) && (
+                                    <>
+                                        <button onClick={denyReport} className='live-deny-modal-button'>Deny</button>
+                                        <button onClick={selectedReport.status === 'Responded' ? archiveReport : respondToReport} className='live-update-modal-button'>
+                                            {selectedReport.status === 'Responded' ? 'Done' : 'Respond'}
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

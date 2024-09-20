@@ -59,8 +59,8 @@
 
 
 .accident-icon {
-    height: 75px;
-    width: 75px;
+    height: 65px;
+    width: 65px;
 }
 
 .accident-content {
@@ -180,7 +180,7 @@
 
 .map-legends {
     position: absolute;
-    bottom: 40px;
+    bottom: 10px;
     left: 10px;
     z-index: 1000;
     width: auto;
@@ -188,16 +188,35 @@
 }
 
 .map-legends-box {
+    display: flex;
+    flex-direction: column;
     background-color: #0A1B57;
     border-radius: 5px;
-    padding: 10px;
+    padding: 15px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    height: 110px;
+    height: auto;
+}
+
+.map-legends-title-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.map-legends-title {
+    display: flex;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bolder;
+    margin-bottom: 10px;
 }
 
 .map-legends img {
     width: auto;
-    height: 10em;
+    height: 8em;
     display: block;
 }
 

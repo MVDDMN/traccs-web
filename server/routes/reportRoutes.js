@@ -84,6 +84,9 @@ router.post("/archivereport", async (req, res) => {
 // Report Module -  Deny report
 router.post("/deny", async (req, res) => {
     const { reportId, responder } = req.body;
+
+    // Manually adjust for UTC+8 (Manila) time
+    const localDateTime = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
     try {
         const report = await reportsModel.findById(reportId);
         if (!report) {
@@ -98,7 +101,8 @@ router.post("/deny", async (req, res) => {
             ...report.toObject(),
             status: "Denied",
             responder: responder,
-            completion_date_time: new Date().toISOString(),
+            respond_date_time: localDateTime.toISOString(),
+            completion_date_time: localDateTime.toISOString(),
         });
 
         // Save the new entry
