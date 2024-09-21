@@ -67,11 +67,14 @@ const ReportStats = () => {
 
                 {/* Year Dropdown */}
                 {availableYears.length > 0 && (
-                    <select value={selectedYear} onChange={handleYearChange} className='report-stats-year-dropdown'>
-                        {availableYears.map((year) => (
-                            <option key={year} value={year}>{year}</option>
-                        ))}
-                    </select>
+                    <div className='report-stats-year-dropdown-box'>
+                        <label>Filter by Year:</label>
+                        <select value={selectedYear} onChange={handleYearChange} className='report-stats-year-dropdown'>
+                            {availableYears.map((year) => (
+                                <option key={year} value={year}>{year}</option>
+                            ))}
+                        </select>
+                    </div>
                 )}
             </div>
 

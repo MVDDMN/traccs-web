@@ -8,6 +8,9 @@ import ResponseTime from './Charts/ResponseTime';
 import ReportTime from './Charts/ReportTime';
 import ReportStats from './Charts/ReportStats';
 
+/* Report Descriptives */
+import DescriptiveStats from './Descriptive/reportStats';
+
 const AnalyticsReports = () => {
   const [selectedChart, setSelectedChart] = useState('ReportStats'); // State to track selected chart
 
@@ -49,6 +52,7 @@ const AnalyticsReports = () => {
           {selectedChart === 'ReportStats' && <ReportStats />}
           {selectedChart === 'ResponseTime' && <ResponseTime />}
           {selectedChart === 'ReportFrequency' && <ReportFrequency />}
+          {selectedChart === 'ReportStats' && <DescriptiveStats />}
         </div>
 
       </div>
