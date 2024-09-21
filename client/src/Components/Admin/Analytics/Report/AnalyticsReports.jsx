@@ -33,7 +33,7 @@ const AnalyticsReports = () => {
             ⓘ
             <span className='tooltip-text'>
               This page contains all the historical report data recorded within the system
-              displaying their descriptive summarized data.
+              displaying their charts and descriptive summarized data.
             </span>
           </a>
         </div>

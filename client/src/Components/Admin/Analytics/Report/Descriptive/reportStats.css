@@ -16,7 +16,7 @@
     justify-content: space-between;
     padding: 10px;
     width: 100%;
-    
+
 }
 
 .desc-reportstats-title-text {
@@ -62,22 +62,51 @@
     text-align: justify;
 }
 
-.desc-reportstats-year-dropdown {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.desc-reportstats-year-dropdown select {
-    padding: 5px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
 .desc-reportstats-error-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .desc-reportstats-container {
+        height: 400px;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .desc-reportstats-container {
+        height: 300px;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .desc-reportstats-container {
+        height: 220px;
+        padding: 20px;
+    }
+    .desc-reportstats-title-text {
+        font-size: 16px;
+    }
+    .desc-reportstats-content-box {
+        padding: 5px;
+    }
+    .desc-reportstats-positives-box,
+    .desc-reportstats-negatives-box {
+        padding: 10px;
+    }
+    .desc-reportstats-positives-box h2,
+    .desc-reportstats-negatives-box h2 {
+        font-size: 10px;
+    }
+    .desc-reportstats-positives-box p,
+    .desc-reportstats-negatives-box p {
+        font-size: 10px;
+    }
 }

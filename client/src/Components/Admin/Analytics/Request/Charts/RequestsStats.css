@@ -1,14 +1,13 @@
 .requests-stats-container {
     display: inline-flex;
     flex-direction: column;
-    justify-content: center;
     padding: 20px;
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    width: 400px;
-    height: 300px;
+    width: 40%;
+    height: 450px;
 }
 
 .requests-stats-title-box {
@@ -18,7 +17,7 @@
 }
 
 .requests-stats-title {
-    font-size: 18px;
+    font-size: 24px;
     padding: 5px;
     font-weight: bold;
     text-align: center;
@@ -35,9 +34,9 @@
 .requests-stats-item {
     display: flex;
     align-items: center;
-    padding: 5px;
+    padding: 25px;
     border-radius: 5px;
-    width: 350px;
+    width: 90%;
     justify-content: space-between;
     background-color: #0E267C;
 }
@@ -49,7 +48,7 @@
 }
 
 .requests-stats-item-title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 300;
     color: white;
 }
@@ -62,58 +61,54 @@
 }
 
 .requests-stat-icon {
-    width: 50px;
-    height: 50px;
+    width: 75px;
+    height: 75px;
 }
 
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .requests-stats-container {
-        height: 250px;
-        width: 400px;
+        padding: 20px;
+        height: 400px;
+    }
+    .requests-stats-item {
+        padding: 20px;
     }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .requests-stats-container {
-        height: 190px;
-        width: 350px;
+        padding: 20px;
+        height: 300px;
     }
     .requests-stats-item {
         padding: 5px;
-        width: 350px;
-    }
-    .requests-stats-item-title {
-        font-size: 16px;
-    }
-    .requests-stats-info p {
-        font-size: 20px;
     }
 }
 
 /* For screen sizes 1800px and below */
 @media (max-width: 1300px) {
     .requests-stats-container {
-        height: 125px;
-        width: 250px;
+        padding: 20px;
+        height: 220px;
+        width: 35%;
     }
     .requests-stats-title {
-        font-size: 12px;
+        font-size: 16px;
     }
     .requests-stats-item {
         padding: 5px;
-        width: 250px;
     }
     .requests-stats-item-title {
-        font-size: 12px;
+        font-size: 16px;
     }
     .requests-stats-info p {
-        font-size: 10px;
+        font-size: 16px;
     }
     .requests-stat-icon {
-        width: 25px;
-        height: 25px;
+        height: 50px;
+        width: 50px;
     }
 }

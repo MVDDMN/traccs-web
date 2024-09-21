@@ -61,22 +61,51 @@
     text-align: justify;
 }
 
-.desc-responsetime-year-dropdown {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.desc-responsetime-year-dropdown select {
-    padding: 5px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
 .desc-responsetime-error-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .desc-responsetime-container {
+        height: 400px;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .desc-responsetime-container {
+        height: 300px;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .desc-responsetime-container {
+        height: 220px;
+        padding: 20px;
+    }
+    .desc-responsetime-title-text {
+        font-size: 16px;
+    }
+    .desc-responsetime-content-box {
+        padding: 5px;
+    }
+    .desc-responsetime-positives-box,
+    .desc-responsetime-negatives-box {
+        padding: 10px;
+    }
+    .desc-responsetime-positives-box h2,
+    .desc-responsetime-negatives-box h2 {
+        font-size: 10px;
+    }
+    .desc-responsetime-positives-box p,
+    .desc-responsetime-negatives-box p {
+        font-size: 10px;
+    }
 }

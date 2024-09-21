@@ -6,14 +6,11 @@ import './Admin.css';
 import '../Assets/global-styles.css';
 import logout from '../Assets/logout.png';
 import notify from '../Assets/notification.png';
+import notificationSound from '../Assets/notification.mp3'; // Notification sound
 
-// Notification sound
-import notificationSound from '../Assets/notification.mp3';
-
-// Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'
-    ? import.meta.env.VITE_PROD_API_BASE_URL
-    : import.meta.env.VITE_API_BASE_URL;
+  ? import.meta.env.VITE_PROD_API_BASE_URL
+  : import.meta.env.VITE_API_BASE_URL;
 
 function Admin({ routes }) {
   const [showModal, setShowModal] = useState(false);
@@ -51,19 +48,12 @@ function Admin({ routes }) {
         const response = await axios.get(`${apiBaseUrl}/api/reports`);
         const newReports = response.data;
 
-        // Check if there's a new report
         if (previousReports.length > 0 && newReports.length > previousReports.length) {
           const latestReport = newReports[newReports.length - 1];
-
-          // Construct the custom message for the report notification
           const newReportNotificationMessage = `New report received from ${latestReport.name} for ${latestReport.type}`;
 
-          // Send the notification message to the backend
-          await axios.post(`${apiBaseUrl}/api/notifications`, {
-            message: newReportNotificationMessage,
-          });
+          await axios.post(`${apiBaseUrl}/api/notifications`, { message: newReportNotificationMessage });
 
-          // Play notification sound
           const audio = new Audio(notificationSound);
           audio.play();
         }
@@ -83,21 +73,16 @@ function Admin({ routes }) {
       }
     };
 
-    // Fetch user data immediately
     fetchUserData();
-
-    // Fetch notifications and reports initially
     fetchNotifications();
     fetchNewReports();
 
-    // Set up intervals
     const userDataInterval = setInterval(fetchUserData, 5000);
     const notificationsInterval = setInterval(() => {
       fetchNotifications();
       fetchNewReports();
     }, 5000);
 
-    // Cleanup intervals when the component unmounts
     return () => {
       clearInterval(userDataInterval);
       clearInterval(notificationsInterval);
@@ -129,15 +114,30 @@ function Admin({ routes }) {
     }
   };
 
+  const handleDownloadManual = () => {
+    const link = document.createElement('a');
+    link.href = '/users-manual.pdf'; // Path to the manual file
+    link.setAttribute('download', 'users-manual.pdf'); // Set the download attribute
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="app-cont">
       <Navigation userType={userType} />
 
       <div className='app-main-cont'>
         <div className='title-cont'>
+          <div className='users-manual-box'>
+            <button title="User's Manual" className='users-manual-btn' onClick={handleDownloadManual}>
+              <label>User's Manual</label>
+            </button>
+          </div>
+
           <div className='welcome-bar'>
             <div className='admin-info'>
-              <button className='notification-button' onClick={() => setShowNotifications(!showNotifications)}>
+              <button className='notification-button' title="Notifications" onClick={() => setShowNotifications(!showNotifications)}>
                 <img className="notification-img" src={notify} alt="notify" />
                 {notifications.length > 0 && <span className="notification-count">{notifications.length}</span>}
                 {showNotifications && (
@@ -159,7 +159,7 @@ function Admin({ routes }) {
               <a>Account: <b className='info-text'>{userBarangay}</b></a>
             </div>
             <div className='logout-admin-box'>
-              <button className='logout-button' onClick={() => setShowModal(true)}>
+              <button className='logout-button' title="Logout" onClick={() => setShowModal(true)}>
                 <img className="logout-img" src={logout} alt="logout" />
               </button>
             </div>

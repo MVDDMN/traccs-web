@@ -6,7 +6,8 @@ const communitySchema = new mongoose.Schema({
     itemname: String,
     type: String,
     description: String,
-    quantity: Number
+    quantity: Number,
+    date_time: { type: Date }
 })
 
 const communityModel = mongoose.model("communities", communitySchema)

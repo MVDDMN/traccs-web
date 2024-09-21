@@ -80,6 +80,7 @@
     justify-content: center;
     align-items: center;
     height: 100%;
+    max-height: 100%;
     width: 100%;
     gap: 5px;
     background-color: #ccc;
@@ -91,6 +92,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    margin-bottom: 10px;
 }
 
 .analyticsreports-date-picker-container label {
@@ -155,4 +157,47 @@
     text-align: center;
     font-weight: bold;
     animation: fadeInOut 5s infinite;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .analyticsreports-content-container {
+        height: 35em;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .analyticsreports-content-container {
+        height: 29em;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .analyticsreports-content-container {
+        height: 21em;
+        padding: 20px;
+    }
+    .analyticsreports-table-title-text {
+        gap: 10px;
+        font-size: 24px;
+    }
+    .analyticsreports-dropdown {
+        font-size: 12px;
+        width: 20em;
+    }
+    .analyticsreports-dropdown-container label {
+        font-size: 12px;
+    }
+    .analyticsreports-date-picker-container label {
+        font-size: 12px;
+    }
+    .analyticsreports-date-input {
+        font-size: 12px;
+        width: 150px;
+    }
 }

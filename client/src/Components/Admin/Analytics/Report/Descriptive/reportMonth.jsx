@@ -93,7 +93,7 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
         <div className='desc-reportmonth-container'>
             <div className='desc-reportmonth-title'>
                 <label className='desc-reportmonth-title-text'>
-                    Descriptive Report Based on Frequency by Month
+                    Report Descriptive Summary 
                 </label>
             </div>
 

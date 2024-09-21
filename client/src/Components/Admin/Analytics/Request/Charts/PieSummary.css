@@ -5,8 +5,8 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #ffffff;
-    height: 300px;
-    width: 600px;
+    height: 450px;
+    width: 45%;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
@@ -21,52 +21,39 @@
 
 .requests-pie-title {
     text-align: center;
-    margin-top: 0;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     color: #333;
 }
 
 .requests-pie-chart-canvas {
-    width: 100%;
-    max-width: 600px;
+    width: auto;
     height: auto;
-    max-height: 275px;
+    max-height: 90%;
 }
 
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .requests-pie-summary-container {
-        height: 249px;
-        width: 600px;
-    }
-    .requests-pie-chart-canvas {
-        max-width: 600px;
-        max-height: 225px;
+        height: 400px;
     }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .requests-pie-summary-container {
-        height: 210px;
-        width: 550px;
-    }
-    .requests-pie-chart-canvas {
-        max-width: 500px;
-        max-height: 180px;
+        height: 300px;
     }
 }
 
 /* For screen sizes 1800px and below */
 @media (max-width: 1300px) {
     .requests-pie-summary-container {
-        height: 150px;
-        width: 350px;
+        height: 220px;
+        width: 40%;
     }
-    .requests-pie-chart-canvas {
-        max-width: 350px;
-        max-height: 130px;
+    .requests-pie-title {
+        font-size: 16px;
     }
 }

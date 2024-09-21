@@ -77,7 +77,7 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
         <div className='desc-responsetime-container'>
             <div className='desc-responsetime-title'>
                 <label className='desc-responsetime-title-text'>
-                    Descriptive Summary of Response Time per Barangay
+                    Report Descriptive Summary 
                 </label>
             </div>
 

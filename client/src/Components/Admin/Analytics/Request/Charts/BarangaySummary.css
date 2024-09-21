@@ -1,13 +1,12 @@
 .barangay-summary-chart-container {
     display: inline-flex;
     flex-direction: column;
-    align-items: center;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #ffffff;
-    height: 300px;
-    width: 650px;
+    height: 450px;
+    width: 45%;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
@@ -20,54 +19,47 @@
     padding: 5px;
 }
 
+.barangay-summary-title-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 .barangay-summary-title {
     text-align: center;
-    margin-top: 0;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     color: #333;
 }
 
 .barangay-summary-canvas {
     width: auto;
-    max-width: 600px;
     height: auto;
-    max-height: 260px;
+    max-height: 90%;
 }
 
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .barangay-summary-chart-container {
-        height: 249px;
-        width: 650px;
-    }
-    .barangay-summary-canvas {
-        max-width: 600px;
-        max-height: 220px;
+        height: 400px;
     }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .barangay-summary-chart-container {
-        height: 210px;
-        width: 500px;
-    }
-    .barangay-summary-canvas {
-        max-width: 500px;
-        max-height: 190px;
+        height: 300px;
     }
 }
 
 /* For screen sizes 1800px and below */
 @media (max-width: 1300px) {
     .barangay-summary-chart-container {
-        height: 150px;
-        width: 400px;
+        height: 220px;
+        width: 40%;
     }
-    .barangay-summary-canvas {
-        max-width: 400px;
-        max-height: 135px;
+    .barangay-summary-title {
+        font-size: 16px;
     }
 }

@@ -40,35 +40,23 @@
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .response-time-summary-container {
-        height: 304px;
-        width: 400px;
-    }
-    .response-time-chart-container {
-        height: 290px;
+        height: 400px;
     }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .response-time-summary-container {
-        height: 217px;
-        width: 305px;
-    }
-    .response-time-chart-container {
-        height: 180px;
+        height: 300px;
     }
 }
 
 /* For screen sizes 1800px and below */
 @media (max-width: 1300px) {
     .response-time-summary-container {
-        height: 153px;
-        width: 250px;
-    }
-    .response-time-chart-container {
-        height: 140px;
+        height: 220px;
     }
     .response-time-title {
-        font-size: 14px;
+        font-size: 16px;
     }
 }

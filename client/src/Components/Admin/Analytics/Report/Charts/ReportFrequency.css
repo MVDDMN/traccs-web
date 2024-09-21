@@ -17,7 +17,7 @@
 }
 
 .report-frequency-title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     text-align: center;
     margin-top: 0;
@@ -42,34 +42,23 @@
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .report-frequency-container {
-        height: 304px;
-        width: 850px;
-    }
-    .report-frequency-chart-container {
-        height: 300px;
+        height: 400px;
     }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .report-frequency-container {
-        height: 217px;
-        width: 750px;
-    }
-    .report-frequency-chart-container {
-        height: 220px;
-        max-width: 750px;
+        height: 300px;
     }
 }
 
 /* For screen sizes 1800px and below */
 @media (max-width: 1300px) {
     .report-frequency-container {
-        height: 153px;
-        width: 625px;
+        height: 220px;
     }
-    .report-frequency-chart-container {
-        height: 160px;
-        max-width: 625px;
+    .report-frequency-title {
+        font-size: 16px;
     }
 }

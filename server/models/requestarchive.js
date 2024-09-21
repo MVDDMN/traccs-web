@@ -8,7 +8,7 @@ const requestarchiveSchema = new mongoose.Schema({
     type: String,
     description: String,
     quantity: Number,
-    date_time: String
+    date_time: { type: Date }
 })
 
 const requestarchiveModel = mongoose.model("requestarchives", requestarchiveSchema)

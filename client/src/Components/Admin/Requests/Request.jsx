@@ -14,7 +14,6 @@ const Request = () => {
                     <div className='request-navigation-content'>
 
                         <Link to="barangay" className='request-button'>Barangay</Link>
-                        <Link to="community" className='request-button'>Community</Link>
                         <Link to="personal" className='request-button'>My Requests</Link>
                         <Link to="requestarchives" className='request-button'>History</Link>
 

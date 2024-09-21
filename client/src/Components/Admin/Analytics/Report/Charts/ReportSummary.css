@@ -47,35 +47,33 @@
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .report-summary-container {
-        height: 225px;
-        width: 400px;
+        height: 400px;
     }
-    .bar-chart-canvas {
-        max-height: 215px;
+    .report-summary-pie-chart-canvas {
+        max-height: 350px;
     }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .report-summary-container {
-        height: 210px;
-        width: 305px;
+        height: 300px;
     }
-    .bar-chart-canvas {
-        max-height: 205px;
+    .report-summary-pie-chart-canvas {
+        max-height: 250px;
     }
 }
 
 /* For screen sizes 1800px and below */
 @media (max-width: 1300px) {
     .report-summary-container {
-        height: 150px;
-        width: 250px;
-    }
-    .bar-chart-canvas {
-        max-height: 150px;
+        height: 220px;
+        width: 35%;
     }
     .report-summary-title {
-        font-size: 14px;
+        font-size: 16px;
+    }
+    .report-summary-pie-chart-canvas {
+        max-height: 200px;
     }
 }

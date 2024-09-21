@@ -71,7 +71,7 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
         <div className='desc-reportsummary-container'>
             <div className='desc-reportsummary-title'>
                 <label className='desc-reportsummary-title-text'>
-                    Descriptive Summary
+                    Report Descriptive Summary 
                 </label>
             </div>
 

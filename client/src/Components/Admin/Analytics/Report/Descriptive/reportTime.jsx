@@ -98,7 +98,7 @@ const ReportTime = ({ dateFrom, dateTo }) => {
         <div className='desc-reporttime-container'>
             <div className='desc-reporttime-title'>
                 <label className='desc-reporttime-title-text'>
-                    Descriptive Summary of Report Frequency by Hour
+                    Report Descriptive Summary 
                 </label>
             </div>
 

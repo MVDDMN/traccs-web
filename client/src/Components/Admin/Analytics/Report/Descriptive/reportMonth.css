@@ -61,22 +61,51 @@
     text-align: justify;
 }
 
-.desc-reportmonth-year-dropdown {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.desc-reportmonth-year-dropdown select {
-    padding: 5px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
 .desc-reportmonth-error-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .desc-reportmonth-container {
+        height: 400px;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .desc-reportmonth-container {
+        height: 300px;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .desc-reportmonth-container {
+        height: 220px;
+        padding: 20px;
+    }
+    .desc-reportmonth-title-text {
+        font-size: 16px;
+    }
+    .desc-reportmonth-content-box {
+        padding: 5px;
+    }
+    .desc-reportmonth-positives-box,
+    .desc-reportmonth-negatives-box {
+        padding: 10px;
+    }
+    .desc-reportmonth-positives-box h2,
+    .desc-reportmonth-negatives-box h2 {
+        font-size: 10px;
+    }
+    .desc-reportmonth-positives-box p,
+    .desc-reportmonth-negatives-box p {
+        font-size: 10px;
+    }
 }

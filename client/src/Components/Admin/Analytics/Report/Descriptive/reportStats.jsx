@@ -101,7 +101,7 @@ const ReportStats = ({ dateFrom, dateTo }) => {
         <div className='desc-reportstats-container'>
             <div className='desc-reportstats-title'>
                 <label className='desc-reportstats-title-text'>
-                    Descriptive Summary
+                    Report Descriptive Summary 
                 </label>
             </div>
 

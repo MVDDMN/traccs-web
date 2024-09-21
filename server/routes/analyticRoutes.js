@@ -8,7 +8,21 @@ const router = express.Router();
 // Analytics Module - Summary of Request
 router.get('/analytics/summary', async (req, res) => {
     try {
-        const summary = await requestsModel.aggregate([
+        const { dateFrom, dateTo } = req.query;
+
+        // Convert dateFrom and dateTo to Date objects for filtering
+        const query = {};
+        if (dateFrom && dateTo) {
+            query.date_time = {
+                $gte: new Date(dateFrom),
+                $lte: new Date(dateTo)
+            };
+        }
+
+        const summary = await requestarchiveModel.aggregate([
+            {
+                $match: query,  // Match documents within the date range
+            },
             {
                 $group: {
                     _id: "$type",
@@ -20,6 +34,7 @@ router.get('/analytics/summary', async (req, res) => {
                 $sort: { totalRequests: -1 }
             }
         ]);
+
         res.json(summary);
     } catch (err) {
         res.status(500).send(err);
@@ -29,7 +44,24 @@ router.get('/analytics/summary', async (req, res) => {
 // Analytics Module - Summary of Request by Barangay
 router.get('/analytics/barangay-summary', async (req, res) => {
     try {
+        const { dateFrom, dateTo } = req.query;
+        
+        // Build a query object to filter by date range
+        let dateQuery = {};
+        if (dateFrom && dateTo) {
+            dateQuery = {
+                date_time: {
+                    $gte: new Date(dateFrom),
+                    $lte: new Date(dateTo)
+                }
+            };
+        }
+
+        // Fetch the summary grouped by barangay, filtered by the date range
         const barangaySummary = await requestarchiveModel.aggregate([
+            {
+                $match: dateQuery // Apply the date range filter
+            },
             {
                 $group: {
                     _id: "$barangay",
@@ -41,6 +73,7 @@ router.get('/analytics/barangay-summary', async (req, res) => {
                 $sort: { totalRequests: -1 }
             }
         ]);
+
         res.json(barangaySummary);
     } catch (err) {
         console.error('Error fetching barangay summary data:', err);
@@ -325,21 +358,34 @@ router.get('/analytics/report-frequency-by-hour', async (req, res) => {
 // Analytics Module - Requests Stats
 router.get('/analytics/requests-stats', async (req, res) => {
     try {
-        // Total Requests
-        const totalRequests = await requestsModel.countDocuments();
+        const { dateFrom, dateTo } = req.query;
+        const dateFilter = {};
 
-        // Requests This Month
+        if (dateFrom && dateTo) {
+            dateFilter.date_time = {
+                $gte: new Date(dateFrom),
+                $lte: new Date(dateTo),
+            };
+        }
+
+        // Total Requests within the date range
+        const totalRequests = await requestsModel.countDocuments(dateFilter);
+
+        // Requests This Month within the date range
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
         const requestsThisMonth = await requestsModel.aggregate([
             {
                 $addFields: {
-                    month: { $month: { $dateFromString: { dateString: "$date_time" } } },
-                    year: { $year: { $dateFromString: { dateString: "$date_time" } } }
+                    month: { $month: "$date_time" },
+                    year: { $year: "$date_time" }
                 }
             },
             {
                 $match: {
-                    month: new Date().getMonth() + 1,
-                    year: new Date().getFullYear()
+                    month: currentMonth,
+                    year: currentYear,
+                    ...dateFilter // Apply date range filter if available
                 }
             },
             {
@@ -347,20 +393,22 @@ router.get('/analytics/requests-stats', async (req, res) => {
             }
         ]);
 
-        // Requests Today
+        // Requests Today within the date range
+        const currentDay = new Date().getDate();
         const requestsToday = await requestsModel.aggregate([
             {
                 $addFields: {
-                    day: { $dayOfMonth: { $dateFromString: { dateString: "$date_time" } } },
-                    month: { $month: { $dateFromString: { dateString: "$date_time" } } },
-                    year: { $year: { $dateFromString: { dateString: "$date_time" } } }
+                    day: { $dayOfMonth: "$date_time" },
+                    month: { $month: "$date_time" },
+                    year: { $year: "$date_time" }
                 }
             },
             {
                 $match: {
-                    day: new Date().getDate(),
-                    month: new Date().getMonth() + 1, // MongoDB months are 1-indexed
-                    year: new Date().getFullYear()
+                    day: currentDay,
+                    month: currentMonth,
+                    year: currentYear,
+                    ...dateFilter // Apply date range filter if available
                 }
             },
             {
@@ -374,7 +422,7 @@ router.get('/analytics/requests-stats', async (req, res) => {
             requestsToday: requestsToday.length > 0 ? requestsToday[0].requestsToday : 0,
         });
     } catch (error) {
-        console.error('Error fetching requests stats:', error); // Debugging log
+        console.error('Error fetching requests stats:', error);
         res.status(500).send('Server error');
     }
 });

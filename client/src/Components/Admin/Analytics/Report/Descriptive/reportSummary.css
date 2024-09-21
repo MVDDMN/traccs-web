@@ -61,22 +61,49 @@
     text-align: justify;
 }
 
-.desc-reportsummary-year-dropdown {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.desc-reportsummary-year-dropdown select {
-    padding: 5px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
 .desc-reportsummary-error-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .desc-reportsummary-container {
+        height: 400px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .desc-reportsummary-container {
+        height: 300px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .desc-reportsummary-container {
+        height: 220px;
+        padding: 20px;
+    }
+    .desc-reportsummary-title-text {
+        font-size: 16px;
+    }
+    .desc-reportsummary-content-box {
+        padding: 5px;
+    }
+    .desc-reportsummary-positives-box,
+    .desc-reportsummary-negatives-box {
+        padding: 10px;
+    }
+    .desc-reportsummary-positives-box h2,
+    .desc-reportsummary-negatives-box h2 {
+        font-size: 10px;
+    }
+    .desc-reportsummary-positives-box p,
+    .desc-reportsummary-negatives-box p {
+        font-size: 10px;
+    }
 }

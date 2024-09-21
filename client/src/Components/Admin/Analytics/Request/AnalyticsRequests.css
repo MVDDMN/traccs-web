@@ -51,27 +51,148 @@
     opacity: 1;
 }
 
+.analyticsrequests-input-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .analyticsrequests-dropdown-container {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     text-align: center;
+    align-items: center;
+    gap: 5px;
 }
 
 .analyticsrequests-dropdown {
     padding: 10px;
     font-size: 16px;
-    width: 15em;
+    width: 20em;
     border-radius: 5px;
     border: 1px solid #ccc;
 }
 
 .analyticsrequests-charts-container {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
-    height: auto;
-    width: auto;
+    height: 100%;
+    width: 100%;
     gap: 5px;
+    background-color: #ccc;
+    border: 1px solid lightgray;
+    border-radius: 5px;
 }
 
+.analyticsrequests-date-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.analyticsrequests-date-picker-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.analyticsrequests-date-input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    width: 200px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.analyticsrequests-date-input:hover {
+    border-color: #888;
+}
+
+.analyticsrequests-date-input:focus {
+    border-color: #555;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.analyticsrequests-prompt-cont {
+    display: flex;
+    flex-direction: column;
+    background-color: #ccc;
+    border-radius: 10px;
+    justify-content: center;
+    height: 100%;
+}
+
+.analyticsrequests-prompt {
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+}
+
+@keyframes fadeInOut {
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.animated-prompt {
+    font-size: 20px;
+    color: #0E267C;
+    text-align: center;
+    font-weight: bold;
+    animation: fadeInOut 5s infinite;
+}
+
+/* Media Queries for Responsiveness */
+/* For screen sizes 1800px and below */
+@media (max-width: 1800px) {
+    .analyticsrequests-content-container {
+        height: 35em;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1600px and below */
+@media (max-width: 1600px) {
+    .analyticsrequests-content-container {
+        height: 29em;
+        padding: 20px;
+    }
+}
+
+/* For screen sizes 1800px and below */
+@media (max-width: 1300px) {
+    .analyticsrequests-content-container {
+        height: 21em;
+        padding: 20px;
+    }   
+    .analyticsrequests-table-title-text {
+        gap: 10px;
+        font-size: 24px;
+    }
+    .analyticsrequests-dropdown {
+        font-size: 12px;
+        width: 20em;
+    }
+    .analyticsrequests-dropdown-container label {
+        font-size: 12px;
+    }
+    .analyticsrequests-date-picker-container label {
+        font-size: 12px;
+    }
+    .analyticsrequests-date-input {
+        font-size: 12px;
+        width: 150px;
+    }
+}
