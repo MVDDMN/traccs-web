@@ -1,7 +1,6 @@
 .report-stats-container {
     display: inline-flex;
     flex-direction: column;
-    justify-content: center;
     padding: 20px;
     border-radius: 10px;
     background-color: #ffffff;
@@ -69,7 +68,7 @@
 
 .report-stats-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 10px;
 }

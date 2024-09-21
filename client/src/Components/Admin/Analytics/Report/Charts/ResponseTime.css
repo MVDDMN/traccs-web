@@ -1,12 +1,14 @@
 .response-time-summary-container {
+    display: flex;
+    flex-direction: column;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #ffffff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    height: 350px;
-    width: 400px;
+    height: 450px;
+    width: 45%;
 }
 
 .response-time-title-box {
@@ -17,7 +19,7 @@
 }
 
 .response-time-title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     text-align: center;
     margin-top: 0;
@@ -25,20 +27,12 @@
 }
 
 .response-time-chart-container {
-    width: 100%;
-    height: 300px;
-}
-
-.response-time-chart-container canvas {
-    max-height: none;
-}
-
-.response-time-chart-container .response-time-chart-canvas {
+    width: auto;
     height: 100%;
 }
 
-.custom-response-time-chart {
-    width: 100%;
+.response-time-chart {
+    width: auto;
     height: 100%;
 }
 

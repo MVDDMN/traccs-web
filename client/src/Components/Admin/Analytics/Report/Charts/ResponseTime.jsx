@@ -8,7 +8,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
     : import.meta.env.VITE_API_BASE_URL;
 
-const ResponseTime = () => {
+const ResponseTime = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo as props
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
@@ -21,42 +21,56 @@ const ResponseTime = () => {
             }
         ],
     });
+    const [averageResponseTimesInText, setAverageResponseTimesInText] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [noData, setNoData] = useState(false); // Track if no data is available
 
     useEffect(() => {
         const fetchResponseTimeSummary = async () => {
+            setLoading(true);
+            setNoData(false); // Reset no data state
             try {
-                const response = await axios.get(`${apiBaseUrl}/api/analytics/response-time-summary`);
+                const response = await axios.get(`${apiBaseUrl}/api/analytics/response-time-summary`, {
+                    params: { dateFrom, dateTo } // Pass the date range to the backend
+                });
                 const data = response.data;
 
-                const responders = data.map(item => item._id);
-                const averageResponseTimes = data.map(item => {
-                    const totalMinutes = item.averageResponseTime / (1000 * 60);
-                    return `${Math.floor(totalMinutes)}m`;
-                });
+                // Check if data exists
+                if (data && data.length > 0) {
+                    const responders = data.map(item => item._id);
+                    const averageResponseTimes = data.map(item => {
+                        const totalMinutes = item.averageResponseTime / (1000 * 60); // Convert ms to minutes
+                        return `${Math.floor(totalMinutes)}m`;
+                    });
 
-                setChartData({
-                    labels: responders,
-                    datasets: [
-                        {
-                            label: 'Average Completion Time (minutes)',
-                            data: data.map(item => item.averageResponseTime / (1000 * 60)),
-                            backgroundColor: '#0E267C',
-                            borderColor: '#0E267C',
-                            borderWidth: 1,
-                        }
-                    ],
-                });
+                    setChartData({
+                        labels: responders,
+                        datasets: [
+                            {
+                                label: 'Average Completion Time (minutes)',
+                                data: data.map(item => item.averageResponseTime / (1000 * 60)), // Convert ms to minutes
+                                backgroundColor: '#0E267C',
+                                borderColor: '#0E267C',
+                                borderWidth: 1,
+                            }
+                        ],
+                    });
 
-                setAverageResponseTimesInText(averageResponseTimes);
+                    setAverageResponseTimesInText(averageResponseTimes);
+                } else {
+                    setNoData(true); // No data available for the selected date range
+                }
             } catch (error) {
                 console.error('Error fetching the response time summary', error);
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchResponseTimeSummary();
-    }, []);
-
-    const [averageResponseTimesInText, setAverageResponseTimesInText] = useState([]);
+        if (dateFrom && dateTo) {
+            fetchResponseTimeSummary(); // Fetch data only when both dateFrom and dateTo are set
+        }
+    }, [dateFrom, dateTo]);
 
     return (
         <div className="response-time-summary-container">
@@ -65,37 +79,43 @@ const ResponseTime = () => {
             </div>
             
             <div className="response-time-chart-container">
-                <Bar
-                    data={chartData}
-                    options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Responders',
+                {loading ? (
+                    <p>Loading chart...</p>
+                ) : noData ? (
+                    <p className="no-data-message">No data available for the selected date range.</p>
+                ) : (
+                    <Bar
+                        data={chartData}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Responders',
+                                    },
                                 },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Minutes',
+                                    },
+                                }
                             },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Minutes',
-                                },
-                            }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return ` ${averageResponseTimesInText[context.dataIndex]}`;
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return ` ${averageResponseTimesInText[context.dataIndex]}`;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }}
-                    id="response-time-chart"
-                />
+                        }}
+                        id="response-time-chart"
+                    />
+                )}
             </div>
         </div>
     );

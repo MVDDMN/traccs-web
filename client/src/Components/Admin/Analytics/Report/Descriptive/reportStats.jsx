@@ -6,55 +6,42 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
     : import.meta.env.VITE_API_BASE_URL;
 
-const ReportStats = () => {
+const ReportStats = ({ dateFrom, dateTo }) => {
     const [stats, setStats] = useState({ totalReports: 0, reportsThisMonth: 0, reportsToday: 0 });
     const [loading, setLoading] = useState(true);
-    const [selectedYear, setSelectedYear] = useState('');
-    const [availableYears, setAvailableYears] = useState([]);
     const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchAvailableYears = async () => {
-            try {
-                const response = await axios.get(`${apiBaseUrl}/api/analytics/report-stats`);
-                const years = response.data.availableYears || [];
-                if (years.length > 0) {
-                    setAvailableYears(years);
-                    setSelectedYear(years[0]);
-                }
-            } catch (error) {
-                setError('Error fetching available years');
-                console.error('Error fetching available years:', error);
-            }
-        };
-
-        fetchAvailableYears();
-    }, []);
+    const [noData, setNoData] = useState(false);  // Track if no data is available
 
     useEffect(() => {
         const fetchStats = async () => {
+            setLoading(true);
+            setError(null);
+            setNoData(false); // Reset noData state
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/analytics/report-stats`, {
-                    params: { year: selectedYear }
+                    params: { dateFrom, dateTo } // Use dateFrom and dateTo as query parameters
                 });
-                setStats(response.data);
+
+                if (response.data && response.data.totalReports > 0) {
+                    setStats(response.data);
+                } else {
+                    setNoData(true);  // No data available for the selected date range
+                }
             } catch (error) {
                 console.error('Error fetching report stats:', error);
+                setError('Error fetching report data.');
             } finally {
                 setLoading(false);
             }
         };
 
-        if (selectedYear) {
+        if (dateFrom && dateTo) {
             fetchStats();
         }
-    }, [selectedYear]);
+    }, [dateFrom, dateTo]);
 
-    const handleYearChange = (event) => {
-        setSelectedYear(event.target.value);
-    };
-
-    const generateReportDescription = () => {
+    // Function to generate a descriptive report for positive trends
+    const generatePositiveReportDescription = () => {
         if (loading || !stats) {
             return "Loading report analysis...";
         }
@@ -74,9 +61,9 @@ const ReportStats = () => {
         }
 
         if (stats.totalReports > 0) {
-            reportDescription += `Overall, the total number of reports for the year is ${stats.totalReports}. `;
+            reportDescription += `Overall, the total number of reports for the selected period is ${stats.totalReports}. `;
         } else {
-            reportDescription += "No reports have been filed for the year. ";
+            reportDescription += "No reports have been filed for the selected period. ";
         }
 
         if (stats.reportsThisMonth > stats.totalReports / 12) {
@@ -88,40 +75,55 @@ const ReportStats = () => {
         return reportDescription;
     };
 
+    const generateNegativeReportDescription = () => {
+        if (loading || !stats) {
+            return "Loading negative trends analysis...";
+        }
+
+        let negativeDescription = "";
+
+        if (stats.reportsThisMonth < stats.totalReports / 12) {
+            negativeDescription += "The number of reports this month is significantly lower than the average for previous months. ";
+        }
+
+        if (stats.reportsToday === 0) {
+            negativeDescription += "No reports have been filed today, indicating a potential drop in user engagement. ";
+        }
+
+        if (!negativeDescription) {
+            negativeDescription = "There are no significant negative trends in the data currently.";
+        }
+
+        return negativeDescription;
+    };
+
     return (
         <div className='desc-reportstats-container'>
             <div className='desc-reportstats-title'>
                 <label className='desc-reportstats-title-text'>
-                    Descriptive Summary ({selectedYear})
+                    Descriptive Summary
                 </label>
-                {/* Year Dropdown */}
-                {availableYears.length > 0 && (
-                    <div className='desc-reportstats-year-dropdown'>
-                        <label>Filter by Year:</label>
-                        <select value={selectedYear} onChange={handleYearChange}>
-                            {availableYears.map((year) => (
-                                <option key={year} value={year}>{year}</option>
-                            ))}
-                        </select>
-                    </div>
-                )}
             </div>
 
             <div className='desc-reportstats-content-box'>
-                {/* Positive Trends */}
-                <div className='desc-reportstats-positives-box'>
-                    <h2>Positive Report Trends</h2>
-                    <p>{generateReportDescription()}</p>
-                </div>
+                {loading ? (
+                    <p>Loading report trends...</p>
+                ) : noData ? (
+                    <p>No data available for the selected date range.</p>
+                ) : (
+                    <>
+                        <div className='desc-reportstats-positives-box'>
+                            <h2>Positive Report Trends</h2>
+                            <p>{generatePositiveReportDescription()}</p>
+                        </div>
 
-                {/* Negative Trends */}
-                <div className='desc-reportstats-negatives-box'>
-                    <h2>Negative Report Trends</h2>
-                    <p>{loading ? 'Loading...' : 'There are no significant negative trends in the data currently.'}</p>
-                </div>
+                        <div className='desc-reportstats-negatives-box'>
+                            <h2>Negative Report Trends</h2>
+                            <p>{generateNegativeReportDescription()}</p>
+                        </div>
+                    </>
+                )}
             </div>
-
-            
 
             {error && <p className="desc-reportstats-error-message">{error}</p>}
         </div>

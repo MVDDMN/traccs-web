@@ -48,10 +48,23 @@ router.get('/analytics/barangay-summary', async (req, res) => {
     }
 });
 
-// Analytics Module - Summary of Reports by Type
+// Analytics Module - Pie Chart Summary of Reports by Type with Year Filtering
 router.get('/analytics/report-summary', async (req, res) => {
     try {
+        const { dateFrom, dateTo } = req.query;
+        let reportsQuery = {};
+
+        if (dateFrom && dateTo) {
+            reportsQuery = {
+                report_date_time: {
+                    $gte: new Date(dateFrom),
+                    $lte: new Date(dateTo)
+                }
+            };
+        }
+
         const reportSummary = await historyModel.aggregate([
+            { $match: reportsQuery },
             {
                 $group: {
                     _id: "$type",
@@ -62,19 +75,32 @@ router.get('/analytics/report-summary', async (req, res) => {
                 $sort: { totalReports: -1 }
             }
         ]);
-        res.json(reportSummary);
+
+        res.json({ reportSummary });
     } catch (err) {
         console.error('Error fetching report summary data:', err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-// Analytics Module - Response Time per Responder
+// Analytics Module - Response Time per Responder with Date Range Filtering
 router.get('/analytics/response-time-summary', async (req, res) => {
     try {
+        const { dateFrom, dateTo } = req.query;
+
+        // Build the query for filtering by date range
+        const dateFilter = {};
+        if (dateFrom && dateTo) {
+            dateFilter.report_date_time = {
+                $gte: new Date(dateFrom),
+                $lte: new Date(dateTo),
+            };
+        }
+
         const responseTimeSummary = await historyModel.aggregate([
             {
                 $match: {
+                    ...dateFilter,
                     respond_date_time: { $exists: true },
                     completion_date_time: { $exists: true }
                 }
@@ -105,17 +131,33 @@ router.get('/analytics/response-time-summary', async (req, res) => {
     }
 });
 
-// Analytics Module - Route to fetch report frequency data
+// Analytics Module - Route to fetch report frequency data with date range filtering
 router.get('/analytics/report-frequency', async (req, res) => {
     try {
+        const { dateFrom, dateTo } = req.query; // Get the date range from query parameters
+        let matchStage = {};
+
+        // If both dateFrom and dateTo are provided, filter by date range
+        if (dateFrom && dateTo) {
+            matchStage = {
+                report_date_time: {
+                    $gte: new Date(dateFrom),
+                    $lte: new Date(dateTo),
+                }
+            };
+        }
+
         const reportFrequency = await historyModel.aggregate([
+            { 
+                $match: matchStage // Apply the date range filter 
+            },
             {
                 $group: {
                     _id: {
-                        month: { $month: "$report_date_time" }, // No need for $dateFromString
+                        month: { $month: "$report_date_time" }, // Group by month
                         type: "$type"
                     },
-                    count: { $sum: 1 },
+                    count: { $sum: 1 }, // Sum the number of reports for each type per month
                 },
             },
             {
@@ -128,7 +170,7 @@ router.get('/analytics/report-frequency', async (req, res) => {
             },
             {
                 $sort: {
-                    month: 1
+                    month: 1 // Sort by month in ascending order
                 }
             }
         ]);
@@ -140,28 +182,25 @@ router.get('/analytics/report-frequency', async (req, res) => {
     }
 });
 
-// Analytics Module - Report Stats with Year Filtering and Available Years
+// Analytics Module - Report Stats with Date Filtering
 router.get('/analytics/report-stats', async (req, res) => {
     try {
-        const { year } = req.query; // Fetch year from query params
-        let reportsQuery = {}; // Initialize query object
+        const { dateFrom, dateTo } = req.query;
+        let reportsQuery = {};
 
-        if (year) {
-            // If a year is provided, filter by that year
-            const yearStart = `${year}-01-01T00:00:00.000+00:00`;
-            const yearEnd = `${year}-12-31T23:59:59.999+00:00`;
+        if (dateFrom && dateTo) {
             reportsQuery = {
                 report_date_time: {
-                    $gte: yearStart,
-                    $lte: yearEnd
+                    $gte: new Date(dateFrom),
+                    $lte: new Date(dateTo)
                 }
             };
         }
 
-        // Fetch reports filtered by the year (if provided)
         const totalReports = await historyModel.countDocuments(reportsQuery);
         const reports = await historyModel.find(reportsQuery);
 
+        // Calculate reports for today and this month based on the selected date range
         const today = new Date();
         const todayISO = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' format
 
@@ -169,8 +208,8 @@ router.get('/analytics/report-stats', async (req, res) => {
         let reportsToday = 0;
 
         reports.forEach(report => {
-            const reportDate = new Date(report.report_date_time); // Convert the string date into a Date object
-            const reportISO = reportDate.toISOString().split('T')[0]; // Normalize report date
+            const reportDate = new Date(report.report_date_time);
+            const reportISO = reportDate.toISOString().split('T')[0];
 
             // Check if it's the same month as today
             if (
@@ -186,42 +225,41 @@ router.get('/analytics/report-stats', async (req, res) => {
             }
         });
 
-        // Find all distinct years from the reports for year dropdown
-        const availableYears = await historyModel.aggregate([
-            {
-                $addFields: {
-                    year: { $substr: ['$report_date_time', 0, 4] } // Extract year from the string date
-                }
-            },
-            {
-                $group: {
-                    _id: '$year'
-                }
-            },
-            {
-                $sort: { _id: -1 } // Sort in descending order to get the most recent years first
-            }
-        ]);
-
-        const years = availableYears.map(yearData => yearData._id); // Map to get an array of years
-
-        res.json({
-            totalReports,
-            reportsThisMonth,
-            reportsToday,
-            availableYears: years // Return available years
-        });
+        res.json({ totalReports, reportsThisMonth, reportsToday });
     } catch (error) {
         console.error('Error fetching report stats:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });
 
-// Analytics Module - Report frequency per hour
+// Analytics Module - Report frequency per hour with date range filtering
 router.get('/analytics/report-frequency-by-hour', async (req, res) => {
     try {
+        const { dateFrom, dateTo } = req.query;
+
+        // Validate the date range input
+        if (!dateFrom || !dateTo) {
+            return res.status(400).json({ error: 'dateFrom and dateTo are required' });
+        }
+
+        const from = new Date(dateFrom);
+        const to = new Date(dateTo);
+
+        if (isNaN(from.getTime()) || isNaN(to.getTime())) {
+            return res.status(400).json({ error: 'Invalid date format' });
+        }
+
+        // Build the query object to filter by date range
+        let reportsQuery = {
+            report_date_time: {
+                $gte: from,
+                $lte: to
+            }
+        };
+
         // Use MongoDB aggregation to extract hours directly from the report_date_time field
         const reportFrequency = await historyModel.aggregate([
+            { $match: reportsQuery }, // Apply the date range filter
             {
                 $group: {
                     _id: {
@@ -246,6 +284,15 @@ router.get('/analytics/report-frequency-by-hour', async (req, res) => {
             }
         ]);
 
+        // If no data is found, return early
+        if (!reportFrequency.length) {
+            return res.json({
+                labels: [],
+                data: [],
+                reportTypes: []
+            });
+        }
+
         // Create labels in 12-hour format for the raw time
         const labels = Array.from({ length: 24 }, (_, index) => {
             const hour12 = index % 12 || 12; // Convert to 12-hour format
@@ -253,19 +300,25 @@ router.get('/analytics/report-frequency-by-hour', async (req, res) => {
             return `${hour12}:00 ${period}`;
         });
 
-        // Map the aggregated results into the hourly frequency array
+        // Initialize an array to hold the hourly report counts and report types
         const hourFrequency = Array(24).fill(0);
+        const reportTypesByHour = Array.from({ length: 24 }, () => []);
+
+        // Populate the hourFrequency and reportTypesByHour arrays based on the results
         reportFrequency.forEach(report => {
-            hourFrequency[report.hour] = report.count;
+            const hour = report.hour;
+            hourFrequency[hour] += report.count;
+            reportTypesByHour[hour].push(report.type);
         });
 
         res.json({
             labels,
             data: hourFrequency,
-            reportTypes: reportFrequency.map(r => r.type),
+            reportTypes: reportTypesByHour
         });
     } catch (err) {
-        res.status(500).send(err);
+        console.error('Error fetching report frequency by hour:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

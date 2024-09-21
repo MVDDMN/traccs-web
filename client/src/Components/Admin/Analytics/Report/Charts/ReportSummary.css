@@ -1,6 +1,6 @@
 .report-summary-container {
-    height: 250px;
-    width: 400px;
+    height: 450px;
+    width: 40%;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -10,23 +10,37 @@
 
 .report-summary-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
     justify-content: center;
+    align-items: center;
 }
 
 .report-summary-title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     text-align: center;
     margin-top: 0;
     color: #333;
 }
 
-.bar-chart-canvas {
-    height: auto;
-    max-height: 240px;
+.report-summary-pie-chart-canvas {
+    max-height: 420px;
     width: 100%;
+}
+
+.report-summary-year-dropdown {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.report-summary-year-dropdown select {
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
 /* Media Queries for Responsiveness */

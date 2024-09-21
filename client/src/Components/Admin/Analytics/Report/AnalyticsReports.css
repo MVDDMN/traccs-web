@@ -51,10 +51,19 @@
     opacity: 1;
 }
 
+.analyticsreports-input-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .analyticsreports-dropdown-container {
     display: flex;
     margin-bottom: 10px;
     text-align: center;
+    align-items: center;
+    gap: 5px;
 }
 
 .analyticsreports-dropdown {
@@ -78,5 +87,72 @@
     border-radius: 5px;
 }
 
+.analyticsreports-date-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
+.analyticsreports-date-picker-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
 
+.analyticsreports-date-input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    width: 200px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.analyticsreports-date-input:hover {
+    border-color: #888;
+    /* Changes border color on hover */
+}
+
+.analyticsreports-date-input:focus {
+    border-color: #555;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.analyticsreports-prompt-cont {
+    display: flex;
+    flex-direction: column;
+    background-color: #ccc;
+    border-radius: 10px;
+    justify-content: center;
+    height: 100%;
+}
+
+.analyticsreports-prompt {
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* CSS for looping animation of the prompt message */
+@keyframes fadeInOut {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.animated-prompt {
+    font-size: 20px;
+    color: #0E267C;
+    text-align: center;
+    font-weight: bold;
+    animation: fadeInOut 5s infinite;
+}
