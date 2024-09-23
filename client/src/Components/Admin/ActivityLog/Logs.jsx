@@ -115,7 +115,7 @@ const Logs = () => {
                   <a className='logs-table-title-text'>Activity Logs</a>
                   <a className='logs-table-description'>
                     ⓘ
-                    <span className='tooltip-text'>This page contains all the admin activity recorded within the system.</span>
+                    <span className='tooltip-text'>This page contains all the administrator activity recorded and listed within the system based on their usage and activity.</span>
                   </a>
                 </div>
                 <div className='sort-filter'>

@@ -353,7 +353,7 @@ const Live = () => {
                         <a className='report-table-title-text'>Live Reports</a>
                         <a className='report-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page contains all the list of reports made by the users.</span>
+                            <span className='tooltip-text'>This page displays all user-submitted reports. You can respond or deny each report as needed.</span>
                         </a>
                     </div>
 
@@ -384,7 +384,6 @@ const Live = () => {
                                                 day: 'numeric',
                                                 hour: '2-digit',
                                                 minute: '2-digit',
-                                                second: '2-digit',
                                                 hour12: true,
                                                 timeZone: 'UTC'
                                             })}

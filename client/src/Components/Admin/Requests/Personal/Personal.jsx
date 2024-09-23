@@ -231,7 +231,7 @@ const Personal = () => {
                         <a className='personal-table-title-text'>My Requests</a>
                         <a className='personal-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page allows the admin to create and list all of its requests.</span>
+                            <span className='tooltip-text'>This page allows you to create, edit, or delete your own requests.</span>
                         </a>
                     </div>
 

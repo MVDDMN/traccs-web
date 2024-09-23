@@ -223,7 +223,7 @@ const ResourceTable = () => {
                         <a className='resource-table-title-text'>My Resources</a>
                         <a className='resource-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page allows to create and list all resources of the barangay.</span>
+                            <span className='tooltip-text'>This page allows you to create, edit and view all listed resources within the barangay on the table.</span>
                         </a>
                     </div>
 

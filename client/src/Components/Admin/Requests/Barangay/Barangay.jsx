@@ -143,7 +143,7 @@ const Barangay = () => {
                             <a className='barangay-table-title-text'>Barangay Requests</a>
                             <a className='barangay-table-description'>
                                 ⓘ
-                                <span className='tooltip-text'>This page allows to respond to the list of requests made by barangays.</span>
+                                <span className='tooltip-text'>This page displays barangay requests. You can view details and respond to each request.</span>
                             </a>
                         </div>
                         <div className='barangay-filter-box'>
@@ -179,7 +179,18 @@ const Barangay = () => {
                                         <td>{request.itemname}</td>
                                         <td>{request.type}</td>
                                         <td>{request.quantity}</td>
-                                        <td>{request.date_time}</td>
+                                        <td>
+                                            
+                                            {new Date(request.date_time).toLocaleString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: true,
+                                                timeZone: 'UTC'
+                                            })}
+                                        </td>
                                         <td>
                                             {userBarangay !== request.barangay && (
                                                 <div className='action-button-box'>

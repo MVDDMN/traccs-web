@@ -15,7 +15,7 @@ const Navigation = ({ userType }) => {
           </div>
 
           <div className='navigation-title-box'>
-            <a className='navigation-title-text'>Home</a>
+            <a className='navigation-title-text'>Home Modules</a>
           </div>
 
           <div className='module'>
@@ -25,7 +25,7 @@ const Navigation = ({ userType }) => {
           </div>
 
           <div className='navigation-title-box'>
-            <a className='navigation-title-text'>Management</a>
+            <a className='navigation-title-text'>Management Modules</a>
           </div>
 
           <div className='module'>

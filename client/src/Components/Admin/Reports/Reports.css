@@ -46,6 +46,7 @@
     text-decoration: none;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .reports-button:hover {

@@ -13,9 +13,9 @@ const Request = () => {
 
                     <div className='request-navigation-content'>
 
-                        <Link to="barangay" className='request-button'>Barangay</Link>
-                        <Link to="personal" className='request-button'>My Requests</Link>
-                        <Link to="requestarchives" className='request-button'>History</Link>
+                        <Link to="barangay" className='request-button' title="View Barangay Requests Table">Barangay</Link>
+                        <Link to="personal" className='request-button' title="View My Requests Table">My Requests</Link>
+                        <Link to="requestarchives" className='request-button' title="View Historical Requests Table">History</Link>
 
                     </div>
 

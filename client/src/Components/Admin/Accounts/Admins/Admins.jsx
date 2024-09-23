@@ -59,19 +59,26 @@ const Admins = () => {
         const fetchAdmins = async () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/administrators`);
-                setAdmins(response.data);
+                const sortedAdmins = response.data.sort((a, b) => {
+                    // Move 'root' admin to the top
+                    if (a.username === 'root') return -1;
+                    if (b.username === 'root') return 1;
+                    return 0;
+                });
+                setAdmins(sortedAdmins);
                 setIsLoading(false); // Data is loaded
             } catch (error) {
                 console.error("Error fetching admins:", error);
                 setIsLoading(false);
             }
         };
-
+    
         fetchAdmins();
         const interval = setInterval(fetchAdmins, 5000);
-
+    
         return () => clearInterval(interval);
     }, []);
+    
 
     const validateForm = () => {
         const errors = {};
@@ -219,7 +226,7 @@ const Admins = () => {
                         <a className='admins-table-title-text'>Admin Accounts</a>
                         <a className='admins-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page allows to create and list all admin accounts</span>
+                            <span className='tooltip-text'>This page allows to view, create, edit and delete all listed administrator account but some information can not be tampered with on this page.</span>
                         </a>
                     </div>
 
@@ -234,6 +241,7 @@ const Admins = () => {
                                     <th>E-mail</th>
                                     <th>Type</th>
                                     <th>Barangay</th>
+                                    <th>Contact</th>
                                     <th>Created At</th>
                                     <th>Actions</th>
                                 </tr>
@@ -246,6 +254,7 @@ const Admins = () => {
                                         <td>{admin.email}</td>
                                         <td>{admin.type}</td>
                                         <td>{admin.barangay}</td>
+                                        <td>{admin.contact}</td>
                                         <td>
                                             {new Date
                                                 (admin.createdAt).toLocaleDateString
@@ -261,10 +270,8 @@ const Admins = () => {
                                         <td>
                                             <div className='action-button-box'>
                                                 <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Edit</button>
-                                                {admin.username !== 'root' && (
-                                                    <>
-                                                        <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
-                                                    </>
+                                                {userUsername !== admin.username && admin.username !== 'root' && (
+                                                    <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
                                                 )}
                                             </div>
                                         </td>

@@ -238,7 +238,7 @@ const HistoryMap = () => {
         };
 
         fetchHistoryData();
-        const interval = setInterval(fetchHistoryData, 5000);
+        const interval = setInterval(fetchHistoryData, 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -347,7 +347,6 @@ const HistoryMap = () => {
                                                 day: 'numeric',
                                                 hour: '2-digit',
                                                 minute: '2-digit',
-                                                second: '2-digit',
                                                 hour12: true,
                                                 timeZone: 'UTC'
                                             })}

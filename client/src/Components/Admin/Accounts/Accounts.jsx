@@ -44,8 +44,8 @@ const Accounts = () => {
       <div className='accounts-content'>
         <div className='accounts-navigation-container'>
           <div className='accounts-navigation-content'>
-            <Link to="users"><a className='accounts-button'>Users</a></Link>
-            <Link to="admins"><a className='accounts-button'>Admins</a></Link>
+            <Link to="users"><label className='accounts-button' title="View Mobile Users Table">Users</label></Link>
+            <Link to="admins"><label className='accounts-button' title="View Administrators Table">Admins</label></Link>
           </div>
         </div>
         <div className='accounts-module-contents'>
@@ -57,3 +57,4 @@ const Accounts = () => {
 };
 
 export default Accounts;
+  

@@ -13,9 +13,9 @@ const Resources = () => {
 
                     <div className='resource-navigation-content'>
 
-                        <Link to="resourcetable"><a className='resource-button'>My Resources</a></Link>
-                        <Link to="resourcedonate"><a className='resource-button'>Donations</a></Link>
-                        <Link to="resourcearchive"><a className='resource-button'>Revoked Donations</a></Link>
+                        <Link to="resourcetable"><label className='resource-button' title="View My Resources Table">My Resources</label></Link>
+                        <Link to="resourcedonate"><label className='resource-button' title="View Donations Table">Donations</label></Link>
+                        <Link to="resourcearchive"><label className='resource-button' title="View Revoked Donations Table">Revoked Donations</label></Link>
 
                     </div>
 

@@ -108,7 +108,7 @@ const Users = () => {
                         <a className='accounts-table-title-text'>User Accounts</a>
                         <a className='accounts-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page contains the list which allows to verify/unverify all the user accounts.</span>
+                            <span className='tooltip-text'>This page displays all mobile user accounts, allowing you to verify or unverify them individually and send email notification to them.</span>
                         </a>
                     </div>
 

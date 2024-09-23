@@ -287,7 +287,7 @@ const Archive = () => {
                         <a className='archive-table-title-text'>History Reports</a>
                         <a className='archive-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page contains all the list of historical reports made by the users.</span>
+                            <span className='tooltip-text'>This page displays all user-submitted historical reports. You can add reports to the history map or delete denied reports.</span>
                         </a>
                     </div>
 
@@ -317,7 +317,6 @@ const Archive = () => {
                                             day: 'numeric',
                                             hour: '2-digit',
                                             minute: '2-digit',
-                                            second: '2-digit',
                                             hour12: true,
                                             timeZone: 'UTC'
                                         })}

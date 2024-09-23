@@ -396,6 +396,7 @@ const Dashboard = () => {
                         <div
                             className={`accident-frame ${filter === 'All' ? 'selected-frame' : ''}`}
                             onClick={() => handleFilterChange('All')}
+                            title="Filter Report to View All Report Map Markers"
                         >
                             <img className='accident-icon' src={usericon} />
                             <div className='accident-content'>
@@ -406,6 +407,7 @@ const Dashboard = () => {
                         <div
                             className={`accident-frame ${filter === 'Fire' ? 'selected-frame' : ''}`}
                             onClick={() => handleFilterChange('Fire')}
+                            title="Filter Report to View Fire Report Map Markers"
                         >
                             <img className='accident-icon' src={fireicon} />
                             <div className='accident-content'>
@@ -416,6 +418,7 @@ const Dashboard = () => {
                         <div
                             className={`accident-frame ${filter === 'Police' ? 'selected-frame' : ''}`}
                             onClick={() => handleFilterChange('Police')}
+                            title="Filter Report to View Police Report Map Markers"
                         >
                             <img className='accident-icon' src={policeicon} />
                             <div className='accident-content'>
@@ -426,6 +429,7 @@ const Dashboard = () => {
                         <div
                             className={`accident-frame ${filter === 'Accident' ? 'selected-frame' : ''}`}
                             onClick={() => handleFilterChange('Accident')}
+                            title="Filter Report to View Accident Report Map Markers"
                         >
                             <img className='accident-icon' src={accidenticon} />
                             <div className='accident-content'>
@@ -436,6 +440,7 @@ const Dashboard = () => {
                         <div
                             className={`accident-frame ${filter === 'Hazard' ? 'selected-frame' : ''}`}
                             onClick={() => handleFilterChange('Hazard')}
+                            title="Filter Report to View Hazard Map Markers"
                         >
                             <img className='accident-icon' src={hazardicon} />
                             <div className='accident-content'>
@@ -446,6 +451,7 @@ const Dashboard = () => {
                         <div
                             className={`accident-frame ${filter === 'Medical' ? 'selected-frame' : ''}`}
                             onClick={() => handleFilterChange('Medical')}
+                            title="Filter Report to View Medical Map Markers"
                         >
                             <img className='accident-icon' src={medicalicon} />
                             <div className='accident-content'>
@@ -456,6 +462,7 @@ const Dashboard = () => {
                         <div
                             className={`accident-frame ${filter === 'Assistance' ? 'selected-frame' : ''}`}
                             onClick={() => handleFilterChange('Assistance')}
+                            title="Filter Report to View Assistance Map Markers"
                         >
                             <img className='accident-icon' src={assistanceicon} />
                             <div className='accident-content'>

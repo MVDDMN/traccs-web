@@ -44,8 +44,8 @@ const Analytics = () => {
       <div className='analytics-navigation-container'>
 
         <div className='analytics-navigation-content'>
-          <Link to="analyticsreports"><label className='analytics-navigation-button'>Reports Analysis</label></Link>
-          <Link to="analyticsrequests"><label className='analytics-navigation-button'>Requests Analysis</label></Link>
+          <Link to="analyticsreports"><label className='analytics-navigation-button' title="View Reports Analysis">Reports Analysis</label></Link>
+          <Link to="analyticsrequests"><label className='analytics-navigation-button' title="View Requests Analysis">Requests Analysis</label></Link>
         </div>
 
       </div>

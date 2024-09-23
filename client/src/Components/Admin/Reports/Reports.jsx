@@ -12,9 +12,9 @@ const Reports = () => {
                 <div className='reports-navigation-container'>
                     <div className='reports-navigation-content'>
 
-                        <Link to="live"><a className='reports-button'>Live Reports</a></Link>
-                        <Link to="archive"><a className='reports-button'>History</a></Link>
-                        <Link to="historymap"><a className='reports-button'>History Map</a></Link>
+                        <Link to="live"><label className='reports-button' title="View live reports that are sent to the system on the table">Live Reports</label></Link>
+                        <Link to="archive"><label className='reports-button' title="View historical reports that are saved on the system as table">History</label></Link>
+                        <Link to="historymap"><label className='reports-button' title="View historical reports saved on the map with their respective locations and details">History Map</label></Link>
 
 
                     </div>
