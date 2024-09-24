@@ -5,12 +5,12 @@ const usersModel = require('../models/users');
 const nodemailer = require("nodemailer");
 const router = express.Router();
 
-// Nodemailer transporter setup using Outlook with environment variables
+// Nodemailer transporter setup using Gmail with environment variables
 const transporter = nodemailer.createTransport({
-    service: 'hotmail', // Use 'hotmail' for Outlook
+    service: 'gmail', // Use 'gmail' for Gmail
     auth: {
-        user: process.env.OUTLOOK_USER, // Email from .env
-        pass: process.env.OUTLOOK_PASS  // Password or App Password from .env
+        user: process.env.GMAIL_USER, // Email from .env
+        pass: process.env.GMAIL_PASS  // App Password from .env
     }
 });
 
@@ -25,7 +25,7 @@ router.post('/users/:id/send-verification-email', async (req, res) => {
         }
 
         const mailOptions = {
-            from: process.env.OUTLOOK_USER,
+            from: process.env.GMAIL_USER, // Use Gmail user
             to: user.email,
             subject: 'Account Status Update',
             text: req.body.message // Use the message from the request body

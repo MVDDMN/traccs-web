@@ -7,12 +7,12 @@ const rateLimit = require('express-rate-limit');
 const router = express.Router();
 require('dotenv').config();
 
-// Nodemailer transporter setup using Outlook with environment variables
+// Nodemailer transporter setup using Gmail with environment variables
 const transporter = nodemailer.createTransport({
-    service: 'hotmail', // Use 'hotmail' for Outlook
+    service: 'gmail', // Use 'gmail' for Gmail
     auth: {
-        user: process.env.OUTLOOK_USER, // Email from .env
-        pass: process.env.OUTLOOK_PASS  // Password or App Password from .env
+        user: process.env.GMAIL_USER, // Email from .env
+        pass: process.env.GMAIL_PASS  // App Password from .env
     }
 });
 
@@ -39,7 +39,7 @@ const otpLimiter = rateLimit({
     message: 'Too many OTP requests from this IP, please try again after a minute',
 });
 
-// Send OTP Route
+// Send OTP Route using Gmail
 router.post('/send-otp', async (req, res) => {
     const { email } = req.body;
 
@@ -48,7 +48,7 @@ router.post('/send-otp', async (req, res) => {
 
     // Send OTP via email
     const mailOptions = {
-        from: process.env.OUTLOOK_USER,
+        from: process.env.GMAIL_USER,
         to: email,
         subject: 'Your OTP Code',
         text: `Your OTP code is ${otp}. Please do not share this code with anyone.`,

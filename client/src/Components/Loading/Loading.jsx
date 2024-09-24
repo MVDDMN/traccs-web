@@ -22,7 +22,7 @@ const Loading = () => {
                 if (response.data.exists) {
                     navigate("/login");
                 } else {
-                    navigate("/login");
+                    navigate("/setup");
                 }
             } catch (error) {
                 setError("Error 503 Service Currently Unavaiable");
