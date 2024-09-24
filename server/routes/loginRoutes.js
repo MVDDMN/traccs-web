@@ -120,7 +120,7 @@ router.post('/send-forgot-otp', async (req, res) => {
         // Generate OTP and send email as before
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const mailOptions = {
-            from: process.env.OUTLOOK_USER,
+            from: process.env.GMAIL_USER,
             to: email,
             subject: 'Your OTP Code',
             text: `Your OTP code is ${otp}. Please do not share this code with anyone.`,
