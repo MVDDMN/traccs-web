@@ -12,6 +12,7 @@ const RequestArchive = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const [sortOrder, setSortOrder] = useState('newest');
     const [isLoading, setIsLoading] = useState(true);
     const itemsPerPage = 9;
 
@@ -21,7 +22,7 @@ const RequestArchive = () => {
                 const response = await axios.get(`${apiBaseUrl}/api/requestarchives`);
                 const archivesWithDataTime = response.data.map(item => ({
                     ...item,
-                    date_time: item.date_time // Assuming your API response includes date_time
+                    date_time: item.date_time
                 }));
                 setRequestArchives(archivesWithDataTime);
                 setIsLoading(false); // Data is loaded
@@ -37,10 +38,17 @@ const RequestArchive = () => {
         return () => clearInterval(interval);
     }, []);
 
+    // Sort the request archives based on the selected order
+    const sortedRequestArchives = [...requestarchives].sort((a, b) => {
+        const dateA = new Date(a.date_time);
+        const dateB = new Date(b.date_time);
+        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+
     // Pagination calculations
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentRequestArchives = requestarchives.slice(indexOfFirstItem, indexOfLastItem);
+    const currentRequestArchives = sortedRequestArchives.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(requestarchives.length / itemsPerPage);
 
     const handleNextPage = () => {
@@ -65,18 +73,35 @@ const RequestArchive = () => {
         setIsModalOpen(false);
     };
 
+    const handleSortChange = (event) => {
+        setSortOrder(event.target.value);
+    };
+
     return (
         <div className="requestarchives-content-box">
 
             <div className='requestarchives-table-container'>
                 <div className='requestarchives-table-box'>
                     <div className='requestarchives-table-title-box'>
-                        <a className='requestarchives-table-title-text'>Requests History</a>
-                        <a className='requestarchives-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>This page displays the history of barangay requests along with their details.</span>
-                        </a>
+
+                        <div className='requestarchives-table-title-content'>
+                            <a className='requestarchives-table-title-text'>Requests History</a>
+                            <a className='requestarchives-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>This page displays the history of barangay requests along with their details.</span>
+                            </a>
+                        </div>
+
+                        <div className='requestarchives-filter-box'>
+                            <label htmlFor="requestarchives-filter">Sort by:</label>
+                            <select id="requestarchives-filter" value={sortOrder} onChange={handleSortChange}>
+                                <option value="newest">Newest to Oldest</option>
+                                <option value="oldest">Oldest to Newest</option>
+                            </select>
+                        </div>
+
                     </div>
+
 
                     {isLoading ? (
                         <div className='loading-message'>Loading table, please wait...</div>
@@ -105,7 +130,7 @@ const RequestArchive = () => {
                                         <td>{requestarchive.type}</td>
                                         <td>{requestarchive.quantity}</td>
                                         <td>{requestarchive.responder}</td>
-                                        <td>{requestarchive.date_time ? new Date(requestarchive.date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-'}</td>
+                                        <td>{requestarchive.date_time ? new Date(requestarchive.date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}</td>
                                         <td>
                                             <div className='action-button-box'>
                                                 <button className='requestarchives-view-requests-button' onClick={() => openModal(requestarchive)}>View</button>
@@ -134,7 +159,19 @@ const RequestArchive = () => {
                             </div>
 
                             <div className='requestarchive-title-box'>
-                                <h2>Request Details</h2>
+                                <a className='requestarchive-title-box-text'>
+                                    History Request Details
+                                </a>
+
+                                <div className='requests-tooltip'>
+                                    <label className='requests-tooltip-icon'>ⓘ</label>
+                                    <div className='requests-tooltip-box'>
+                                        <label className='requests-tooltip-sub-text'>
+                                            This section contains contains the information of a historical requests.
+                                            The responded requests is saved here for future reference.
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className='requestarchive-details-container'>
@@ -180,7 +217,7 @@ const RequestArchive = () => {
                                     <div className='requestarchive-text-box'>
                                         <a className='requestarchive-title-text'>
                                             Date & Time:
-                                            <b className='requestarchive-content-text'>{selectedRequest.date_time ? new Date(selectedRequest.date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-'}</b>
+                                            <b className='requestarchive-content-text'>{selectedRequest.date_time ? new Date(selectedRequest.date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}</b>
                                         </a>
                                     </div>
                                     <div className='requestarchive-description-box'>

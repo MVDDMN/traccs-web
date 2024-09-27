@@ -273,10 +273,12 @@
 
 .archive-reports-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     height: auto;
     width: 100%;
     align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .archive-reports-title-box-text{
@@ -439,8 +441,71 @@
 .archive-delete-modal-button:hover {
     background-color: darkred;
 }
-
 /*End of Archive Modal*/
+
+/*Modal Tooltip*/
+.archive-reports-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.archive-reports-tooltip-icon {
+    font-size: 18px;
+}
+
+.archive-reports-tooltip:hover .archive-reports-tooltip-icon {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.archive-reports-tooltip-box {
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    height: auto;
+    width: 450px;
+    background-color: #555;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 10000;
+    top: 2em;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.archive-reports-tooltip-box::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent; 
+}
+
+.archive-reports-tooltip:hover .archive-reports-tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.archive-reports-tooltip-text {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    font-size: 16px;
+}
+
+.archive-reports-tooltip-sub-text {
+    width: 100%;
+    color: #fff;
+    text-align: justify;
+    font-size: 16px;
+}
 
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */

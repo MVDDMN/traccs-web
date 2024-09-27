@@ -170,11 +170,17 @@
     color: gray;
 }
 
-.history-title-box h2 { 
+.history-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     width: 100%;
+    gap: 5px;
+}
+
+.history-title-box-text {
+    font-size: 24px;
     font-weight: 300;
 }
 

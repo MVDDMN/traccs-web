@@ -72,13 +72,13 @@ const Admins = () => {
                 setIsLoading(false);
             }
         };
-    
+
         fetchAdmins();
         const interval = setInterval(fetchAdmins, 5000);
-    
+
         return () => clearInterval(interval);
     }, []);
-    
+
 
     const validateForm = () => {
         const errors = {};
@@ -269,11 +269,14 @@ const Admins = () => {
                                         </td>
                                         <td>
                                             <div className='action-button-box'>
-                                                <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Edit</button>
+                                                {admin.username !== 'root' && (
+                                                    <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Edit</button>
+                                                )}
                                                 {userUsername !== admin.username && admin.username !== 'root' && (
                                                     <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
                                                 )}
                                             </div>
+
                                         </td>
                                     </tr>
                                 ))}
@@ -290,53 +293,66 @@ const Admins = () => {
             </div>
 
             {isModalOpen && (
-                <div className="request-modal">
-                    <div className="request-modal-content">
-                        <div className='request-modal-content-box'>
+                <div className="admin-modal">
+                    <div className="admin-modal-content">
+                        <div className='admin-modal-content-box'>
                             <div className='close-modal-button-box'>
                                 <button onClick={closeModal} className='close-modal-button'>X</button>
                             </div>
 
-                            <div className='request-title-box'>
-                                <h2>{isEditMode ? "Edit Admin" : "Add Admin"}</h2>
+                            <div className='admin-title-box'>
+                                <a className='admin-title-box-text'>
+                                    <a>{isEditMode ? "Edit Admin" : "Add Admin"}</a>
+                                </a>
+
+                                <div className='accounts-tooltip'>
+                                    <label className='accounts-tooltip-icon'>ⓘ</label>
+                                    <div className='accounts-tooltip-box'>
+                                        <label className='accounts-tooltip-sub-text'>
+                                            This section contains all information about the administrator account.
+                                            You can choose to "Add" or "Update" the administrator details with the required details to be filled.
+                                            If you select "Add" or "Update" it will update and reflect the administrator details on the table.
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className='request-details-container'>
-                                <div className='request-details-modal-box'>
-                                    <div className='request-content-cont'>
-                                        <div className='request-text-box'>
-                                            <label className='request-label'>Name:</label>
+                            <div className='admin-details-container'>
+                                <div className='admin-details-modal-box'>
+                                    <div className='admin-content-cont'>
+                                        <div className='admin-text-box'>
+                                            <label className='admin-label'>Name:</label>
                                             <input
                                                 type="text"
                                                 name="name"
                                                 value={formData.name}
                                                 onChange={handleInputChange}
-                                                className="request-input"
+                                                className="admin-input"
                                                 disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, name: validateName(formData.name) })}
                                             />
                                         </div>
-                                        <div className='request-text-box'>
-                                            <label className='request-label'>Email:</label>
+                                        <div className='admin-text-box'>
+                                            <label className='admin-label'>Email:</label>
                                             <input
                                                 type="text"
                                                 name="email"
                                                 value={formData.email}
                                                 onChange={handleInputChange}
-                                                className="request-input"
+                                                className="admin-input"
                                                 disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, email: validateEmail(formData.email) })}
                                             />
                                         </div>
-                                        <div className='request-text-box'>
-                                            <label className='request-label'>Contact Number:</label>
+                                        <div className='admin-text-box'>
+                                            <label className='admin-label'>Contact Number:</label>
                                             <div className="contact-input-group">
                                                 <span className="contact-prefix">+63</span>
                                                 <input
                                                     type="tel"
                                                     name="contact"
-                                                    className="request-input"
-                                                    value={formData.contact ? formData.contact.replace(/^\+63/, '') : ''} // Safeguard against undefined
+                                                    className="admin-input"
+                                                    value={formData.contact ? formData.contact.replace(/^\+63/, '') : ''}
                                                     onChange={(e) => {
                                                         const newValue = e.target.value.replace(/^0+/, '');
                                                         setFormData({ ...formData, contact: `+63${newValue}` });
@@ -348,39 +364,40 @@ const Admins = () => {
                                         </div>
 
                                     </div>
-                                    <div className='request-content-cont'>
-                                        <div className='request-text-box'>
-                                            <label className='request-label'>Username:</label>
+                                    <div className='admin-content-cont'>
+                                        <div className='admin-text-box'>
+                                            <label className='admin-label'>Username:</label>
                                             <input
                                                 type="text"
                                                 name="username"
                                                 value={formData.username}
                                                 onChange={handleInputChange}
-                                                className="request-input"
+                                                className="admin-input"
                                                 disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, username: validateUsername(formData.username) })}
                                             />
                                         </div>
-                                        <div className='request-text-box'>
-                                            <label className='request-label'>Password:</label>
+                                        <div className='admin-text-box'>
+                                            <label className='admin-label'>Password:</label>
                                             <input
                                                 type="text"
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleInputChange}
-                                                className="request-input"
+                                                className="admin-input"
                                                 onBlur={() => setErrors({ ...errors, password: validatePassword(formData.password) })}
                                             />
                                         </div>
                                     </div>
-                                    <div className='request-content-cont'>
-                                        <div className='request-text-box'>
-                                            <label className='request-label'>Barangay:</label>
+
+                                    <div className='admin-content-cont'>
+                                        <div className='admin-text-box'>
+                                            <label className='admin-label'>Barangay:</label>
                                             <select
                                                 name="barangay"
                                                 value={formData.barangay}
                                                 onChange={handleInputChange}
-                                                className="request-input"
+                                                className="admin-input"
                                                 disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, barangay: validateBarangay(formData.barangay) })}
                                             >
@@ -393,13 +410,13 @@ const Admins = () => {
                                                 <option value="Santa Ana">Santa Ana</option>
                                             </select>
                                         </div>
-                                        <div className='request-text-box'>
-                                            <label className='request-label'>Type:</label>
+                                        <div className='admin-text-box'>
+                                            <label className='admin-label'>Type:</label>
                                             <select
                                                 name="type"
                                                 value={formData.type}
                                                 onChange={handleInputChange}
-                                                className="request-input"
+                                                className="admin-input"
                                                 disabled={formData.username === 'root'}
                                                 onBlur={() => setErrors({ ...errors, type: validateType(formData.type) })}
                                             >
@@ -409,20 +426,25 @@ const Admins = () => {
                                             </select>
                                         </div>
                                     </div>
-                                    <div className='request-text-box'>
-                                        {errors.name && <div className="error">{errors.name}</div>}
-                                        {errors.username && <div className="error">{errors.username}</div>}
-                                        {errors.email && <div className="error">{errors.email}</div>}
-                                        {errors.contact && <div className="error">{errors.contact}</div>}
-                                        {errors.password && <div className="error">{errors.password}</div>}
-                                        {errors.barangay && <div className="error">{errors.barangay}</div>}
-                                        {errors.type && <div className="error">{errors.type}</div>}
+
+                                    <div className='admin-text-box'>
+
+                                        <div className='error-box'>
+                                            {errors.name && <div className="error">{errors.name}</div>}
+                                            {errors.username && <div className="error">{errors.username}</div>}
+                                            {errors.email && <div className="error">{errors.email}</div>}
+                                            {errors.contact && <div className="error">{errors.contact}</div>}
+                                            {errors.password && <div className="error">{errors.password}</div>}
+                                            {errors.barangay && <div className="error">{errors.barangay}</div>}
+                                            {errors.type && <div className="error">{errors.type}</div>}
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
 
-                            <div className='update-modal-button-box'>
-                                <button className='update-modal-button' onClick={handleAddEditAdmin}>{isEditMode ? "Update Admin" : "Add Admin"}</button>
+                            <div className='update-admin-modal-button-box'>
+                                <button className='update-admin-modal-button' onClick={handleAddEditAdmin}>{isEditMode ? "Update Admin" : "Add Admin"}</button>
                             </div>
                         </div>
                     </div>

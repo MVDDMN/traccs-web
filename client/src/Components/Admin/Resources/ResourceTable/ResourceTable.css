@@ -293,11 +293,17 @@
     color: gray;
 }
 
-.resource-title-box h2 {
+.resource-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     width: 100%;
+    gap: 5px;
+}
+
+.resource-title-box-text {
+    font-size: 24px;
     font-weight: 300;
 }
 
@@ -415,6 +421,70 @@
 
 .error-message {
     margin-left: 10px;
+}
+
+/*Modal Tooltip*/
+.resource-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.resource-tooltip-icon {
+    font-size: 18px;
+}
+
+.resource-tooltip:hover .resource-tooltip-icon {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.resource-tooltip-box {
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    height: auto;
+    width: 450px;
+    background-color: #555;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 10000;
+    top: 2em;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.resource-tooltip-box::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent; 
+}
+
+.resource-tooltip:hover .resource-tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.resource-tooltip-text {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    font-size: 16px;
+}
+
+.resource-tooltip-sub-text {
+    width: 100%;
+    color: #fff;
+    text-align: justify;
+    font-size: 16px;
 }
 
 /* Media Queries for Responsiveness */

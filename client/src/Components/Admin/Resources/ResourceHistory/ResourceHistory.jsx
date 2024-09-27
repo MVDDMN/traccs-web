@@ -128,7 +128,19 @@ const ResourceHistory = () => {
                             </div>
 
                             <div className='history-title-box'>
-                                <h2>Donation Details</h2>
+                                <a className='history-title-box-text'>
+                                    Revoked Donation Details
+                                </a>
+
+                                <div className='resource-tooltip'>
+                                    <label className='resource-tooltip-icon'>ⓘ</label>
+                                    <div className='resource-tooltip-box'>
+                                        <label className='resource-tooltip-sub-text'>
+                                            This section contains all information about the selected donation.
+                                            All donations that have been revoked are recorded within the system for reference.
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className='history-details-container'>

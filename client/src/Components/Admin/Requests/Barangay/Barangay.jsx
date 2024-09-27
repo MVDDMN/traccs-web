@@ -180,7 +180,7 @@ const Barangay = () => {
                                         <td>{request.type}</td>
                                         <td>{request.quantity}</td>
                                         <td>
-                                            
+
                                             {new Date(request.date_time).toLocaleString('en-US', {
                                                 year: 'numeric',
                                                 month: 'long',
@@ -220,7 +220,22 @@ const Barangay = () => {
                             </div>
 
                             <div className='requests-title-box'>
-                                <h2>Request Details</h2>
+                                <a className='requests-title-box-text'>
+                                    Requests Details
+                                </a>
+
+                                <div className='requests-tooltip'>
+                                    <label className='requests-tooltip-icon'>ⓘ</label>
+                                    <div className='requests-tooltip-box'>
+                                        <label className='requests-tooltip-sub-text'>
+                                            This section contains all information about the requests and the requestor.
+                                            You can choose to "Respond" to a requests made by the barangay.
+                                            If you select "Respond" the requests will be responded and put in history for reference.
+                                            After responding, the requests would then notify the system about the transaction.
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div className='requests-details-container'>
@@ -233,7 +248,7 @@ const Barangay = () => {
                                     </div>
                                     <div className='requests-text-box'>
                                         <a className='requests-title-text'>
-                                            Name:
+                                            Name of Requestor:
                                             <b className='requests-content-text'>{selectedRequest.username}</b>
                                         </a>
                                         <a className='requests-title-text'>
@@ -243,7 +258,7 @@ const Barangay = () => {
                                     </div>
                                     <div className='requests-text-box'>
                                         <a className='requests-title-text'>
-                                            Barangay:
+                                            Barangay in Need:
                                             <b className='requests-content-text'>{selectedRequest.barangay}</b>
                                         </a>
                                         <a className='requests-title-text'>

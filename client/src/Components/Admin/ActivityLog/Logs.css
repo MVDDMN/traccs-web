@@ -183,11 +183,17 @@
     color: gray;
 }
 
-.logs-title-box h2 {
+.logs-modal-title-box {
     display: inline-flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
     width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.logs-modal-title-text {
+    font-size: 24px;
     font-weight: 300;
 }
 
@@ -243,6 +249,70 @@
     border-radius: 5px;
     padding: 10px;
     resize: none;
+}
+
+/*Modal Tooltip*/
+.logs-modal-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.logs-modal-tooltip-icon {
+    font-size: 18px;
+}
+
+.logs-modal-tooltip:hover .logs-modal-tooltip-icon {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logs-modal-tooltip-box {
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    height: auto;
+    width: 450px;
+    background-color: #555;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 10000;
+    top: 2em;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.logs-modal-tooltip-box::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent; 
+}
+
+.logs-modal-tooltip:hover .logs-modal-tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.logs-modal-tooltip-text {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    font-size: 16px;
+}
+
+.logs-modal-tooltip-sub-text {
+    width: 100%;
+    color: #fff;
+    text-align: justify;
+    font-size: 16px;
 }
 
 /* Media Queries for Responsiveness */

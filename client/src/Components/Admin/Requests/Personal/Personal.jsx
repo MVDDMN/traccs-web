@@ -288,7 +288,21 @@ const Personal = () => {
                             </div>
 
                             <div className='request-title-box'>
-                                <h2>Request Details</h2>
+                                <a className='request-title-box-text'>
+                                    Edit Request Details
+                                </a>
+
+                                <div className='requests-tooltip'>
+                                    <label className='requests-tooltip-icon'>ⓘ</label>
+                                    <div className='requests-tooltip-box'>
+                                        <label className='requests-tooltip-sub-text'>
+                                            This section contains all information about the requests.
+                                            You can choose to either "Update Requests" after editing the requests. 
+                                            If you select "Update Requests" the requests will be updated with the new details. 
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div className='request-details-container'>
@@ -396,7 +410,21 @@ const Personal = () => {
                             </div>
 
                             <div className='request-title-box'>
-                                <h2>Request Details</h2>
+                                <a className='request-title-box-text'>
+                                    New Request Details
+                                </a>
+
+                                <div className='requests-tooltip'>
+                                    <label className='requests-tooltip-icon'>ⓘ</label>
+                                    <div className='requests-tooltip-box'>
+                                        <label className='requests-tooltip-sub-text'>
+                                            This section contains contains about all the information needed for a requests.
+                                            You can choose to either "Add Request" after filling all the needed information the requests. 
+                                            If you select "Add" the requests will be added to the table and be visible to others for response. 
+                                        </label>
+                                    </div>
+                                </div>
+                                
                             </div>
 
                             <div className='request-details-container'>

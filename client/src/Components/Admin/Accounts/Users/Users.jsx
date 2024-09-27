@@ -108,7 +108,9 @@ const Users = () => {
                         <a className='accounts-table-title-text'>User Accounts</a>
                         <a className='accounts-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page displays all mobile user accounts, allowing you to verify or unverify them individually and send email notification to them.</span>
+                            <span className='tooltip-text'>
+                                This page displays all mobile user accounts, allowing you to verify or unverify an account. Invalid accounts will be deemed for deletion.
+                            </span>
                         </a>
                     </div>
 
@@ -185,6 +187,18 @@ const Users = () => {
 
                             <div className='users-title-box'>
                                 <a className='users-title-text'>User Details</a>
+
+                                <div className='accounts-tooltip'>
+                                    <label className='accounts-tooltip-icon'>ⓘ</label>
+                                    <div className='accounts-tooltip-box'>
+                                        <label className='accounts-tooltip-sub-text'>
+                                            This section contains all information about mobile user account.
+                                            You can choose to "Unverify" or "Verify" the user account.
+                                            If you select "Unverify" or "Verify" it will send an email response to notify the user account that it has updated its status.
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div className='users-text-box'>
@@ -287,7 +301,7 @@ const Users = () => {
                 <div className="delete-modal">
                     <div className="delete-content">
                         <div className='delete-message'>
-                            <p>Delete User?</p>
+                            <p>Invalid User Account?</p>
                             <a>You won’t be able to undo this action. Are you sure?</a>
                         </div>
                         <div className='delete-choice'>

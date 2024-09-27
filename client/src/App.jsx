@@ -36,7 +36,6 @@ import ResourceArchive from './Components/Admin/Resources/ResourceHistory/Resour
 /*Request Imports*/
 import Request from './Components/Admin/Requests/Request.jsx';
 import Barangay from './Components/Admin/Requests/Barangay/Barangay.jsx';
-import Community from './Components/Admin/Requests/Community/Community.jsx';
 import RequestArchive from './Components/Admin/Requests/RequestArchive/RequestArchive.jsx';
 import Personal from './Components/Admin/Requests/Personal/Personal.jsx';
 
@@ -111,7 +110,6 @@ function App() {
                     <Route path="request" element={<Request />}>
                       <Route index element={<Barangay />} />
                       <Route path="barangay" element={<Barangay />} />
-                      <Route path="community" element={<Community />} />
                       <Route path="requestarchives" element={<RequestArchive/>} />
                       <Route path="personal" element={<Personal/>} />
                     </Route>

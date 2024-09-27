@@ -171,11 +171,17 @@
     color: gray;
 }
 
-.donations-title-box h2 { 
+.donations-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     width: 100%;
+    gap: 5px;
+}
+
+.donations-title-box-text {
+    font-size: 24px;
     font-weight: 300;
 }
 

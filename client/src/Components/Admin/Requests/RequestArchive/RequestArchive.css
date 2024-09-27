@@ -40,6 +40,23 @@
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
 }
 
+.requestarchives-filter-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    width: 20em;
+}
+
+.requestarchives-filter-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
 /*Requests Table*/
 .requestarchives-table-box {
     display: inline-flex;
@@ -50,6 +67,15 @@
 .requestarchives-table-title-box {
     position: relative;
     display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.requestarchives-table-title-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
     align-items: center;
 }
 
@@ -120,7 +146,7 @@
 .requestarchive-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 600px;
+    height: 500px;
     width: 850px;
     padding: 25px;
     background-color: white;
@@ -148,11 +174,17 @@
     color: gray;
 }
 
-.requestarchive-title-box h2 {
+.requestarchive-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     width: 100%;
+    gap: 5px;
+}
+
+.requestarchive-title-box-text {
+    font-size: 24px;
     font-weight: 300;
 }
 
@@ -250,14 +282,5 @@
     .requestarchives-view-requests-button {
         height: 22px;
         width: 75px;
-    }
-
-    /*Request Archive Modal*/
-    .requestarchive-modal-content {
-        height: 500px;
-        width: 850px;
-    }
-    .requestarchive-title-text {
-        font-size: 12px;
     }
 }

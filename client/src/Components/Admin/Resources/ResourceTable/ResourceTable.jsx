@@ -276,7 +276,22 @@ const ResourceTable = () => {
                             </div>
 
                             <div className='resource-title-box'>
-                                <h2>Resource Details</h2>
+                                <a className='resource-title-box-text'>
+                                    Edit Resource Details
+                                </a>
+
+                                <div className='resource-tooltip'>
+                                    <label className='resource-tooltip-icon'>ⓘ</label>
+                                    <div className='resource-tooltip-box'>
+                                        <label className='resource-tooltip-sub-text'>
+                                            This section contains all information about the selected resource to be updated.
+                                            You can choose to "Update Information" to update the resource.
+                                            If you select "Update Information" it will require all information to be filled.
+                                            After updating the resource, the changes will be present on the table.
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div className='resource-details-container'>
@@ -367,7 +382,21 @@ const ResourceTable = () => {
                             </div>
 
                             <div className='resource-title-box'>
-                                <h2>Add Resource</h2>
+                                <a className='resource-title-box-text'>
+                                    Add Resource Details
+                                </a>
+
+                                <div className='resource-tooltip'>
+                                    <label className='resource-tooltip-icon'>ⓘ</label>
+                                    <div className='resource-tooltip-box'>
+                                        <label className='resource-tooltip-sub-text'>
+                                            This section contains all information about adding a resource.
+                                            You can choose to "Add Resource" to include a new resource to the table.
+                                            If you select "Add Resource" all the necessary details must be filled first.
+                                            After adding a resource, the resource would then be visible in the table.
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className='resource-details-container'>

@@ -207,11 +207,17 @@
     color: gray;
 }
 
-.request-title-box h2 {
+.request-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     width: 100%;
+    gap: 5px;
+}
+
+.request-title-box-text {
+    font-size: 24px;
     font-weight: 300;
 }
 
@@ -320,8 +326,6 @@
 .personal-update-modal-button:hover {
     background-color: #0A1B57;
 }
-
-
 
 /*Delete Request*/
 .delete-modal {

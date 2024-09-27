@@ -456,6 +456,20 @@ const Live = () => {
                                 <a className='live-reports-title-box-text'>
                                     Report Details
                                 </a>
+
+                                <div className='live-reports-tooltip'>
+                                    <label className='live-reports-tooltip-icon'>ⓘ</label>
+                                    <div className='live-reports-tooltip-box'>
+                                        <label className='live-reports-tooltip-sub-text'>
+                                            This section contains all information about the incident and the reporter.
+                                            You can choose to either respond to or deny the report.
+                                            If you select "Deny" a modal will appear asking for the reason for denial.
+                                            After responding, you must click "Done" to confirm your action and store
+                                            the report in the history tab for future reference.
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div className='live-reports-details-container'>

@@ -190,8 +190,11 @@
 
 .users-title-box {
     display: inline-flex;
+    flex-direction: row;
     width: 100%;
     justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
 
 .users-title-text {
@@ -333,6 +336,69 @@
     border-radius: 5px;
 }
 
+/*Modal Tooltip*/
+.accounts-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.accounts-tooltip-icon {
+    font-size: 18px;
+}
+
+.accounts-tooltip:hover .accounts-tooltip-icon {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.accounts-tooltip-box {
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    height: auto;
+    width: 450px;
+    background-color: #555;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 10000;
+    top: 2em;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.accounts-tooltip-box::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent; 
+}
+
+.accounts-tooltip:hover .accounts-tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.accounts-tooltip-text {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    font-size: 16px;
+}
+
+.accounts-tooltip-sub-text {
+    width: 100%;
+    color: #fff;
+    text-align: justify;
+    font-size: 16px;
+}
 
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */

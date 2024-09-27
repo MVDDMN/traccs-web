@@ -351,10 +351,12 @@
 
 .live-reports-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     height: 100%;
     width: 100%;
     align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .live-reports-title-box-text {
@@ -614,6 +616,70 @@
 .live-deny-modal-submit-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+/*Modal Tooltip*/
+.live-reports-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.live-reports-tooltip-icon {
+    font-size: 18px;
+}
+
+.live-reports-tooltip:hover .live-reports-tooltip-icon {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.live-reports-tooltip-box {
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    height: auto;
+    width: 450px;
+    background-color: #555;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 10000;
+    top: 2em;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.live-reports-tooltip-box::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent; 
+}
+
+.live-reports-tooltip:hover .live-reports-tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.live-reports-tooltip-text {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    font-size: 16px;
+}
+
+.live-reports-tooltip-sub-text {
+    width: 100%;
+    color: #fff;
+    text-align: justify;
+    font-size: 16px;
 }
 
 

@@ -179,9 +179,22 @@ const Logs = () => {
               <div className='close-modal-button-box'>
                 <button onClick={closeModal} className='close-modal-button'>X</button>
               </div>
-              <div className='logs-title-box'>
-                <h2>Log Details</h2>
+
+              <div className='logs-modal-title-box'>
+                <a className='logs-modal-title-text'>Log Details</a>
+
+                <div className='logs-modal-tooltip'>
+                  <label className='logs-modal-tooltip-icon'>ⓘ</label>
+                  <div className='logs-modal-tooltip-box'>
+                    <label className='logs-modal-tooltip-sub-text'>
+                      This section contains all information about administrator system activity log.
+                      You are able to view the necessary information in detail about the action done by the admin in the web systems.
+                    </label>
+                  </div>
+                </div>
+
               </div>
+
               <div className='logs-details-container'>
                 <div className='logs-details-modal-box'>
                   <div className='logs-text-box'>

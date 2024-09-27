@@ -364,6 +364,18 @@ const Archive = () => {
                                 <a className='archive-reports-title-box-text'>
                                     Historical Report Details
                                 </a>
+                                
+                                <div className='archive-reports-tooltip'>
+                                    <label className='archive-reports-tooltip-icon'>ⓘ</label>
+                                    <div className='archive-reports-tooltip-box'>
+                                        <label className='archive-reports-tooltip-sub-text'>
+                                            This section contains all information about the incident and the reporter.
+                                            You can choose to "Add to History Map" the report. 
+                                            If the report is denied you can "Delete" the report from the table.
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div className='archive-reports-details-container'>

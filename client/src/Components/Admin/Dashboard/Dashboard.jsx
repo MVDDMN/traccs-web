@@ -10,7 +10,7 @@ import hazardicon from '../../Assets/hazard.png';
 import assistanceicon from '../../Assets/assistance.png';
 import usericon from '../../Assets/user.png';
 import maplegends from '../../Assets/Legends.png';
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, Tooltip } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
 // Map icons
@@ -393,6 +393,19 @@ const Dashboard = () => {
             <div className='dashboard-content'>
                 <div className='dashboard-reports-box'>
                     <div className='dashboard-reports-content'>
+
+                        <div className='dashboard-tooltip'>
+                            <label className='dashboard-tooltip-icon'>ⓘ</label>
+                            <div className='dashboard-tooltip-box'>
+                                <label className='dashboard-tooltip-text'>
+                                    Map Marker Filtering
+                                </label>
+                                <label className='dashboard-tooltip-sub-text'>
+                                    This allows the user to filter amongst the available report types.
+                                </label>
+                            </div>
+                        </div>
+
                         <div
                             className={`accident-frame ${filter === 'All' ? 'selected-frame' : ''}`}
                             onClick={() => handleFilterChange('All')}
@@ -483,10 +496,35 @@ const Dashboard = () => {
                         </div>
                     )}
                     <div className="dashboard-controls">
-                        <button onClick={toggleAutoTrack} className="toggle-button">
+
+                        <div className='dashboard-map-tooltip'>
+                            <label className='dashboard-map-tooltip-icon'>ⓘ</label>
+                            <div className='dashboard-map-tooltip-box'>
+
+                                <div className='dashboard-map-tooltip-text-box'>
+                                    <label className='dashboard-map-tooltip-text'>
+                                        Auto Tracking
+                                    </label>
+                                    <label className='dashboard-map-tooltip-sub-text'>
+                                        Interacting with the button allows the user to toggle the tracking of a recent report marker location.
+                                    </label>
+                                </div>
+
+                                <div className='dashboard-map-tooltip-text-box'>
+                                    <label className='dashboard-map-tooltip-text'>
+                                        Heatmap
+                                    </label>
+                                    <label className='dashboard-map-tooltip-sub-text'>
+                                        Interacting with the button allows the user to see visible heatmap density based on reports.
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <button onClick={toggleAutoTrack} title="Toggle Auto-Tracking Button" className="toggle-button">
                             {autoTrack ? 'Disable' : 'Enable'} Auto-Tracking
                         </button>
-                        <button onClick={() => setShowCircles(prev => !prev)} className="toggle-button">
+                        <button onClick={() => setShowCircles(prev => !prev)} title="Toggle Heatmap Button" className="toggle-button">
                             {showCircles ? 'Hide' : 'Show'} Heatmap
                         </button>
                     </div>
@@ -512,6 +550,7 @@ const Dashboard = () => {
                         {autoTrack && <FlyToLatestReport reports={reports} />}
                         <MarkerClusterGroup
                             iconCreateFunction={createClusterCustomIcon}
+
                         >
 
                             {filteredReports.map(report => (
@@ -520,9 +559,13 @@ const Dashboard = () => {
                                     position={[parseFloat(report.location.split(',')[0]), parseFloat(report.location.split(',')[1])]}
                                     icon={getMapIcon(report.type)}
                                 >
+                                    <Tooltip>
+                                        Click to View {report.type} Report Details
+
+                                    </Tooltip> {/* Removed 'permanent' */}
                                     <Popup>
                                         <div>
-                                            <h3>{report.name}</h3>
+                                            <h3><b>Name:</b> {report.name}</h3>
                                             <p><b>Type:</b> {report.type}</p>
                                             <p><b>Status:</b> {report.status}</p>
                                             <p><b>Location:</b> {report.location}</p>
@@ -540,7 +583,7 @@ const Dashboard = () => {
                                                 })}
                                             </p>
                                             <button onClick={() => handleViewReport(report)} className="map-report-button">
-                                                View Report
+                                                View Report Details
                                             </button>
                                         </div>
                                     </Popup>
@@ -605,6 +648,23 @@ const Dashboard = () => {
                                 <a className='dashboard-reports-title-box-text'>
                                     Report Details
                                 </a>
+
+                                <div className='dashboard-reports-tooltip'>
+                                    <label className='dashboard-reports-tooltip-icon'>ⓘ</label>
+                                    <div className='dashboard-reports-tooltip-box'>
+                                        <label className='dashboard-reports-tooltip-text'>
+                                            
+                                        </label>
+                                        <label className='dashboard-reports-tooltip-sub-text'>
+                                        This section contains all information about the incident and the reporter. 
+                                        You can choose to either respond to or deny the report. 
+                                        If you select "Deny" a modal will appear asking for the reason for denial. 
+                                        After responding, you must click "Done" to confirm your action and store 
+                                        the report in the history tab for future reference.
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div className='dashboard-reports-details-container'>
@@ -723,6 +783,7 @@ const Dashboard = () => {
                                             onClick={openDenyModal}
                                             className='dashboard-deny-modal-button'
                                             disabled={isSubmitting}
+                                            title='Deny Button'
                                         >
                                             {isSubmitting ? 'Processing...' : 'Deny'}
                                         </button>
@@ -730,6 +791,7 @@ const Dashboard = () => {
                                             onClick={isResponded ? archiveReport : respondToReport}
                                             className='dashboard-update-modal-button'
                                             disabled={isSubmitting}
+                                            title={isResponded ? 'Done Button' : 'Respond Button'}
                                         >
                                             {isSubmitting ? 'Processing...' : isResponded ? 'Done' : 'Respond'}
                                         </button>

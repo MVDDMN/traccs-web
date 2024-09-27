@@ -302,6 +302,7 @@ const ResourceDonate = () => {
                                     <th>Email</th>
                                     <th>Donation Type</th>
                                     <th>Donation Amount</th>
+                                    <th>Date</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -314,14 +315,21 @@ const ResourceDonate = () => {
                                         <td>{donation.email}</td>
                                         <td>{donation.donationType}</td>
                                         <td>{donation.donationAmount}</td>
-                                        <td>{donation.status ? donation.status : 'Not Updated'}</td>
+                                        <td>
+                                            {new Date(donation.createdAt).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </td>
+                                        <td>{donation.status}</td>
                                         <td>
                                             <div className='action-button-box'>
                                                 {donation.status !== 'Recorded' && (
                                                     <button className='view-donations-button' onClick={() => handleEditDonation(donation)}>Update</button>
                                                 )}
                                                 {donation.status == 'Recorded' && (
-                                                <button className='view-donations-button' onClick={() => handleViewDonation(donation)}>View</button>
+                                                    <button className='view-donations-button' onClick={() => handleViewDonation(donation)}>View</button>
                                                 )}
                                             </div>
                                         </td>
@@ -348,7 +356,19 @@ const ResourceDonate = () => {
                             </div>
 
                             <div className='donations-title-box'>
-                                <h2>Donation Details</h2>
+                                <a className='donations-title-box-text'>
+                                    Donation Details
+                                </a>
+
+                                <div className='resource-tooltip'>
+                                    <label className='resource-tooltip-icon'>ⓘ</label>
+                                    <div className='resource-tooltip-box'>
+                                        <label className='resource-tooltip-sub-text'>
+                                            This section contains all information about the selected donation.
+                                            All donations that have been updated are recorded within the system for reference.
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className='donations-details-container'>
@@ -510,7 +530,21 @@ const ResourceDonate = () => {
                             </div>
 
                             <div className='donations-title-box'>
-                                <h2>Edit Donation</h2>
+                                <a className='donations-title-box-text'>
+                                    Edit Donation Details
+                                </a>
+
+                                <div className='resource-tooltip'>
+                                    <label className='resource-tooltip-icon'>ⓘ</label>
+                                    <div className='resource-tooltip-box'>
+                                        <label className='resource-tooltip-sub-text'>
+                                            This section contains all information about the selected donation.
+                                            You can choose to "Update" or "Delete" a donation.
+                                            A donation must be provided with an update description to be recorded.
+                                            Any deleted donations will be considered as revoked and will retain only some parts of the information for privacy.
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className='donations-details-container'>

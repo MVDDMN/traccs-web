@@ -391,6 +391,16 @@ const HistoryMap = () => {
                                 <a className='historymap-reports-title-box-text'>
                                     History Map Report Details
                                 </a>
+                                <div className='historymap-reports-tooltip'>
+                                    <label className='historymap-reports-tooltip-icon'>ⓘ</label>
+                                    <div className='historymap-reports-tooltip-box'>
+                                        <label className='historymap-reports-tooltip-sub-text'>
+                                            This section contains all information about the incident and the reporter.
+                                            You can choose to "Remove" the report from the history map.
+                                            After removing, the report would be kept in the history tab for future reference.
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className='historymap-reports-details-container'>

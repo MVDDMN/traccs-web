@@ -13,6 +13,205 @@
     width: 100%;
 }
 
+.dashboard-tooltip {
+    position: relative;
+    display: inline-block; 
+}
+
+.dashboard-tooltip-icon {
+    font-size: 24px;
+}
+
+.dashboard-tooltip:hover .dashboard-tooltip-icon {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.dashboard-tooltip-box {
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    height: auto;
+    width: 240px;
+    background-color: #555;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 10000;
+    bottom: -38px;
+    left: 160px;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.dashboard-tooltip-box::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -18px;
+    transform: translateY(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #555 transparent transparent;
+}
+
+.dashboard-tooltip:hover .dashboard-tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.dashboard-tooltip-text {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.dashboard-tooltip-sub-text {
+    width: 100%;
+    color: #fff;
+    text-align: justify;
+    font-size: 16px;
+}
+
+/*Map Tooltip*/
+.dashboard-map-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-map-tooltip-icon {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.dashboard-map-tooltip:hover .dashboard-map-tooltip-icon {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.dashboard-map-tooltip-box {
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    width: 240px;
+    gap: 10px;
+    background-color: #555;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 10000;
+    bottom: -74px;
+    left: -140px;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.dashboard-map-tooltip-box::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -18px; 
+    transform: translateY(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent transparent #555; /* Adjust the border-color to make the left side visible */
+}
+
+.dashboard-map-tooltip:hover .dashboard-map-tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.dashboard-map-tooltip-text-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-map-tooltip-text {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.dashboard-map-tooltip-sub-text {
+    width: 100%;
+    color: #fff;
+    text-align: justify;
+    font-size: 16px;
+}
+
+/*Modal Tooltip*/
+.dashboard-reports-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-reports-tooltip-icon {
+    font-size: 18px;
+}
+
+.dashboard-reports-tooltip:hover .dashboard-reports-tooltip-icon {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.dashboard-reports-tooltip-box {
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    height: auto;
+    width: 450px;
+    background-color: #555;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 10000;
+    top: 2em;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.dashboard-reports-tooltip-box::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent; 
+}
+
+.dashboard-reports-tooltip:hover .dashboard-reports-tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}
+
+.dashboard-reports-tooltip-text {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+    font-size: 16px;
+}
+
+.dashboard-reports-tooltip-sub-text {
+    width: 100%;
+    color: #fff;
+    text-align: justify;
+    font-size: 16px;
+}
+
 /*Section 1 Reports*/
 .dashboard-reports-box {
     display: inline-flex;
@@ -51,6 +250,7 @@
 .accident-frame:hover {
     background: #0A1B57;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
 }
 
 .selected-frame {
@@ -289,10 +489,12 @@
 
 .dashboard-reports-title-box {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     height: 100%;
     width: 100%;
     align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .dashboard-reports-title-box-text {
@@ -577,7 +779,7 @@
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .accident-frame {
-        width: 150px;
+        width: 140px;
         height: auto;
         margin-bottom: 10px;
     }
@@ -598,7 +800,7 @@
 /* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
     .accident-frame {
-        width: 120px;
+        width: 100px;
         height: auto;
         font-size: 10px;
         margin-bottom: 10px;
