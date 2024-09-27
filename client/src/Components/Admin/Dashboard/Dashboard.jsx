@@ -567,6 +567,7 @@ const Dashboard = () => {
                         {autoTrack && <FlyToLatestReport reports={reports} />}
                         <MarkerClusterGroup
                             iconCreateFunction={createClusterCustomIcon}
+                            chunkedLoading
                         >
 
                             {filteredReports.map(report => (
