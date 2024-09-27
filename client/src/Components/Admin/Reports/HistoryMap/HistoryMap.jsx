@@ -91,15 +91,15 @@ const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSel
         filterDiv.innerHTML = `
         <div class="filter-content-box">
             <div class="type-dropdown-box">
-                <button id="type-dropdown-button" class="type-dropdown-button" style="margin-right: 10px;">Sort by Type</button>
+                <button id="type-dropdown-button" class="type-dropdown-button" aria-label="Filter by report type" style="margin-right: 10px;">Sort by Type</button>
                 <div id="type-dropdown-content" class="type-dropdown-content" style="display: none; width: 94%;"></div>
             </div>
             <div class="month-dropdown-box">
-                <button id="month-dropdown-button" class="month-dropdown-button" style="margin-right: 10px;">Sort by Month</button>
+                <button id="month-dropdown-button" class="month-dropdown-button" aria-label="Filter by report month" style="margin-right: 10px;">Sort by Month</button>
                 <div id="month-dropdown-content" class="month-dropdown-content" style="display: none; width: 93%;"></div>
             </div>
             <div class="year-dropdown-box">
-                <button id="year-dropdown-button" class="year-dropdown-button">Sort by Year</button>
+                <button id="year-dropdown-button" class="year-dropdown-button" aria-label="Filter by report year" >Sort by Year</button>
                 <div id="year-dropdown-content" class="year-dropdown-content" style="display: none; width: 99%;"></div>
             </div>
         </div>
@@ -321,7 +321,14 @@ const HistoryMap = () => {
     return (
         <div className='history-maps-box'>
             <div className='history-maps-content'>
-                <MapContainer id="history-map" center={[14.5591613626185, 121.14011670582923]} zoom={15} scrollWheelZoom={false}>
+                <MapContainer
+                    id="history-map"
+                    center={[14.5591613626185, 121.14011670582923]}
+                    zoom={15}
+                    scrollWheelZoom={false}
+                    aria-hidden="false"
+                    aria-label="Interactive map showing various reports"
+                >
                     <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     />
@@ -330,8 +337,15 @@ const HistoryMap = () => {
                         {filteredData.map((entry, index) => (
                             <Marker
                                 key={entry._id}
-                                position={[parseFloat(entry.location.split(',')[0]), parseFloat(entry.location.split(',')[1])] }
+                                position={[parseFloat(entry.location.split(',')[0]), parseFloat(entry.location.split(',')[1])]}
                                 icon={getMapIcon(entry.type)}
+                                aria-label={`Marker for ${entry.type} report`}
+                                tabIndex="0"
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleViewReport(entry); // Open the report details on Enter key press
+                                    }
+                                }}
                             >
                                 <Popup>
                                     <div>

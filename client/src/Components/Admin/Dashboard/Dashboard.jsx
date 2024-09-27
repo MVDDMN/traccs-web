@@ -521,10 +521,21 @@ const Dashboard = () => {
 
                             </div>
                         </div>
-                        <button onClick={toggleAutoTrack} title="Toggle Auto-Tracking Button" className="toggle-button">
+                        <button
+                            onClick={toggleAutoTrack}
+                            title="Toggle Auto-Tracking Button"
+                            aria-label={autoTrack ? 'Disable Auto-Tracking' : 'Enable Auto-Tracking'}
+                            className="toggle-button"
+                        >
                             {autoTrack ? 'Disable' : 'Enable'} Auto-Tracking
                         </button>
-                        <button onClick={() => setShowCircles(prev => !prev)} title="Toggle Heatmap Button" className="toggle-button">
+
+                        <button
+                            onClick={() => setShowCircles(prev => !prev)}
+                            title="Toggle Heatmap Button"
+                            aria-label={showCircles ? 'Hide Heatmap' : 'Show Heatmap'}
+                            className="toggle-button"
+                        >
                             {showCircles ? 'Hide' : 'Show'} Heatmap
                         </button>
                     </div>
@@ -542,7 +553,13 @@ const Dashboard = () => {
                         center={[14.5591613626185, 121.14011670582923]}
                         zoom={15}
                         scrollWheelZoom={false}
+                        aria-hidden="false"
+                        aria-label="Interactive map showing various reports"
                     >
+                        {/* Invisible for visual users, only read by screen readers */}
+                        <div className="sr-only" aria-live="polite">
+                            Interactive map showing report locations. Use arrow keys to navigate.
+                        </div>
                         <TileLayer
                             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
@@ -550,7 +567,6 @@ const Dashboard = () => {
                         {autoTrack && <FlyToLatestReport reports={reports} />}
                         <MarkerClusterGroup
                             iconCreateFunction={createClusterCustomIcon}
-
                         >
 
                             {filteredReports.map(report => (
@@ -558,12 +574,18 @@ const Dashboard = () => {
                                     key={report._id}
                                     position={[parseFloat(report.location.split(',')[0]), parseFloat(report.location.split(',')[1])]}
                                     icon={getMapIcon(report.type)}
+                                    tabIndex="0"
+                                    aria-label={`Marker for ${report.type} report`}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleViewReport(entry); // Open the report details on Enter key press
+                                        }
+                                    }}
                                 >
-                                    <Tooltip>
+                                    <Tooltip direction="bottom" offset={[0, 10]}>
                                         Click to View {report.type} Report Details
-
                                     </Tooltip> {/* Removed 'permanent' */}
-                                    <Popup>
+                                    <Popup role="dialog" aria-labelledby={`report-details-${report._id}`}>
                                         <div>
                                             <h3><b>Name:</b> {report.name}</h3>
                                             <p><b>Type:</b> {report.type}</p>
@@ -653,14 +675,14 @@ const Dashboard = () => {
                                     <label className='dashboard-reports-tooltip-icon'>ⓘ</label>
                                     <div className='dashboard-reports-tooltip-box'>
                                         <label className='dashboard-reports-tooltip-text'>
-                                            
+
                                         </label>
                                         <label className='dashboard-reports-tooltip-sub-text'>
-                                        This section contains all information about the incident and the reporter. 
-                                        You can choose to either respond to or deny the report. 
-                                        If you select "Deny" a modal will appear asking for the reason for denial. 
-                                        After responding, you must click "Done" to confirm your action and store 
-                                        the report in the history tab for future reference.
+                                            This section contains all information about the incident and the reporter.
+                                            You can choose to either respond to or deny the report.
+                                            If you select "Deny" a modal will appear asking for the reason for denial.
+                                            After responding, you must click "Done" to confirm your action and store
+                                            the report in the history tab for future reference.
                                         </label>
                                     </div>
                                 </div>

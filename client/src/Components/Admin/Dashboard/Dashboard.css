@@ -15,7 +15,7 @@
 
 .dashboard-tooltip {
     position: relative;
-    display: inline-block; 
+    display: inline-block;
 }
 
 .dashboard-tooltip-icon {
@@ -105,8 +105,8 @@
     border-radius: 5px;
     position: absolute;
     z-index: 10000;
-    bottom: -74px;
-    left: -140px;
+    bottom: -85px;
+    left: -135px;
     transform: translateX(-50%);
     opacity: 0;
     transition: opacity 0.3s ease-in;
@@ -116,11 +116,12 @@
     content: '';
     position: absolute;
     top: 50%;
-    right: -18px; 
+    right: -18px;
     transform: translateY(-50%);
     border-width: 10px;
     border-style: solid;
-    border-color: transparent transparent transparent #555; /* Adjust the border-color to make the left side visible */
+    border-color: transparent transparent transparent #555;
+    /* Adjust the border-color to make the left side visible */
 }
 
 .dashboard-map-tooltip:hover .dashboard-map-tooltip-box {
@@ -190,7 +191,7 @@
     transform: translateX(-50%);
     border-width: 10px;
     border-style: solid;
-    border-color: transparent transparent #555 transparent; 
+    border-color: transparent transparent #555 transparent;
 }
 
 .dashboard-reports-tooltip:hover .dashboard-reports-tooltip-box {
@@ -670,6 +671,7 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
 /*End of Report Modal*/
 
 /* Deny Modal Overlay */
@@ -679,11 +681,13 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10000; /* Ensure it's on top */
+    z-index: 10000;
+    /* Ensure it's on top */
 }
 
 /* Deny Modal Content */
@@ -755,6 +759,17 @@
 .dashboard-deny-modal-submit-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 
 /* Media Queries for Responsiveness */
