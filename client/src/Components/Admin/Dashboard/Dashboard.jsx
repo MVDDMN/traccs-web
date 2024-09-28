@@ -553,7 +553,7 @@ const Dashboard = () => {
                         center={[14.5591613626185, 121.14011670582923]}
                         zoom={15}
                         scrollWheelZoom={false}
-                        aria-hidden="false"
+                        aria-hidden="true"
                         aria-label="Interactive map showing various reports"
                     >
                         {/* Invisible for visual users, only read by screen readers */}

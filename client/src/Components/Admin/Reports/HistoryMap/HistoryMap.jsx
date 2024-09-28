@@ -91,15 +91,15 @@ const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSel
         filterDiv.innerHTML = `
         <div class="filter-content-box">
             <div class="type-dropdown-box">
-                <button id="type-dropdown-button" class="type-dropdown-button" aria-label="Filter by report type" style="margin-right: 10px;">Sort by Type</button>
+                <button id="type-dropdown-button" class="type-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report type" style="margin-right: 10px;">Sort by Type</button>
                 <div id="type-dropdown-content" class="type-dropdown-content" style="display: none; width: 94%;"></div>
             </div>
             <div class="month-dropdown-box">
-                <button id="month-dropdown-button" class="month-dropdown-button" aria-label="Filter by report month" style="margin-right: 10px;">Sort by Month</button>
+                <button id="month-dropdown-button" class="month-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report month" style="margin-right: 10px;">Sort by Month</button>
                 <div id="month-dropdown-content" class="month-dropdown-content" style="display: none; width: 93%;"></div>
             </div>
             <div class="year-dropdown-box">
-                <button id="year-dropdown-button" class="year-dropdown-button" aria-label="Filter by report year" >Sort by Year</button>
+                <button id="year-dropdown-button" class="year-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report year" >Sort by Year</button>
                 <div id="year-dropdown-content" class="year-dropdown-content" style="display: none; width: 99%;"></div>
             </div>
         </div>
@@ -161,11 +161,9 @@ const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSel
 
         const toggleContent = (id) => {
             const content = filterDiv.querySelector(`#${id}`);
-            if (content.style.display === 'none') {
-                content.style.display = 'inline-flex';
-            } else {
-                content.style.display = 'none';
-            }
+            const isExpanded = content.style.display === 'inline-flex';
+            content.style.display = isExpanded ? 'none' : 'inline-flex';
+            filterDiv.querySelector(`#${id}-dropdown-button`).setAttribute('aria-expanded', !isExpanded);
         };
 
         L.DomEvent.on(filterDiv.querySelector('#type-dropdown-button'), 'click', () => toggleContent('type-dropdown-content'));
@@ -257,6 +255,8 @@ const HistoryMap = () => {
         setFilteredData(filteredByYear);
     }, [selectedTypes, selectedMonths, selectedYears, historyData]);
 
+    
+
     const handleViewReport = (history) => {
         setSelectedHistory(history);
         setIsModalOpen(true);
@@ -326,6 +326,7 @@ const HistoryMap = () => {
                     center={[14.5591613626185, 121.14011670582923]}
                     zoom={15}
                     scrollWheelZoom={false}
+                    keyboard={false}
                     aria-hidden="false"
                     aria-label="Interactive map showing various reports"
                 >
@@ -333,7 +334,9 @@ const HistoryMap = () => {
                         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     />
                     <FilterControl selectedTypes={selectedTypes} setSelectedTypes={setSelectedTypes} selectedMonths={selectedMonths} setSelectedMonths={setSelectedMonths} selectedYears={selectedYears} setSelectedYears={setSelectedYears} years={years} />
-                    <MarkerClusterGroup>
+                    <MarkerClusterGroup
+                        chunkedLoading
+                    >
                         {filteredData.map((entry, index) => (
                             <Marker
                                 key={entry._id}
@@ -347,7 +350,7 @@ const HistoryMap = () => {
                                     }
                                 }}
                             >
-                                <Popup>
+                                <Popup role="dialog" aria-labelledby="marker-popup">
                                     <div>
                                         <h3>{entry.name}</h3>
                                         <p><b>Type:</b> {entry.type}</p>
@@ -365,7 +368,11 @@ const HistoryMap = () => {
                                                 timeZone: 'UTC'
                                             })}
                                         </p>
-                                        <button onClick={() => handleViewReport(entry)} className="map-report-button">
+                                        <button
+                                            onClick={() => handleViewReport(entry)}
+                                            className="map-report-button"
+                                            aria-label={`View details for ${entry.name} report`}
+                                        >
                                             View Report
                                         </button>
                                     </div>
@@ -394,7 +401,7 @@ const HistoryMap = () => {
             )}
 
             {isModalOpen && selectedHistory && (
-                <div className="historymap-reports-modal">
+                <div className="historymap-reports-modal" role="dialog" aria-modal="true" aria-labelledby="history-map-reports" tabIndex="-1">
                     <div className="historymap-reports-modal-content">
                         <div className='historymap-reports-modal-content-box'>
                             <div className='historymap-close-modal-button-box'>
