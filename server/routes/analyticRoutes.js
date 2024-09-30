@@ -1,6 +1,6 @@
 const express = require("express");
-const historyModel = require('../models/history');
 const requestarchiveModel = require('../models/requestarchive');
+const archiveModel = require('../models/archive');
 const requestsModel = require('../models/request');
 const reportsModel = require('../models/reports');
 const router = express.Router();
@@ -96,7 +96,7 @@ router.get('/analytics/report-summary', async (req, res) => {
             };
         }
 
-        const reportSummary = await historyModel.aggregate([
+        const reportSummary = await archiveModel.aggregate([
             { $match: reportsQuery },
             {
                 $group: {
@@ -130,7 +130,7 @@ router.get('/analytics/response-time-summary', async (req, res) => {
             };
         }
 
-        const responseTimeSummary = await historyModel.aggregate([
+        const responseTimeSummary = await archiveModel.aggregate([
             {
                 $match: {
                     ...dateFilter,
@@ -146,12 +146,18 @@ router.get('/analytics/response-time-summary', async (req, res) => {
                             { $toDate: "$completion_date_time" },
                             { $toDate: "$respond_date_time" }
                         ]
-                    }
+                    },
+                    year: { $year: "$report_date_time" },
+                    month: { $month: "$report_date_time" }
                 }
             },
             {
                 $group: {
-                    _id: "$responder",
+                    _id: {
+                        responder: "$responder",
+                        year: "$year",
+                        month: "$month"
+                    },
                     averageResponseTime: { $avg: "$responseTime" }
                 }
             }
@@ -163,6 +169,7 @@ router.get('/analytics/response-time-summary', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 // Analytics Module - Route to fetch report frequency data with date range filtering
 router.get('/analytics/report-frequency', async (req, res) => {
@@ -180,7 +187,7 @@ router.get('/analytics/report-frequency', async (req, res) => {
             };
         }
 
-        const reportFrequency = await historyModel.aggregate([
+        const reportFrequency = await archiveModel.aggregate([
             { 
                 $match: matchStage // Apply the date range filter 
             },
@@ -195,15 +202,16 @@ router.get('/analytics/report-frequency', async (req, res) => {
             },
             {
                 $project: {
-                    _id: 0,
-                    month: "$_id.month",
-                    type: "$_id.type",
-                    count: 1
+                    _id: 0,                      // Remove default _id
+                    month: "$_id.month",          // Extract month from the _id
+                    type: "$_id.type",            // Extract type from the _id
+                    count: 1                      // Include count in the output
                 }
             },
             {
                 $sort: {
-                    month: 1 // Sort by month in ascending order
+                    month: 1, // Sort by month in ascending order
+                    type: 1   // Sort by type for better organization in charting
                 }
             }
         ]);
@@ -230,19 +238,52 @@ router.get('/analytics/report-stats', async (req, res) => {
             };
         }
 
-        const totalReports = await historyModel.countDocuments(reportsQuery);
-        const reports = await historyModel.find(reportsQuery);
+        const totalReports = await archiveModel.countDocuments(reportsQuery);
+        const reports = await archiveModel.find(reportsQuery);
 
-        // Calculate reports for today and this month based on the selected date range
+        // Initialize statistics
+        let resolvedReports = 0;
+        let deniedReports = 0;
+        let reportsByDate = {};
+        let respondersCount = {};
         const today = new Date();
         const todayISO = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' format
-
         let reportsThisMonth = 0;
         let reportsToday = 0;
+        let reportTypesSummary = {};
 
         reports.forEach(report => {
             const reportDate = new Date(report.report_date_time);
             const reportISO = reportDate.toISOString().split('T')[0];
+
+            // Count resolved and denied reports
+            if (report.status === 'Archived') {
+                resolvedReports++;
+            } else if (report.status === 'Denied') {
+                deniedReports++;
+            }
+
+            // Track reports by date for highest report day
+            if (!reportsByDate[reportISO]) {
+                reportsByDate[reportISO] = 0;
+            }
+            reportsByDate[reportISO]++;
+
+            // Count the number of responses by responder
+            if (report.responder) {
+                if (!respondersCount[report.responder]) {
+                    respondersCount[report.responder] = 0;
+                }
+                respondersCount[report.responder]++;
+            }
+
+            // Track report types
+            if (report.type) {
+                if (!reportTypesSummary[report.type]) {
+                    reportTypesSummary[report.type] = 0;
+                }
+                reportTypesSummary[report.type]++;
+            }
 
             // Check if it's the same month as today
             if (
@@ -258,7 +299,37 @@ router.get('/analytics/report-stats', async (req, res) => {
             }
         });
 
-        res.json({ totalReports, reportsThisMonth, reportsToday });
+        // Determine the date with the highest number of reports
+        let highestReportDate = null;
+        let highestReportCount = 0;
+        for (let [date, count] of Object.entries(reportsByDate)) {
+            if (count > highestReportCount) {
+                highestReportDate = date;
+                highestReportCount = count;
+            }
+        }
+
+        // Determine the responder with the highest responses
+        let highestResponder = null;
+        let highestResponseCount = 0;
+        for (let [responder, count] of Object.entries(respondersCount)) {
+            if (count > highestResponseCount) {
+                highestResponder = responder;
+                highestResponseCount = count;
+            }
+        }
+
+        res.json({
+            totalReports,
+            reportsThisMonth,
+            reportsToday,
+            resolvedReports,
+            deniedReports,
+            highestReportDate,
+            highestReportCount,
+            highestResponder,
+            reportTypesSummary
+        });
     } catch (error) {
         console.error('Error fetching report stats:', error);
         res.status(500).json({ error: 'Server error' });
@@ -278,6 +349,7 @@ router.get('/analytics/report-frequency-by-hour', async (req, res) => {
         const from = new Date(dateFrom);
         const to = new Date(dateTo);
 
+        // Ensure the dates are valid
         if (isNaN(from.getTime()) || isNaN(to.getTime())) {
             return res.status(400).json({ error: 'Invalid date format' });
         }
@@ -291,33 +363,33 @@ router.get('/analytics/report-frequency-by-hour', async (req, res) => {
         };
 
         // Use MongoDB aggregation to extract hours directly from the report_date_time field
-        const reportFrequency = await historyModel.aggregate([
+        const reportFrequency = await archiveModel.aggregate([
             { $match: reportsQuery }, // Apply the date range filter
             {
                 $group: {
                     _id: {
-                        hour: { $hour: "$report_date_time" }, // Extract the hour directly
-                        type: "$type"
+                        hour: { $hour: "$report_date_time" }, // Extract the hour of the report
+                        type: "$type"  // Group by type of report
                     },
-                    count: { $sum: 1 }
+                    count: { $sum: 1 }  // Count the number of reports for each group
                 }
             },
             {
                 $project: {
                     _id: 0,
-                    hour: "$_id.hour",
-                    type: "$_id.type",
-                    count: 1
+                    hour: "$_id.hour",  // Hour of the report
+                    type: "$_id.type",  // Type of report
+                    count: 1  // Number of reports
                 }
             },
             {
                 $sort: {
-                    hour: 1
+                    hour: 1  // Sort by hour (ascending)
                 }
             }
         ]);
 
-        // If no data is found, return early
+        // If no data is found, return early with empty arrays
         if (!reportFrequency.length) {
             return res.json({
                 labels: [],
@@ -326,34 +398,46 @@ router.get('/analytics/report-frequency-by-hour', async (req, res) => {
             });
         }
 
-        // Create labels in 12-hour format for the raw time
+        // Create labels for each hour (24-hour format converted to 12-hour format with AM/PM)
         const labels = Array.from({ length: 24 }, (_, index) => {
-            const hour12 = index % 12 || 12; // Convert to 12-hour format
-            const period = index < 12 ? 'AM' : 'PM'; // AM/PM period
+            const hour12 = index % 12 || 12; // Convert to 12-hour format (handles 0 as 12)
+            const period = index < 12 ? 'AM' : 'PM'; // Determine AM or PM
             return `${hour12}:00 ${period}`;
         });
 
-        // Initialize an array to hold the hourly report counts and report types
+        // Initialize arrays to store the report counts and types per hour
         const hourFrequency = Array(24).fill(0);
-        const reportTypesByHour = Array.from({ length: 24 }, () => []);
+        const reportTypesByHour = Array.from({ length: 24 }, () => []); // Holds types for each hour
 
-        // Populate the hourFrequency and reportTypesByHour arrays based on the results
+        // NEW: Initialize an object to store the breakdown of each hour's reports by type and their counts
+        const breakdownByHour = Array.from({ length: 24 }, () => ({})); 
+
+        // Populate the hourFrequency and reportTypesByHour arrays based on the aggregation results
         reportFrequency.forEach(report => {
             const hour = report.hour;
-            hourFrequency[hour] += report.count;
-            reportTypesByHour[hour].push(report.type);
+            hourFrequency[hour] += report.count;  // Increment report count for the specific hour
+            reportTypesByHour[hour].push(report.type);  // Store the report type for this hour
+
+            // NEW: Populate the breakdownByHour object to track how many reports each type has per hour
+            if (!breakdownByHour[hour][report.type]) {
+                breakdownByHour[hour][report.type] = 0;
+            }
+            breakdownByHour[hour][report.type] += report.count; // Increment count for this type
         });
 
+        // Send the response with labels, data (report counts per hour), report types, and the new breakdown
         res.json({
             labels,
-            data: hourFrequency,
-            reportTypes: reportTypesByHour
+            data: hourFrequency,  // Total reports per hour
+            reportTypes: reportTypesByHour,  // Types of reports per hour
+            breakdownByHour  // NEW: Detailed breakdown of how many reports of each type occurred per hour
         });
     } catch (err) {
         console.error('Error fetching report frequency by hour:', err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 // Analytics Module - Requests Stats
 router.get('/analytics/requests-stats', async (req, res) => {
@@ -432,7 +516,7 @@ router.get('/analytics/reports-summary-status', async (req, res) => {
     try {
         const totalReports = await reportsModel.countDocuments();
         const pendingReports = await reportsModel.countDocuments({ status: 'Pending' });
-        const completedReports = await historyModel.countDocuments({ status: 'Archived' });
+        const completedReports = await archiveModel.countDocuments({ status: 'Archived' });
         const inProgressReports = await reportsModel.countDocuments({ status: 'Responded' });
 
         res.json({

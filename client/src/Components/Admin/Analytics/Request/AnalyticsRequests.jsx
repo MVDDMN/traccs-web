@@ -45,7 +45,7 @@ const AnalyticsRequests = () => {
                     <div className='analyticsrequests-dropdown-container'>
                         <label>Select a Chart:</label>
                         <select value={selectedChart} onChange={handleChartChange} className='analyticsrequests-dropdown'>
-                            <option value="RequestsStats">Request Performance Statistics</option>
+                            <option value="RequestsStats">Request Statistics</option>
                             <option value="TypeSummary">Request Type Summary</option>
                             <option value="BarangaySummary">Request Barangay Summary</option>
                             <option value="PieSummary">Request Pie Chart Summary</option>

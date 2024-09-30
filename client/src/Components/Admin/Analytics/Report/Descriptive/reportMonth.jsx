@@ -43,50 +43,74 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
 
     // Function to generate descriptive trends based on the data
     const generateReportDescription = (data) => {
-        let positiveDescription = "";
-        let negativeDescription = "";
+        let reportSummary = "";
 
         const totalReports = data.reduce((sum, report) => sum + report.count, 0);
-
-        if (totalReports > 100) {
-            positiveDescription += `There has been a significant number of reports, totaling ${totalReports} across the selected date range. `;
-        } else {
-            negativeDescription += `The total number of reports for this period is relatively low, with only ${totalReports} reports. `;
-        }
-
-        const mostCommonType = data.reduce((prev, current) => (prev.count > current.count) ? prev : current, {});
-        if (mostCommonType) {
-            positiveDescription += `The most reported type is "${mostCommonType.type}", which occurred ${mostCommonType.count} times. `;
-        }
-
-        const leastCommonType = data.reduce((prev, current) => (prev.count < current.count) ? prev : current, {});
-        if (leastCommonType && leastCommonType.count > 0) {
-            negativeDescription += `Interestingly, the least reported type is "${leastCommonType.type}" with only ${leastCommonType.count} occurrences. `;
-        }
-
-        const monthWithMostReports = data.reduce((acc, curr) => {
-            const monthIndex = parseInt(curr.month) - 1;
+        const reportByMonth = data.reduce((acc, curr) => {
+            const monthIndex = curr.month - 1; // Convert to 0-based index for arrays
             acc[monthIndex] = (acc[monthIndex] || 0) + curr.count;
             return acc;
-        }, Array(12).fill(0)).indexOf(Math.max(...data.map(item => item.count)));
+        }, Array(12).fill(0)); // Array to store monthly counts
+
+        const monthWithMostReports = reportByMonth.indexOf(Math.max(...reportByMonth));
+        const monthWithMostReportsCount = Math.max(...reportByMonth);
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const previousMonthIndex = monthWithMostReports === 0 ? 11 : monthWithMostReports - 1;
+        const previousMonthCount = reportByMonth[previousMonthIndex];
 
         if (monthWithMostReports >= 0) {
-            positiveDescription += `The month with the most reports is ${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][monthWithMostReports]}. `;
+            reportSummary += `The month with the most received reports is ${monthNames[monthWithMostReports]} with a total of ${monthWithMostReportsCount} reports. `;
         }
 
-        const monthWithLeastReports = data.reduce((acc, curr) => {
-            const monthIndex = parseInt(curr.month) - 1;
-            acc[monthIndex] = (acc[monthIndex] || 0) + curr.count;
+        // Only show the comparison if there is data for the previous month
+        if (previousMonthCount > 0) {
+            const percentageChange = ((monthWithMostReportsCount - previousMonthCount) / previousMonthCount) * 100;
+            if (percentageChange > 0) {
+                reportSummary += `This shows an increase of ${percentageChange.toFixed(2)}% in the total number of reports compared to ${monthNames[previousMonthIndex]}. `;
+            } else {
+                reportSummary += `This shows a decrease of ${Math.abs(percentageChange).toFixed(2)}% in the total number of reports compared to ${monthNames[previousMonthIndex]}. `;
+            }
+        }
+
+        // Find the most prevalent report type in that month
+        const reportByType = data.reduce((acc, curr) => {
+            if (!acc[curr.type]) {
+                acc[curr.type] = 0;
+            }
+            acc[curr.type] += curr.count;
             return acc;
-        }, Array(12).fill(0)).indexOf(Math.min(...data.map(item => item.count)));
+        }, {});
 
-        if (monthWithLeastReports >= 0) {
-            negativeDescription += `The month with the least reports is ${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][monthWithLeastReports]}. `;
+        const prevalentReportType = Object.keys(reportByType).reduce((a, b) => reportByType[a] > reportByType[b] ? a : b);
+        const prevalentReportCount = reportByType[prevalentReportType];
+
+        if (prevalentReportType && prevalentReportCount) {
+            reportSummary += `The most prevalent report type in ${monthNames[monthWithMostReports]} is "${prevalentReportType}" with a total of ${prevalentReportCount} reports. `;
         }
 
-        // Combine positive and negative trends into one summary
-        const unifiedTrends = `${positiveDescription} ${negativeDescription}`;
-        setReportSummary(unifiedTrends || "No significant trends detected.");
+        // Add suggestive narratives based on the prevalent report type
+        const suggestiveNarrative = getSuggestionBasedOnType(prevalentReportType);
+        reportSummary += suggestiveNarrative;
+
+        setReportSummary(reportSummary || "No significant trends detected.");
+    };
+
+    // Function to get suggestive narratives based on the most prevalent report type
+    const getSuggestionBasedOnType = (reportType) => {
+        switch (reportType) {
+            case 'Fire':
+                return 'Consider enhancing fire safety protocols, ensuring that fire extinguishers are accessible and up to date, and conducting fire drills for staff and residents. ';
+            case 'Police':
+                return 'Review security protocols and increase surveillance in areas with a high crime rate. Work with local law enforcement to increase patrols and community safety initiatives. ';
+            case 'Hazard':
+                return 'Conduct safety inspections and mitigate potential hazards in public areas. Ensure that any identified hazards are clearly marked or removed to prevent accidents. ';
+            case 'Medical':
+                return 'Ensure that first-aid kits are fully stocked and accessible. Provide first-aid training to staff and ensure that emergency contact information is readily available. ';
+            case 'Assistance':
+                return 'Ensure that resources are allocated efficiently to assist those in need. Consider setting up an efficient communication system to respond to assistance requests promptly. ';
+            default:
+                return 'No specific actions recommended for the prevalent report type. Continue monitoring the situation closely. ';
+        }
     };
 
     return (

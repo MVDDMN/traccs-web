@@ -43,11 +43,11 @@ const AnalyticsReports = () => {
           <div className='analyticsreports-dropdown-container'>
             <label>Select a Chart:</label>
             <select value={selectedChart} onChange={handleChartChange} className='analyticsreports-dropdown'>
-              <option value="ReportStats">Report Performance Statistics</option>
+              <option value="ReportStats">Report Statistics</option>
               <option value="ReportSummary">Report Summary by Type</option>
               <option value="ReportTime">Report Frequency per Hour</option>
               <option value="ReportFrequency">Report Frequency per Month</option>
-              <option value="ResponseTime">Response Average Time</option>
+              <option value="ResponseTime">Average Response Time</option>
             </select>
           </div>
 

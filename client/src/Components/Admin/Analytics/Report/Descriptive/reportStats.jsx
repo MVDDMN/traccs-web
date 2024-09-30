@@ -7,10 +7,10 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     : import.meta.env.VITE_API_BASE_URL;
 
 const ReportStats = ({ dateFrom, dateTo }) => {
-    const [stats, setStats] = useState({ totalReports: 0, reportsThisMonth: 0, reportsToday: 0 });
+    const [stats, setStats] = useState({ totalReports: 0, reportsThisMonth: 0, reportsToday: 0, resolvedReports: 0, deniedReports: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [noData, setNoData] = useState(false);  // Track if no data is available
+    const [noData, setNoData] = useState(false); // Track if no data is available
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -46,30 +46,40 @@ const ReportStats = ({ dateFrom, dateTo }) => {
             return "Loading report analysis...";
         }
 
-        let reportDescription = "Analyzing the current trends, ";
-
-        if (stats.reportsToday > 0) {
-            reportDescription += `there have been ${stats.reportsToday} reports today. `;
-        } else {
-            reportDescription += "no reports have been filed today. ";
+        if (noData) {
+            return "No data available for the selected date range."; 
         }
 
-        if (stats.reportsThisMonth > 0) {
-            reportDescription += `This month has seen a total of ${stats.reportsThisMonth} reports so far. `;
-        } else {
-            reportDescription += "There have been no reports this month. ";
+        let reportDescription = `Within the selected dates, there are ${stats.totalReports} total reports. Of these, ${stats.resolvedReports} have been resolved, and ${stats.deniedReports} were denied due to valid reasons. `;
+
+        // Narrative for the day with the highest reports
+        if (stats.highestReportDate && stats.highestReportCount > 0) {
+            const highestReportDate = new Date(stats.highestReportDate);
+            const formattedDate = highestReportDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            reportDescription += `${formattedDate} saw the highest number of reports, with ${stats.highestReportCount} reports. `;
         }
 
-        if (stats.totalReports > 0) {
-            reportDescription += `Overall, the total number of reports for the selected period is ${stats.totalReports}. `;
-        } else {
-            reportDescription += "No reports have been filed for the selected period. ";
+        // Narrative if there are more than 10 reports today
+        if (stats.reportsToday > 10) {
+            reportDescription += `There has been an unusually high number of reports today, with more than ${stats.reportsToday} incidents reported.`;
         }
 
-        if (stats.reportsThisMonth > stats.totalReports / 12) {
-            reportDescription += "The current month shows an above-average number of reports compared to previous months. ";
-        } else {
-            reportDescription += "The report activity this month is below the expected average. ";
+        // Add the highest responder in today's reports
+        if (stats.highestResponder) {
+            reportDescription += `The highest number of responses came from ${stats.highestResponder}. `;
+        }
+
+        // Summary of report types and their counts
+        if (stats.reportTypesSummary) {
+            const typesSummary = Object.entries(stats.reportTypesSummary)
+                .map(([type, count]) => `${type}: ${count}`)
+                .join(', ');
+
+            reportDescription += `In complete summary, the report types involved were: ${typesSummary}, with a total of ${stats.totalReports} reports.`;
         }
 
         return reportDescription;
@@ -79,7 +89,7 @@ const ReportStats = ({ dateFrom, dateTo }) => {
         <div className='desc-reportstats-container'>
             <div className='desc-reportstats-title'>
                 <label className='desc-reportstats-title-text'>
-                    Report Descriptive Summary 
+                    Report Descriptive Summary
                 </label>
             </div>
 
@@ -90,7 +100,6 @@ const ReportStats = ({ dateFrom, dateTo }) => {
                     <p>No data available for the selected date range.</p>
                 ) : (
                     <div className='desc-reportstats-trends-box'>
-                        
                         <p>{generateUnifiedReportDescription()}</p>
                     </div>
                 )}

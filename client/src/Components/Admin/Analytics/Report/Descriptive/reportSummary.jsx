@@ -46,20 +46,92 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
         const totalReports = data.reduce((sum, report) => sum + report.totalReports, 0);
 
         if (totalReports > 100) {
-            reportDescription += `There has been a high volume of reports with over ${totalReports} incidents recorded. `;
+            reportDescription += `There have been over ${totalReports} reports during the selected period. `;
         } else {
-            reportDescription += `The number of reported incidents is relatively low, with only ${totalReports} reports recorded. `;
+            reportDescription += `A total of ${totalReports} reports were submitted in the selected period. `;
         }
 
+        // Mapping report types to descriptions
+        const reportTypes = {
+            "Fire": "fire-related",
+            "Police": "police-related",
+            "Accident": "vehicular accident-related",
+            "Medical": "medical-related",
+            "Hazard": "hazard-related",
+            "Assistance": "assistance-related"
+        };
+
+        // Filter out report types with zero counts
+        const nonZeroReportTypes = Object.keys(reportTypes).filter(type => {
+            const count = data.find(report => report._id === type)?.totalReports || 0;
+            return count > 0;
+        });
+
+        // Generate detailed breakdown for non-zero report types
+        let detailedBreakdown = `Within the selected dates, there are ${totalReports} reports: `;
+        detailedBreakdown += nonZeroReportTypes.map(type => {
+            const count = data.find(report => report._id === type)?.totalReports || 0;
+            return `${count} ${reportTypes[type]} reports`;
+        }).join(", ") + ".";
+
+        reportDescription += detailedBreakdown + " ";
+
+        // Determine the most common type of report and apply its narrative
         const mostCommonType = data.reduce((prev, current) => (prev.totalReports > current.totalReports) ? prev : current, {});
         if (mostCommonType) {
-            reportDescription += `The most common type of report is "${mostCommonType._id}" with ${mostCommonType.totalReports} cases. `;
+            switch (mostCommonType._id) {
+                case "Accident":
+                    reportDescription += "The most frequently submitted reports pertain to vehicular accidents. These reports highlight the urgent need for increased awareness and safety measures during the specified reporting period. ";
+                    break;
+                case "Medical":
+                    reportDescription += "A substantial number of medical reports document health-related incidents. This underscores the importance of timely medical assistance and the necessity for ongoing health education throughout the reporting period. ";
+                    break;
+                case "Fire":
+                    reportDescription += "Reports related to fire incidents emphasize the critical need for fire safety protocols and community preparedness in response to these emergencies during the reporting period. ";
+                    break;
+                case "Police":
+                    reportDescription += "The low frequency of police reports indicates a need for greater community engagement and awareness regarding law enforcement issues during the specified timeframe. ";
+                    break;
+                case "Assistance":
+                    reportDescription += "Reports concerning community assistance showcase the support available to residents. They highlight the significance of collaboration in addressing community needs during the reporting period. ";
+                    break;
+                case "Hazard":
+                    reportDescription += "Hazard reports identify potential environmental risks, emphasizing the importance of hazard recognition and mitigation efforts during the specified reporting period. ";
+                    break;
+                default:
+                    reportDescription += "There is no significant trend for any specific report type. ";
+                    break;
+            }
         }
 
-        const leastCommonType = data.reduce((prev, current) => (prev.totalReports < current.totalReports) ? prev : current, {});
-        if (leastCommonType) {
-            reportDescription += `Interestingly, the least common report type is "${leastCommonType._id}", with only ${leastCommonType.totalReports} cases. `;
-        }
+        // Check each non-zero report type for exceeding 10 reports and append alarm messages
+        //nonZeroReportTypes.forEach(type => {
+        //    const count = data.find(report => report._id === type)?.totalReports || 0;
+        //    if (count > 10) {
+        //        switch (type) {
+        //            case "Accident":
+        //                reportDescription += `Alert: With ${count} vehicular accident reports, immediate implementation of traffic safety measures is recommended to mitigate further incidents. `;
+        //                break;
+        //            case "Medical":
+        //                reportDescription += `Alert: The high number of medical reports (${count}) necessitates enhanced medical resources and rapid response teams to address health emergencies effectively. `;
+        //                break;
+        //            case "Fire":
+        //               reportDescription += `Alert: ${count} fire-related reports indicate a pressing need for reinforced fire safety protocols and community training programs to prevent future occurrences. `;
+        //                break;
+        //            case "Police":
+        //                reportDescription += `Alert: An increase to ${count} police reports suggests the necessity for heightened community policing efforts and public awareness campaigns to ensure law and order. `;
+        //                break;
+        //            case "Assistance":
+        //                reportDescription += `Alert: With ${count} assistance reports, it's crucial to bolster community support systems and resource allocation to address residents' needs promptly. `;
+        //               break;
+        //            case "Hazard":
+        //                reportDescription += `Alert: The ${count} hazard reports highlight urgent environmental risks that require immediate attention and mitigation strategies to ensure community safety. `;
+        //                break;
+        //            default:
+        //                break;
+        //        }
+        //    }
+        //});
 
         setReportSummary(reportDescription || "There are no significant trends to report at the moment.");
     };

@@ -24,22 +24,45 @@ const ReportTime = ({ dateFrom, dateTo }) => {
                     params: { dateFrom, dateTo } // Pass the date range to the backend
                 });
 
-                const { labels, data, reportTypes } = response.data;
+                const { labels, breakdownByHour } = response.data;
 
                 // Check if there's data to display
-                if (data && data.length > 0 && data.some(count => count > 0)) {  // Ensure that there is data greater than 0
+                if (breakdownByHour && breakdownByHour.length > 0) {  // Ensure that there is data
+                    const datasets = [];
+                    const reportTypeColors = {};  // To store unique colors for each report type
+                    let colorIndex = 0;  // To cycle through colors
+
+                    // Iterate over each hour and populate the datasets
+                    breakdownByHour.forEach((breakdown, hour) => {
+                        Object.keys(breakdown).forEach((reportType) => {
+                            // Check if report type is already in datasets
+                            const existingDataset = datasets.find(dataset => dataset.label === reportType);
+
+                            // Assign a unique color to each report type
+                            if (!reportTypeColors[reportType]) {
+                                reportTypeColors[reportType] = `hsl(${colorIndex * 50}, 70%, 50%)`; // Generate color
+                                colorIndex += 1;
+                            }
+
+                            if (existingDataset) {
+                                // Add the report count for this hour
+                                existingDataset.data[hour] = breakdown[reportType];
+                            } else {
+                                // Create a new dataset for this report type
+                                datasets.push({
+                                    label: reportType,
+                                    data: Array(labels.length).fill(0).map((_, idx) => (idx === hour ? breakdown[reportType] : 0)),  // Only set the data for the current hour
+                                    backgroundColor: reportTypeColors[reportType],
+                                    borderColor: reportTypeColors[reportType],
+                                    borderWidth: 1,
+                                });
+                            }
+                        });
+                    });
+
                     setChartData({
                         labels,
-                        datasets: [
-                            {
-                                label: 'Number of Reports',
-                                data,
-                                backgroundColor: '#0E267C',
-                                borderColor: '#0E267C',
-                                borderWidth: 1,
-                                reportTypes, // Include report types in the dataset
-                            },
-                        ],
+                        datasets,
                     });
                 } else {
                     setNoData(true);  // No data available for the selected date range
@@ -60,7 +83,7 @@ const ReportTime = ({ dateFrom, dateTo }) => {
     return (
         <div className="report-time-chart-container">
             <div className="report-time-chart-header">
-                <a className="report-time-chart-title">Report Frequency by Hour</a>
+                <a className="report-time-chart-title">Report Frequency by Hour </a>
             </div>
             <div className="report-time-chart">
                 {loading ? (
@@ -77,6 +100,7 @@ const ReportTime = ({ dateFrom, dateTo }) => {
                             maintainAspectRatio: false,
                             scales: {
                                 x: {
+                                    stacked: true,  // Enable stacking on the x-axis
                                     beginAtZero: true,
                                     title: {
                                         display: true,
@@ -84,6 +108,7 @@ const ReportTime = ({ dateFrom, dateTo }) => {
                                     },
                                 },
                                 y: {
+                                    stacked: true,  // Enable stacking on the y-axis
                                     beginAtZero: true,
                                     title: {
                                         display: true,
@@ -98,11 +123,7 @@ const ReportTime = ({ dateFrom, dateTo }) => {
                                 tooltip: {
                                     callbacks: {
                                         label: function (tooltipItem) {
-                                            const reportTypes = tooltipItem.dataset.reportTypes[tooltipItem.dataIndex];
-                                            return [
-                                                `Reports: ${tooltipItem.raw}`,
-                                                `Types: ${reportTypes.join(', ')}`,
-                                            ];
+                                            return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
                                         },
                                     },
                                 },

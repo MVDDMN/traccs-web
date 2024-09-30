@@ -3,72 +3,59 @@ import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
 import './ResponseTime.css';
 
-// Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
     : import.meta.env.VITE_API_BASE_URL;
 
-const ResponseTime = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo as props
+const ResponseTime = ({ dateFrom, dateTo }) => {
     const [chartData, setChartData] = useState({
-        labels: [],
-        datasets: [
-            {
-                label: 'Average Completion Time (minutes)',
-                data: [],
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-            }
-        ],
+        labels: [], // X-axis labels for responders
+        datasets: [] // Each barangay will be its own dataset
     });
-    const [averageResponseTimesInText, setAverageResponseTimesInText] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [noData, setNoData] = useState(false); // Track if no data is available
+    const [noData, setNoData] = useState(false);
 
     useEffect(() => {
         const fetchResponseTimeSummary = async () => {
             setLoading(true);
-            setNoData(false); // Reset no data state
+            setNoData(false);
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/analytics/response-time-summary`, {
-                    params: { dateFrom, dateTo } // Pass the date range to the backend
+                    params: { dateFrom, dateTo }
                 });
                 const data = response.data;
 
-                // Check if data exists
                 if (data && data.length > 0) {
-                    const responders = data.map(item => item._id);
-                    const averageResponseTimes = data.map(item => {
-                        const totalMinutes = item.averageResponseTime / (1000 * 60); // Convert ms to minutes
-                        return `${Math.floor(totalMinutes)}m`;
-                    });
+                    // Prepare labels and datasets
+                    const responders = data.map(item => item._id.responder);
+                    const averageResponseTimes = data.map(item => item.averageResponseTime / 1000); // Convert ms to seconds
+
+                    // Create datasets for each barangay
+                    const datasets = responders.map((responder, index) => ({
+                        label: responder,
+                        data: [averageResponseTimes[index]], // Data point for the responder
+                        backgroundColor: '#0E267C',
+                        borderColor: '#0E267C',
+                        borderWidth: 1,
+                    }));
 
                     setChartData({
-                        labels: responders,
-                        datasets: [
-                            {
-                                label: 'Average Completion Time (minutes)',
-                                data: data.map(item => item.averageResponseTime / (1000 * 60)), // Convert ms to minutes
-                                backgroundColor: '#0E267C',
-                                borderColor: '#0E267C',
-                                borderWidth: 1,
-                            }
-                        ],
+                        labels: ['Average Response Time'], // Single label for the X-axis
+                        datasets: datasets, // Set each barangay as its own dataset
                     });
-
-                    setAverageResponseTimesInText(averageResponseTimes);
                 } else {
-                    setNoData(true); // No data available for the selected date range
+                    setNoData(true);
                 }
             } catch (error) {
                 console.error('Error fetching the response time summary', error);
+                setNoData(true); // Set no data to true if there's an error
             } finally {
                 setLoading(false);
             }
         };
 
         if (dateFrom && dateTo) {
-            fetchResponseTimeSummary(); // Fetch data only when both dateFrom and dateTo are set
+            fetchResponseTimeSummary();
         }
     }, [dateFrom, dateTo]);
 
@@ -99,15 +86,25 @@ const ResponseTime = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo 
                                 y: {
                                     title: {
                                         display: true,
-                                        text: 'Minutes',
+                                        text: 'Time (minutes and seconds)',
                                     },
+                                    ticks: {
+                                        callback: function(value) {
+                                            const minutes = Math.floor(value / 60);
+                                            const seconds = Math.floor(value % 60);
+                                            return `${minutes}m ${seconds}s`; // Format Y-axis ticks as Xm Ys
+                                        }
+                                    }
                                 }
                             },
                             plugins: {
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
-                                            return ` ${averageResponseTimesInText[context.dataIndex]}`;
+                                            const totalSeconds = context.dataset.data[0];
+                                            const minutes = Math.floor(totalSeconds / 60);
+                                            const seconds = Math.floor(totalSeconds % 60);
+                                            return `${context.dataset.label}: ${minutes}m ${seconds}s`; // Format tooltip
                                         }
                                     }
                                 }
