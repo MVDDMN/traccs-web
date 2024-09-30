@@ -12,10 +12,8 @@
 
 .desc-barangaysummary-title {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 10px;
     width: 100%;
+    margin-bottom: 10px;
 }
 
 .desc-barangaysummary-title-text {
@@ -26,35 +24,24 @@
 
 .desc-barangaysummary-content-box {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     width: 100%;
     height: 100%;
     padding: 10px;
-    gap: 5px;
     background-color: lightgray;
     border-radius: 8px;
     box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.desc-barangaysummary-positives-box,
-.desc-barangaysummary-negatives-box {
-    width: 45%;
+.desc-barangaysummary-trends-box {
+    width: 100%;
     padding: 15px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: center;
 }
 
-.desc-barangaysummary-positives-box h2,
-.desc-barangaysummary-negatives-box h2 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.desc-barangaysummary-positives-box p,
-.desc-barangaysummary-negatives-box p {
+.desc-barangaysummary-trends-box p {
     font-size: 14px;
     color: #555;
     line-height: 1.5;
@@ -72,7 +59,6 @@
 @media (max-width: 1800px) {
     .desc-barangaysummary-container {
         height: 400px;
-        padding: 20px;
     }
 }
 
@@ -80,7 +66,13 @@
 @media (max-width: 1600px) {
     .desc-barangaysummary-container {
         height: 300px;
-        padding: 20px;
+    }
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .desc-barangaysummary-container {
+        height: 220px;
     }
     .desc-barangaysummary-title-text {
         font-size: 16px;
@@ -88,24 +80,10 @@
     .desc-barangaysummary-content-box {
         padding: 5px;
     }
-    .desc-barangaysummary-positives-box,
-    .desc-barangaysummary-negatives-box {
+    .desc-barangaysummary-trends-box {
         padding: 10px;
     }
-    .desc-barangaysummary-positives-box h2,
-    .desc-barangaysummary-negatives-box h2 {
-        font-size: 10px;
-    }
-    .desc-barangaysummary-positives-box p,
-    .desc-barangaysummary-negatives-box p {
-        font-size: 10px;
-    }
-}
-
-/* For screen sizes 1800px and below */
-@media (max-width: 1300px) {
-    .desc-barangaysummary-container {
-        height: 220px;
-        padding: 20px;
+    .desc-barangaysummary-trends-box p {
+        font-size: 12px;
     }
 }

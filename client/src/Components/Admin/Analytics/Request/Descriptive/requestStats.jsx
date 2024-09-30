@@ -8,8 +8,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 
 const RequestStats = ({ dateFrom, dateTo }) => {
     const [stats, setStats] = useState({ totalRequests: 0, requestsThisMonth: 0, requestsToday: 0 });
-    const [positiveTrends, setPositiveTrends] = useState('');
-    const [negativeTrends, setNegativeTrends] = useState('');
+    const [reportSummary, setReportSummary] = useState(''); // Unified state for trends
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false); // Track if no data is available
 
@@ -44,8 +43,7 @@ const RequestStats = ({ dateFrom, dateTo }) => {
     }, [dateFrom, dateTo]);
 
     const generateReportDescription = (data) => {
-        let positiveDescription = '';
-        let negativeDescription = '';
+        let reportDescription = '';
 
         const { totalRequests, requestsThisMonth, requestsToday } = data;
 
@@ -53,47 +51,40 @@ const RequestStats = ({ dateFrom, dateTo }) => {
         if (totalRequests > 0 || requestsThisMonth > 0 || requestsToday > 0) {
             // Check overall total requests
             if (totalRequests > 100) {
-                positiveDescription += `A significant number of requests have been recorded with over ${totalRequests} requests in total. `;
+                reportDescription += `A significant number of requests have been recorded with over ${totalRequests} requests in total. `;
             }
 
             // Negative Trend: Very low total requests
             if (totalRequests < 10) {
-                negativeDescription += `The total number of requests is alarmingly low, with only ${totalRequests} requests recorded so far. `;
+                reportDescription += `The total number of requests is alarmingly low, with only ${totalRequests} requests recorded so far. `;
             }
 
             // Compare this month's requests with the average per month
             if (requestsThisMonth > totalRequests / 12) {
-                positiveDescription += `This month has seen above-average activity with ${requestsThisMonth} requests, indicating a possible trend in higher monthly requests. `;
+                reportDescription += `This month has seen above-average activity with ${requestsThisMonth} requests, indicating a possible trend in higher monthly requests. `;
             } else if (requestsThisMonth < totalRequests / 12) {
-                negativeDescription += `This month has seen below-average activity, with only ${requestsThisMonth} requests compared to the typical monthly average. `;
+                reportDescription += `This month has seen below-average activity, with only ${requestsThisMonth} requests compared to the typical monthly average. `;
             }
 
-            // Negative Trend: No requests today
+            // No requests today
             if (requestsToday === 0) {
-                negativeDescription += `No new requests have been made today, which could indicate a drop in user engagement. `;
+                reportDescription += `No new requests have been made today, which could indicate a drop in user engagement. `;
             }
 
-            // Negative Trend: Significant drop in requests compared to previous day/week
-            if (requestsToday < (requestsThisMonth / 30)) {
-                negativeDescription += `Today's request volume is below the expected daily average, indicating a drop in user activity. `;
+            // Drop in requests today compared to monthly average
+            if (requestsToday < requestsThisMonth / 30) {
+                reportDescription += `Today's request volume is below the expected daily average, indicating a drop in user activity. `;
             }
 
-            // Negative Trend: Few requests this month (Less than expected monthly activity)
+            // Very low requests this month
             if (requestsThisMonth < 5) {
-                negativeDescription += `The number of requests this month is very low, which may signal a decline in user interest or system use. `;
+                reportDescription += `The number of requests this month is very low, which may signal a decline in user interest or system use. `;
             }
 
-            // No data fallback check
-            setNoData(!(positiveDescription || negativeDescription));
-
-            // Set positive and negative trends based on the generated descriptions
-            setPositiveTrends(positiveDescription);
-            setNegativeTrends(negativeDescription);
+            setReportSummary(reportDescription || "There are no significant trends to report.");
         } else {
-            // If no meaningful data, make sure to show no trends
             setNoData(true);
-            setPositiveTrends('');
-            setNegativeTrends('');
+            setReportSummary('There are no significant trends to report.');
         }
     };
 
@@ -111,20 +102,9 @@ const RequestStats = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        {positiveTrends && (
-                            <div className='desc-requeststats-positives-box'>
-                                <h2>Positive Trends</h2>
-                                <p>{positiveTrends}</p>
-                            </div>
-                        )}
-                        {negativeTrends && (
-                            <div className='desc-requeststats-negatives-box'>
-                                <h2>Negative Trends</h2>
-                                <p>{negativeTrends}</p>
-                            </div>
-                        )}
-                    </>
+                    <div className='desc-requeststats-trends-box'>
+                        <p>{reportSummary}</p>
+                    </div>
                 )}
             </div>
         </div>

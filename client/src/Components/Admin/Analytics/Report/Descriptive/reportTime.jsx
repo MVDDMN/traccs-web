@@ -9,8 +9,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 
 const ReportTime = ({ dateFrom, dateTo }) => {
     const [reportData, setReportData] = useState([]);
-    const [positiveTrends, setPositiveTrends] = useState("");
-    const [negativeTrends, setNegativeTrends] = useState("");
+    const [reportSummary, setReportSummary] = useState(""); // Unified state for trends
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false); // Track if no data is available
 
@@ -26,7 +25,7 @@ const ReportTime = ({ dateFrom, dateTo }) => {
                 const { data } = response; // Assuming data is the main response
                 if (data && data.data && data.data.length > 0 && data.data.some(count => count > 0)) {
                     setReportData(data);
-                    generateReportDescription(data); // Call the auto-generative report logic after data is fetched
+                    generateReportDescription(data); // Generate unified report description
                 } else {
                     setNoData(true); // No data available for the selected date range
                 }
@@ -49,18 +48,17 @@ const ReportTime = ({ dateFrom, dateTo }) => {
         return `${hour12}:00 ${period}`;
     };
 
-    // Function to generate descriptive report based on trends
+    // Function to generate unified report description based on trends
     const generateReportDescription = (data) => {
-        let positiveDescription = "";
-        let negativeDescription = "";
+        let reportDescription = "";
 
         const totalReports = data.data.reduce((sum, count) => sum + count, 0);
 
         // Check if there were significant reports overall
         if (totalReports > 100) {
-            positiveDescription += `There has been a high volume of reports, with over ${totalReports} incidents recorded across the selected date range. `;
+            reportDescription += `There has been a high volume of reports, with over ${totalReports} incidents recorded across the selected date range. `;
         } else {
-            negativeDescription += `The number of reports was relatively low, with only ${totalReports} incidents recorded. `;
+            reportDescription += `The number of reports was relatively low, with only ${totalReports} incidents recorded. `;
         }
 
         // Find the most active hour and the least active hour
@@ -68,13 +66,13 @@ const ReportTime = ({ dateFrom, dateTo }) => {
         const leastActiveHour = data.data.reduce((prev, count, index) => (count < prev.count && count > 0 ? { count, hour: index } : prev), { count: Infinity });
 
         if (mostActiveHour.count > 0) {
-            positiveDescription += `The hour with the most reports was ${formatHour12(mostActiveHour.hour)}, with ${mostActiveHour.count} reports recorded. `;
+            reportDescription += `The hour with the most reports was ${formatHour12(mostActiveHour.hour)}, with ${mostActiveHour.count} reports recorded. `;
         }
 
         if (leastActiveHour.count > 0 && leastActiveHour.count !== Infinity) {
-            negativeDescription += `The hour with the least reports was ${formatHour12(leastActiveHour.hour)}, with only ${leastActiveHour.count} reports. `;
+            reportDescription += `The hour with the least reports was ${formatHour12(leastActiveHour.hour)}, with only ${leastActiveHour.count} reports. `;
         } else {
-            negativeDescription += "Some hours had no reports, indicating periods of inactivity. ";
+            reportDescription += "Some hours had no reports, indicating periods of inactivity. ";
         }
 
         // Check for trends in peak hours
@@ -83,15 +81,14 @@ const ReportTime = ({ dateFrom, dateTo }) => {
         const eveningReports = data.data.slice(18, 24).reduce((sum, count) => sum + count, 0);
 
         if (morningReports > afternoonReports && morningReports > eveningReports) {
-            positiveDescription += "Most of the reports occurred in the morning, indicating higher activity during the early hours. ";
+            reportDescription += "Most of the reports occurred in the morning, indicating higher activity during the early hours. ";
         } else if (eveningReports > morningReports && eveningReports > afternoonReports) {
-            positiveDescription += "Most of the reports occurred in the evening, indicating higher activity later in the day. ";
+            reportDescription += "Most of the reports occurred in the evening, indicating higher activity later in the day. ";
         } else if (afternoonReports > morningReports && afternoonReports > eveningReports) {
-            positiveDescription += "Afternoon was the most active time period, with the highest number of reports during midday. ";
+            reportDescription += "Afternoon was the most active time period, with the highest number of reports during midday. ";
         }
 
-        setPositiveTrends(positiveDescription || "There were no significant positive trends in the data.");
-        setNegativeTrends(negativeDescription || "There were no significant negative trends in the data.");
+        setReportSummary(reportDescription || "There were no significant trends in the data.");
     };
 
     return (
@@ -108,16 +105,9 @@ const ReportTime = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        <div className='desc-reporttime-positives-box'>
-                            <h2>Positive Report Trends</h2>
-                            <p>{positiveTrends}</p>
-                        </div>
-                        <div className='desc-reporttime-negatives-box'>
-                            <h2>Negative Report Trends</h2>
-                            <p>{negativeTrends}</p>
-                        </div>
-                    </>
+                    <div className='desc-reporttime-trends-box'>
+                        <p>{reportSummary}</p>
+                    </div>
                 )}
             </div>
         </div>

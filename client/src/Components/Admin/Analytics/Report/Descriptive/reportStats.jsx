@@ -40,8 +40,8 @@ const ReportStats = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
-    // Function to generate a descriptive report for positive trends
-    const generatePositiveReportDescription = () => {
+    // Function to generate unified report description
+    const generateUnifiedReportDescription = () => {
         if (loading || !stats) {
             return "Loading report analysis...";
         }
@@ -75,28 +75,6 @@ const ReportStats = ({ dateFrom, dateTo }) => {
         return reportDescription;
     };
 
-    const generateNegativeReportDescription = () => {
-        if (loading || !stats) {
-            return "Loading negative trends analysis...";
-        }
-
-        let negativeDescription = "";
-
-        if (stats.reportsThisMonth < stats.totalReports / 12) {
-            negativeDescription += "The number of reports this month is significantly lower than the average for previous months. ";
-        }
-
-        if (stats.reportsToday === 0) {
-            negativeDescription += "No reports have been filed today, indicating a potential drop in user engagement. ";
-        }
-
-        if (!negativeDescription) {
-            negativeDescription = "There are no significant negative trends in the data currently.";
-        }
-
-        return negativeDescription;
-    };
-
     return (
         <div className='desc-reportstats-container'>
             <div className='desc-reportstats-title'>
@@ -111,17 +89,10 @@ const ReportStats = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        <div className='desc-reportstats-positives-box'>
-                            <h2>Positive Report Trends</h2>
-                            <p>{generatePositiveReportDescription()}</p>
-                        </div>
-
-                        <div className='desc-reportstats-negatives-box'>
-                            <h2>Negative Report Trends</h2>
-                            <p>{generateNegativeReportDescription()}</p>
-                        </div>
-                    </>
+                    <div className='desc-reportstats-trends-box'>
+                        
+                        <p>{generateUnifiedReportDescription()}</p>
+                    </div>
                 )}
             </div>
 

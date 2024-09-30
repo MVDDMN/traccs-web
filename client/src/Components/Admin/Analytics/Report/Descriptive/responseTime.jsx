@@ -8,8 +8,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 
 const ResponseTime = ({ dateFrom, dateTo }) => {
     const [responseData, setResponseData] = useState([]);
-    const [positiveTrends, setPositiveTrends] = useState("");
-    const [negativeTrends, setNegativeTrends] = useState("");
+    const [reportSummary, setReportSummary] = useState(""); // Unified state for trends
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false); // To track if no data is available
 
@@ -43,8 +42,7 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
 
     // Function to generate descriptive report based on trends
     const generateReportDescription = (data) => {
-        let positiveDescription = "";
-        let negativeDescription = "";
+        let reportDescription = "";
 
         const totalReports = data.length;
 
@@ -52,9 +50,9 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
         const avgResponseTime = data.reduce((sum, report) => sum + report.averageResponseTime, 0) / totalReports;
 
         if (avgResponseTime < 30 * 60 * 1000) { // Less than 30 minutes
-            positiveDescription += `The average response time across all barangays was quick, at under 30 minutes. `;
+            reportDescription += `The average response time across all barangays was quick, at under 30 minutes. `;
         } else if (avgResponseTime > 60 * 60 * 1000) { // More than 60 minutes
-            negativeDescription += `The average response time across all barangays exceeded 60 minutes, indicating potential delays in response. `;
+            reportDescription += `The average response time across all barangays exceeded 60 minutes, indicating potential delays in response. `;
         }
 
         // Find the barangay with the fastest and slowest response times
@@ -62,15 +60,14 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
         const slowestBarangay = data.reduce((prev, curr) => (curr.averageResponseTime > prev.averageResponseTime ? curr : prev), data[0]);
 
         if (fastestBarangay) {
-            positiveDescription += `Barangay ${fastestBarangay._id} had the fastest response time, averaging ${(fastestBarangay.averageResponseTime / (1000 * 60)).toFixed(2)} minutes. `;
+            reportDescription += `Barangay ${fastestBarangay._id} had the fastest response time, averaging ${(fastestBarangay.averageResponseTime / (1000 * 60)).toFixed(2)} minutes. `;
         }
 
         if (slowestBarangay && slowestBarangay._id !== fastestBarangay._id) {
-            negativeDescription += `Barangay ${slowestBarangay._id} had the slowest response time, averaging ${(slowestBarangay.averageResponseTime / (1000 * 60)).toFixed(2)} minutes. `;
+            reportDescription += `Barangay ${slowestBarangay._id} had the slowest response time, averaging ${(slowestBarangay.averageResponseTime / (1000 * 60)).toFixed(2)} minutes. `;
         }
 
-        setPositiveTrends(positiveDescription || "There were no significant positive trends in the data.");
-        setNegativeTrends(negativeDescription || "There were no significant negative trends in the data.");
+        setReportSummary(reportDescription || "There were no significant trends in the data.");
     };
 
     return (
@@ -87,17 +84,9 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        <div className='desc-responsetime-positives-box'>
-                            <h2>Positive Response Time Trends</h2>
-                            <p>{positiveTrends}</p>
-                        </div>
-
-                        <div className='desc-responsetime-negatives-box'>
-                            <h2>Negative Response Time Trends</h2>
-                            <p>{negativeTrends}</p>
-                        </div>
-                    </>
+                    <div className='desc-responsetime-trends-box'>
+                        <p>{reportSummary}</p>
+                    </div>
                 )}
             </div>
         </div>

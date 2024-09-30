@@ -9,8 +9,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 const ReportSummary = ({ dateFrom, dateTo }) => {
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [positiveTrends, setPositiveTrends] = useState("");
-    const [negativeTrends, setNegativeTrends] = useState("");
+    const [reportSummary, setReportSummary] = useState(""); // Single state for unified trends
     const [noData, setNoData] = useState(false); // Track if no data is available
 
     useEffect(() => {
@@ -42,29 +41,27 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
     }, [dateFrom, dateTo]);
 
     const generateReportDescription = (data) => {
-        let positiveDescription = "";
-        let negativeDescription = "";
+        let reportDescription = "";
 
         const totalReports = data.reduce((sum, report) => sum + report.totalReports, 0);
 
         if (totalReports > 100) {
-            positiveDescription += `There has been a high volume of reports with over ${totalReports} incidents recorded. `;
+            reportDescription += `There has been a high volume of reports with over ${totalReports} incidents recorded. `;
         } else {
-            negativeDescription += `The number of reported incidents is relatively low, with only ${totalReports} reports recorded. `;
+            reportDescription += `The number of reported incidents is relatively low, with only ${totalReports} reports recorded. `;
         }
 
         const mostCommonType = data.reduce((prev, current) => (prev.totalReports > current.totalReports) ? prev : current, {});
         if (mostCommonType) {
-            positiveDescription += `The most common type of report is "${mostCommonType._id}" with ${mostCommonType.totalReports} cases. `;
+            reportDescription += `The most common type of report is "${mostCommonType._id}" with ${mostCommonType.totalReports} cases. `;
         }
 
         const leastCommonType = data.reduce((prev, current) => (prev.totalReports < current.totalReports) ? prev : current, {});
         if (leastCommonType) {
-            negativeDescription += `Interestingly, the least common report type is "${leastCommonType._id}", with only ${leastCommonType.totalReports} cases. `;
+            reportDescription += `Interestingly, the least common report type is "${leastCommonType._id}", with only ${leastCommonType.totalReports} cases. `;
         }
 
-        setPositiveTrends(positiveDescription || "There are no major positive trends to report at the moment.");
-        setNegativeTrends(negativeDescription || "There are no significant negative trends to highlight at the moment.");
+        setReportSummary(reportDescription || "There are no significant trends to report at the moment.");
     };
 
     return (
@@ -81,17 +78,9 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        <div className='desc-reportsummary-positives-box'>
-                            <h2>Positive Report Trends</h2>
-                            <p>{positiveTrends}</p>
-                        </div>
-
-                        <div className='desc-reportsummary-negatives-box'>
-                            <h2>Negative Report Trends</h2>
-                            <p>{negativeTrends}</p>
-                        </div>
-                    </>
+                    <div className='desc-reportsummary-trends-box'>
+                        <p>{reportSummary}</p>
+                    </div>
                 )}
             </div>
         </div>

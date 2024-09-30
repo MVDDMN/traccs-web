@@ -7,8 +7,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     : import.meta.env.VITE_API_BASE_URL;
 
 const BarangaySummary = ({ dateFrom, dateTo }) => {
-    const [positiveTrends, setPositiveTrends] = useState("");
-    const [negativeTrends, setNegativeTrends] = useState("");
+    const [reportSummary, setReportSummary] = useState("");
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false);
 
@@ -39,17 +38,16 @@ const BarangaySummary = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
-    // Function to generate the report description based on trends
+    // Function to generate the unified report description based on trends
     const generateReportDescription = (data) => {
-        let positiveDescription = "";
-        let negativeDescription = "";
+        let reportDescription = "";
 
         const totalRequests = data.reduce((sum, barangay) => sum + barangay.totalRequests, 0);
 
         if (totalRequests > 100) {
-            positiveDescription += `There has been a high volume of requests with over ${totalRequests} total requests made across different barangays. `;
+            reportDescription += `There has been a high volume of requests with over ${totalRequests} total requests made across different barangays. `;
         } else {
-            negativeDescription += `The total number of requests is relatively low, with only ${totalRequests} requests recorded for the selected date range. `;
+            reportDescription += `The total number of requests is relatively low, with only ${totalRequests} requests recorded for the selected date range. `;
         }
 
         // Find the barangay with the most and least requests
@@ -57,27 +55,26 @@ const BarangaySummary = ({ dateFrom, dateTo }) => {
         const leastRequestedBarangay = data.reduce((prev, current) => (prev.totalRequests < current.totalRequests ? prev : current), {});
 
         if (mostRequestedBarangay) {
-            positiveDescription += `Barangay ${mostRequestedBarangay._id} had the most requests with ${mostRequestedBarangay.totalRequests} requests. `;
+            reportDescription += `Barangay ${mostRequestedBarangay._id} had the most requests with ${mostRequestedBarangay.totalRequests} requests. `;
         }
 
         if (leastRequestedBarangay && leastRequestedBarangay.totalRequests > 0) {
-            negativeDescription += `Barangay ${leastRequestedBarangay._id} had the least requests, with only ${leastRequestedBarangay.totalRequests} requests. `;
+            reportDescription += `Barangay ${leastRequestedBarangay._id} had the least requests, with only ${leastRequestedBarangay.totalRequests} requests. `;
         }
 
         // Analyze gaps in request distribution
-        const requestGapThreshold = 20; // Define a threshold for significant gaps
+        const requestGapThreshold = 20;
         if (mostRequestedBarangay.totalRequests - leastRequestedBarangay.totalRequests > requestGapThreshold) {
-            negativeDescription += `There is a significant gap in requests between Barangay ${mostRequestedBarangay._id} and Barangay ${leastRequestedBarangay._id}, indicating unequal distribution of requests across barangays. `;
+            reportDescription += `There is a significant gap in requests between Barangay ${mostRequestedBarangay._id} and Barangay ${leastRequestedBarangay._id}, indicating unequal distribution of requests across barangays. `;
         }
 
         // Check if certain barangays requested a lot of items
         const mostItemsRequestedBarangay = data.reduce((prev, current) => (prev.totalQuantity > current.totalQuantity ? prev : current), {});
         if (mostItemsRequestedBarangay) {
-            positiveDescription += `Barangay ${mostItemsRequestedBarangay._id} also had the highest number of items requested, with a total of ${mostItemsRequestedBarangay.totalQuantity} items requested. `;
+            reportDescription += `Barangay ${mostItemsRequestedBarangay._id} also had the highest number of items requested, with a total of ${mostItemsRequestedBarangay.totalQuantity} items requested. `;
         }
 
-        setPositiveTrends(positiveDescription || "No significant positive trends detected.");
-        setNegativeTrends(negativeDescription || "No significant negative trends detected.");
+        setReportSummary(reportDescription || "No significant trends to report.");
     };
 
     return (
@@ -94,17 +91,9 @@ const BarangaySummary = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        <div className='desc-barangaysummary-positives-box'>
-                            <h2>Positive Report Trends</h2>
-                            <p>{positiveTrends}</p>
-                        </div>
-
-                        <div className='desc-barangaysummary-negatives-box'>
-                            <h2>Negative Report Trends</h2>
-                            <p>{negativeTrends}</p>
-                        </div>
-                    </>
+                    <div className='desc-barangaysummary-trends-box'>
+                        <p>{reportSummary}</p>
+                    </div>
                 )}
             </div>
         </div>

@@ -9,8 +9,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 
 const ReportMonth = ({ dateFrom, dateTo }) => {
     const [reportData, setReportData] = useState([]);
-    const [positiveTrends, setPositiveTrends] = useState("");
-    const [negativeTrends, setNegativeTrends] = useState("");
+    const [reportSummary, setReportSummary] = useState(""); // Single state for unified trends
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false); // Track if no data is available
 
@@ -85,8 +84,9 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
             negativeDescription += `The month with the least reports is ${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][monthWithLeastReports]}. `;
         }
 
-        setPositiveTrends(positiveDescription || "No significant positive trends detected.");
-        setNegativeTrends(negativeDescription || "No significant negative trends detected.");
+        // Combine positive and negative trends into one summary
+        const unifiedTrends = `${positiveDescription} ${negativeDescription}`;
+        setReportSummary(unifiedTrends || "No significant trends detected.");
     };
 
     return (
@@ -103,17 +103,9 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        <div className='desc-reportmonth-positives-box'>
-                            <h2>Positive Report Trends</h2>
-                            <p>{positiveTrends}</p>
-                        </div>
-
-                        <div className='desc-reportmonth-negatives-box'>
-                            <h2>Negative Report Trends</h2>
-                            <p>{negativeTrends}</p>
-                        </div>
-                    </>
+                    <div className='desc-reportmonth-trends-box'>
+                        <p>{reportSummary}</p>
+                    </div>
                 )}
             </div>
         </div>

@@ -37,7 +37,10 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                     const types = data.map(item => item._id);
                     const totalReports = data.map(item => item.totalReports);
 
-                    const colors = types.map(() => `#${Math.floor(Math.random() * 16777215).toString(16)}`);
+                    // Use predefined contrasting colors for better visibility
+                    const colors = [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8DFF57', '#FF6384', '#36A2EB', '#FFCE56'
+                    ];
 
                     setChartData({
                         labels: types,
@@ -45,7 +48,7 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                             {
                                 label: 'Total Reports',
                                 data: totalReports,
-                                backgroundColor: colors,
+                                backgroundColor: colors.slice(0, types.length),
                                 borderColor: '#fff',
                                 borderWidth: 1,
                             }
@@ -84,7 +87,7 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                         maintainAspectRatio: false,
                         plugins: {
                             tooltip: {
-                                mode: 'index',
+                                // Remove mode as default 'nearest' works best for Pie charts
                                 intersect: false,
                             },
                             legend: {

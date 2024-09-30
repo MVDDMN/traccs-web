@@ -7,8 +7,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     : import.meta.env.VITE_API_BASE_URL;
 
 const TypeSummary = ({ dateFrom, dateTo }) => {
-    const [positiveTrends, setPositiveTrends] = useState("");
-    const [negativeTrends, setNegativeTrends] = useState("");
+    const [reportSummary, setReportSummary] = useState("");  // Unified state for trends
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false);  // Track if no data is available
 
@@ -39,24 +38,23 @@ const TypeSummary = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
-    // Function to generate positive and negative trends based on the data
+    // Function to generate unified report trends based on the data
     const generateReportDescription = (data) => {
-        let positiveDescription = "";
-        let negativeDescription = "";
+        let reportDescription = "";
 
         const totalRequests = data.reduce((sum, type) => sum + type.totalRequests, 0);
         const totalItemsRequested = data.reduce((sum, type) => sum + type.totalQuantity, 0);
 
         if (totalRequests > 100) {
-            positiveDescription += `There has been a significant volume of requests with over ${totalRequests} total requests recorded. `;
+            reportDescription += `There has been a significant volume of requests with over ${totalRequests} total requests recorded. `;
         } else {
-            negativeDescription += `The total number of requests is relatively low, with only ${totalRequests} requests recorded for the selected period. `;
+            reportDescription += `The total number of requests is relatively low, with only ${totalRequests} requests recorded for the selected period. `;
         }
 
         if (totalItemsRequested > 500) {
-            positiveDescription += `A substantial amount of items were requested, totaling ${totalItemsRequested} across all types. `;
+            reportDescription += `A substantial amount of items were requested, totaling ${totalItemsRequested} across all types. `;
         } else {
-            negativeDescription += `A lower volume of items were requested, with only ${totalItemsRequested} items requested during this period. `;
+            reportDescription += `A lower volume of items were requested, with only ${totalItemsRequested} items requested during this period. `;
         }
 
         // Find the type with the most and least requests
@@ -64,27 +62,26 @@ const TypeSummary = ({ dateFrom, dateTo }) => {
         const leastRequestedType = data.reduce((prev, current) => (prev.totalRequests < current.totalRequests) ? prev : current, {});
 
         if (mostRequestedType) {
-            positiveDescription += `The most requested type is "${mostRequestedType._id}" with ${mostRequestedType.totalRequests} requests. `;
+            reportDescription += `The most requested type is "${mostRequestedType._id}" with ${mostRequestedType.totalRequests} requests. `;
         }
 
         if (leastRequestedType && leastRequestedType.totalRequests > 0) {
-            negativeDescription += `The least requested type is "${leastRequestedType._id}" with only ${leastRequestedType.totalRequests} requests. `;
+            reportDescription += `The least requested type is "${leastRequestedType._id}" with only ${leastRequestedType.totalRequests} requests. `;
         }
 
         // Find the type with the highest total quantity of items requested
         const typeWithMostItemsRequested = data.reduce((prev, current) => (prev.totalQuantity > current.totalQuantity) ? prev : current, {});
         if (typeWithMostItemsRequested && typeWithMostItemsRequested.totalQuantity > 100) {
-            positiveDescription += `A notable number of items (${typeWithMostItemsRequested.totalQuantity}) were requested for the type "${typeWithMostItemsRequested._id}". `;
+            reportDescription += `A notable number of items (${typeWithMostItemsRequested.totalQuantity}) were requested for the type "${typeWithMostItemsRequested._id}". `;
         }
 
         // Analyze if there are significant gaps in the type distribution
         const gapThreshold = 10;  // Adjust this value to reflect what a "significant gap" means
         if (mostRequestedType.totalRequests - leastRequestedType.totalRequests > gapThreshold) {
-            negativeDescription += `There is a significant gap between the most and least requested types, which indicates uneven distribution of requests across different types. `;
+            reportDescription += `There is a significant gap between the most and least requested types, indicating uneven distribution of requests across different types. `;
         }
 
-        setPositiveTrends(positiveDescription || "There were no significant positive trends identified.");
-        setNegativeTrends(negativeDescription || "There were no significant negative trends identified.");
+        setReportSummary(reportDescription || "There are no significant trends to report.");
     };
 
     return (
@@ -101,17 +98,9 @@ const TypeSummary = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        <div className='desc-typesummary-positives-box'>
-                            <h2>Positive Report Trends</h2>
-                            <p>{positiveTrends}</p>
-                        </div>
-
-                        <div className='desc-typesummary-negatives-box'>
-                            <h2>Negative Report Trends</h2>
-                            <p>{negativeTrends}</p>
-                        </div>
-                    </>
+                    <div className='desc-typesummary-trends-box'>
+                        <p>{reportSummary}</p>
+                    </div>
                 )}
             </div>
         </div>

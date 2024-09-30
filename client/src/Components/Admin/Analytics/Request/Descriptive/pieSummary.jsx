@@ -7,8 +7,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     : import.meta.env.VITE_API_BASE_URL;
 
 const PieSummary = ({ dateFrom, dateTo }) => {
-    const [positiveTrends, setPositiveTrends] = useState("");
-    const [negativeTrends, setNegativeTrends] = useState("");
+    const [reportSummary, setReportSummary] = useState("");
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false);  // Track if no data is available
 
@@ -39,17 +38,16 @@ const PieSummary = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
-    // Function to generate positive and negative trends based on the data
+    // Function to generate the unified report description based on the data
     const generateReportDescription = (data) => {
-        let positiveDescription = "";
-        let negativeDescription = "";
+        let reportDescription = "";
 
         const totalRequests = data.reduce((sum, barangay) => sum + barangay.totalRequests, 0);
 
         if (totalRequests > 100) {
-            positiveDescription += `There has been a significant number of requests, with over ${totalRequests} total requests recorded across all barangays. `;
+            reportDescription += `There has been a significant number of requests, with over ${totalRequests} total requests recorded across all barangays. `;
         } else {
-            negativeDescription += `The total number of requests is relatively low, with only ${totalRequests} requests recorded for the selected period. `;
+            reportDescription += `The total number of requests is relatively low, with only ${totalRequests} requests recorded for the selected period. `;
         }
 
         // Find the barangay with the most and least requests
@@ -57,21 +55,20 @@ const PieSummary = ({ dateFrom, dateTo }) => {
         const leastRequestedBarangay = data.reduce((prev, current) => (prev.totalRequests < current.totalRequests) ? prev : current, {});
 
         if (mostRequestedBarangay) {
-            positiveDescription += `The barangay with the highest number of requests is "${mostRequestedBarangay._id}" with ${mostRequestedBarangay.totalRequests} requests. `;
+            reportDescription += `The barangay with the highest number of requests is "${mostRequestedBarangay._id}" with ${mostRequestedBarangay.totalRequests} requests. `;
         }
 
         if (leastRequestedBarangay && leastRequestedBarangay.totalRequests > 0) {
-            negativeDescription += `The barangay with the lowest number of requests is "${leastRequestedBarangay._id}" with only ${leastRequestedBarangay.totalRequests} requests. `;
+            reportDescription += `The barangay with the lowest number of requests is "${leastRequestedBarangay._id}" with only ${leastRequestedBarangay.totalRequests} requests. `;
         }
 
         // Analyze if there are significant gaps in request distribution between barangays
-        const gapThreshold = 10;  // You can adjust this value to reflect what a "significant gap" means
+        const gapThreshold = 10;  // Adjust this value to reflect what a "significant gap" means
         if (mostRequestedBarangay.totalRequests - leastRequestedBarangay.totalRequests > gapThreshold) {
-            negativeDescription += `There is a significant gap between the most requested barangay and the least requested barangay, indicating unequal distribution of requests. `;
+            reportDescription += `There is a significant gap between the most requested barangay and the least requested barangay, indicating unequal distribution of requests. `;
         }
 
-        setPositiveTrends(positiveDescription || "There were no significant positive trends identified.");
-        setNegativeTrends(negativeDescription || "There were no significant negative trends identified.");
+        setReportSummary(reportDescription || "There are no significant trends to report.");
     };
 
     return (
@@ -88,17 +85,9 @@ const PieSummary = ({ dateFrom, dateTo }) => {
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (
-                    <>
-                        <div className='desc-piesummary-positives-box'>
-                            <h2>Positive Report Trends</h2>
-                            <p>{positiveTrends}</p>
-                        </div>
-
-                        <div className='desc-piesummary-negatives-box'>
-                            <h2>Negative Report Trends</h2>
-                            <p>{negativeTrends}</p>
-                        </div>
-                    </>
+                    <div className='desc-piesummary-trends-box'>
+                        <p>{reportSummary}</p>
+                    </div>
                 )}
             </div>
         </div>

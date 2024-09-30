@@ -29,22 +29,7 @@
     width: 100%;
 }
 
-.report-summary-year-dropdown {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.report-summary-year-dropdown select {
-    padding: 5px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
 /* Media Queries for Responsiveness */
-/* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .report-summary-container {
         height: 400px;
@@ -54,7 +39,6 @@
     }
 }
 
-/* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .report-summary-container {
         height: 300px;
@@ -64,7 +48,6 @@
     }
 }
 
-/* For screen sizes 1800px and below */
 @media (max-width: 1300px) {
     .report-summary-container {
         height: 220px;
