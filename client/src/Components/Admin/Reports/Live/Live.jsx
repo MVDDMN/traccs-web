@@ -159,6 +159,7 @@ const Live = () => {
         } catch (error) {
             console.error('Error responding to report:', error);
         } finally {
+            fetchReports();
             setIsSubmitting(false); // End loading state
         }
     };
@@ -184,6 +185,7 @@ const Live = () => {
         } catch (error) {
             console.error('Error archiving report:', error);
         } finally {
+            fetchReports();
             setIsSubmitting(false); // End loading state
         }
     };
@@ -209,6 +211,7 @@ const Live = () => {
         } catch (error) {
             console.error('Error denying report:', error);
         } finally {
+            fetchReports();
             setIsSubmitting(false); // End loading state
         }
     };

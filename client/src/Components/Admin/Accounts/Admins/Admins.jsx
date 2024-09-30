@@ -32,7 +32,7 @@ const Admins = () => {
     });
     const [selectedAdminId, setSelectedAdminId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const itemsPerPage = 8;
+    const itemsPerPage = 9;
     const [errors, setErrors] = useState({});
     const [userUsername, setUserUsername] = useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -134,7 +134,7 @@ const Admins = () => {
 
                     if (duplicateCheckResponse.status !== 200) {
                         duplicateCheckPassed = false;
-                        setErrors({ ...errors, username: 'Username or email already exists' });
+                        setErrors({ ...errors, username: '• Username or email already exists' });
                     }
                 }
 
@@ -152,7 +152,7 @@ const Admins = () => {
                 }
             } catch (error) {
                 if (error.response && error.response.status === 400 && !isEditMode) {
-                    setErrors({ ...errors, username: 'Username or email already exists' });
+                    setErrors({ ...errors, username: '• Username or email already exists' });
                 } else {
                     console.error("Error adding/editing admin:", error);
                 }
@@ -247,39 +247,33 @@ const Admins = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentAdmins.map(admin => (
-                                    <tr key={admin._id}>
-                                        <td>{admin._id}</td>
-                                        <td>{admin.name}</td>
-                                        <td>{admin.email}</td>
-                                        <td>{admin.type}</td>
-                                        <td>{admin.barangay}</td>
-                                        <td>{admin.contact}</td>
-                                        <td>
-                                            {new Date
-                                                (admin.createdAt).toLocaleDateString
-                                                ('en-US',
-                                                    {
-                                                        month: 'long',
-                                                        day: 'numeric',
-                                                        year: 'numeric'
-                                                    }
-                                                )
-                                            }
-                                        </td>
-                                        <td>
-                                            <div className='action-button-box'>
-                                                {admin.username !== 'root' && (
+                                {currentAdmins
+                                    .filter(admin => admin.username !== 'root')
+                                    .map(admin => (
+                                        <tr key={admin._id}>
+                                            <td>{admin._id}</td>
+                                            <td>{admin.name}</td>
+                                            <td>{admin.email}</td>
+                                            <td>{admin.type}</td>
+                                            <td>{admin.barangay}</td>
+                                            <td>{admin.contact}</td>
+                                            <td>
+                                                {new Date(admin.createdAt).toLocaleDateString('en-US', {
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    year: 'numeric',
+                                                })}
+                                            </td>
+                                            <td>
+                                                <div className='action-button-box'>
                                                     <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Edit</button>
-                                                )}
-                                                {userUsername !== admin.username && admin.username !== 'root' && (
-                                                    <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
-                                                )}
-                                            </div>
-
-                                        </td>
-                                    </tr>
-                                ))}
+                                                    {userUsername !== admin.username && (
+                                                        <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                     )}

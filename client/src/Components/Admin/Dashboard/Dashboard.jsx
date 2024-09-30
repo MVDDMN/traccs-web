@@ -210,6 +210,7 @@ const Dashboard = () => {
         } catch (error) {
             console.error('Error responding to report:', error);
         } finally {
+            fetchReports();
             setIsSubmitting(false);
         }
     };
@@ -235,6 +236,7 @@ const Dashboard = () => {
         } catch (error) {
             console.error('Error denying report:', error);
         } finally {
+            fetchReports();
             setIsSubmitting(false);
         }
     };
@@ -255,6 +257,7 @@ const Dashboard = () => {
         } catch (error) {
             console.error('Error archiving report:', error);
         } finally {
+            fetchReports();
             setIsSubmitting(false);
         }
     };
