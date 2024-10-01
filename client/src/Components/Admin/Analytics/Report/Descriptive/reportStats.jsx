@@ -7,10 +7,10 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     : import.meta.env.VITE_API_BASE_URL;
 
 const ReportStats = ({ dateFrom, dateTo }) => {
-    const [stats, setStats] = useState({ totalReports: 0, reportsThisMonth: 0, reportsToday: 0, resolvedReports: 0, deniedReports: 0 });
+    const [stats, setStats] = useState({ totalReports: 0, reportsPendingPeriod: 0, reportsToday: 0, resolvedReports: 0, deniedReports: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [noData, setNoData] = useState(false); // Track if no data is available
+    const [noData, setNoData] = useState(false);  // Track if no data is available
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -19,10 +19,10 @@ const ReportStats = ({ dateFrom, dateTo }) => {
             setNoData(false); // Reset noData state
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/analytics/report-stats`, {
-                    params: { dateFrom, dateTo } // Use dateFrom and dateTo as query parameters
+                    params: { dateFrom, dateTo } // Send dateFrom and dateTo as query parameters
                 });
 
-                if (response.data && response.data.totalReports > 0) {
+                if (response.data) {
                     setStats(response.data);
                 } else {
                     setNoData(true);  // No data available for the selected date range
@@ -40,6 +40,15 @@ const ReportStats = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
+    // Function to format date to "Month Day Year"
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
     // Function to generate unified report description
     const generateUnifiedReportDescription = () => {
         if (loading || !stats) {
@@ -50,7 +59,15 @@ const ReportStats = ({ dateFrom, dateTo }) => {
             return "No data available for the selected date range."; 
         }
 
-        let reportDescription = `Within the selected dates, there are ${stats.totalReports} total reports. Of these, ${stats.resolvedReports} have been resolved, and ${stats.deniedReports} were denied due to valid reasons. `;
+        let reportDescription = `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, a total of ${stats.totalReports} reports were submitted. Of these, ${stats.resolvedReports} have been resolved, and ${stats.deniedReports} were denied due to valid reasons. `;
+
+        // Pending reports narrative
+        reportDescription += `During this period, there are ${stats.reportsPendingPeriod} reports pending resolution. `;
+
+        // Reports today narrative
+        if (stats.reportsToday > 0) {
+            reportDescription += `Today, ${stats.reportsToday} reports have been submitted. `;
+        }
 
         // Narrative for the day with the highest reports
         if (stats.highestReportDate && stats.highestReportCount > 0) {
@@ -60,17 +77,12 @@ const ReportStats = ({ dateFrom, dateTo }) => {
                 month: 'long', 
                 day: 'numeric' 
             });
-            reportDescription += `${formattedDate} saw the highest number of reports, with ${stats.highestReportCount} reports. `;
-        }
-
-        // Narrative if there are more than 10 reports today
-        if (stats.reportsToday > 10) {
-            reportDescription += `There has been an unusually high number of reports today, with more than ${stats.reportsToday} incidents reported.`;
+            reportDescription += `Notably, on ${formattedDate}, there was a peak with ${stats.highestReportCount} reports. `;
         }
 
         // Add the highest responder in today's reports
         if (stats.highestResponder) {
-            reportDescription += `The highest number of responses came from ${stats.highestResponder}. `;
+            reportDescription += `The highest number of responses today came from ${stats.highestResponder}. `;
         }
 
         // Summary of report types and their counts
@@ -79,8 +91,11 @@ const ReportStats = ({ dateFrom, dateTo }) => {
                 .map(([type, count]) => `${type}: ${count}`)
                 .join(', ');
 
-            reportDescription += `In complete summary, the report types involved were: ${typesSummary}, with a total of ${stats.totalReports} reports.`;
+            reportDescription += `In summary, the report types included: ${typesSummary}. `;
         }
+
+        // Suggestive ending narrative
+        reportDescription += `Moving forward, it may be beneficial to focus on addressing the pending reports to ensure timely resolution and improve response efforts in the community. `;
 
         return reportDescription;
     };

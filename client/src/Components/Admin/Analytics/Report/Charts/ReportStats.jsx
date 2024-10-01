@@ -9,7 +9,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     : import.meta.env.VITE_API_BASE_URL;
 
 const ReportStats = ({ dateFrom, dateTo }) => {
-    const [stats, setStats] = useState({ totalReports: 0, reportsThisMonth: 0, reportsToday: 0 });
+    const [stats, setStats] = useState({ totalReports: 0, reportsPendingPeriod: 0, reportsToday: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [noData, setNoData] = useState(false);  // Track if no data is available
@@ -66,8 +66,8 @@ const ReportStats = ({ dateFrom, dateTo }) => {
                     </div>
                     <div className="stat-item">
                         <div className="stat-info">
-                            <a className='report-stats-item-title'>Reports This Month</a>
-                            <p>{stats.reportsThisMonth}</p>
+                            <a className='report-stats-item-title'>Reports Pending This Period</a>
+                            <p>{stats.reportsPendingPeriod}</p>
                         </div>
                         <img className='report-stat-icon' src={usericon} alt="Icon" />
                     </div>

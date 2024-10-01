@@ -41,11 +41,21 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
+    // Helper function to format the date
+    const formatDate = (date) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(date).toLocaleDateString(undefined, options);
+    };
+
     // Function to generate descriptive trends based on the data
     const generateReportDescription = (data) => {
         let reportSummary = "";
 
         const totalReports = data.reduce((sum, report) => sum + report.count, 0);
+
+        reportSummary += `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, a total of ${totalReports} reports were submitted. `;
+
+        // Analyze monthly report data
         const reportByMonth = data.reduce((acc, curr) => {
             const monthIndex = curr.month - 1; // Convert to 0-based index for arrays
             acc[monthIndex] = (acc[monthIndex] || 0) + curr.count;
@@ -59,16 +69,16 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
         const previousMonthCount = reportByMonth[previousMonthIndex];
 
         if (monthWithMostReports >= 0) {
-            reportSummary += `The month with the most received reports is ${monthNames[monthWithMostReports]} with a total of ${monthWithMostReportsCount} reports. `;
+            reportSummary += `The month with the most reports is ${monthNames[monthWithMostReports]}, totaling ${monthWithMostReportsCount} incidents. `;
         }
 
         // Only show the comparison if there is data for the previous month
         if (previousMonthCount > 0) {
             const percentageChange = ((monthWithMostReportsCount - previousMonthCount) / previousMonthCount) * 100;
             if (percentageChange > 0) {
-                reportSummary += `This shows an increase of ${percentageChange.toFixed(2)}% in the total number of reports compared to ${monthNames[previousMonthIndex]}. `;
+                reportSummary += `This reflects an increase of ${percentageChange.toFixed(2)}% in reports compared to ${monthNames[previousMonthIndex]}. `;
             } else {
-                reportSummary += `This shows a decrease of ${Math.abs(percentageChange).toFixed(2)}% in the total number of reports compared to ${monthNames[previousMonthIndex]}. `;
+                reportSummary += `This reflects a decrease of ${Math.abs(percentageChange).toFixed(2)}% in reports compared to ${monthNames[previousMonthIndex]}. `;
             }
         }
 
@@ -85,31 +95,50 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
         const prevalentReportCount = reportByType[prevalentReportType];
 
         if (prevalentReportType && prevalentReportCount) {
-            reportSummary += `The most prevalent report type in ${monthNames[monthWithMostReports]} is "${prevalentReportType}" with a total of ${prevalentReportCount} reports. `;
+            reportSummary += `In ${monthNames[monthWithMostReports]}, the most prevalent report type was "${prevalentReportType}", with ${prevalentReportCount} incidents recorded. `;
         }
 
         // Add suggestive narratives based on the prevalent report type
-        const suggestiveNarrative = getSuggestionBasedOnType(prevalentReportType);
-        reportSummary += suggestiveNarrative;
+        const suggestiveEndingNarratives = getSuggestionsForType(prevalentReportType);
+        const randomEnding = suggestiveEndingNarratives[Math.floor(Math.random() * suggestiveEndingNarratives.length)];
+        reportSummary += randomEnding;
 
         setReportSummary(reportSummary || "No significant trends detected.");
     };
 
     // Function to get suggestive narratives based on the most prevalent report type
-    const getSuggestionBasedOnType = (reportType) => {
+    const getSuggestionsForType = (reportType) => {
         switch (reportType) {
             case 'Fire':
-                return 'Consider enhancing fire safety protocols, ensuring that fire extinguishers are accessible and up to date, and conducting fire drills for staff and residents. ';
+                return [
+                    'Consider enhancing fire safety protocols, ensuring that fire extinguishers are accessible and up to date, and conducting fire drills for staff and residents.',
+                    'Increasing community awareness about fire hazards and providing training on fire safety measures can help reduce incidents in the future.'
+                ];
             case 'Police':
-                return 'Review security protocols and increase surveillance in areas with a high crime rate. Work with local law enforcement to increase patrols and community safety initiatives. ';
+                return [
+                    'Review security protocols and increase surveillance in areas with a high crime rate. Work with local law enforcement to increase patrols and community safety initiatives.',
+                    'Engaging the community in discussions about safety and crime prevention strategies can foster a safer environment.'
+                ];
             case 'Hazard':
-                return 'Conduct safety inspections and mitigate potential hazards in public areas. Ensure that any identified hazards are clearly marked or removed to prevent accidents. ';
+                return [
+                    'Conduct safety inspections and mitigate potential hazards in public areas. Ensure that any identified hazards are clearly marked or removed to prevent accidents.',
+                    'Educating the community about hazard recognition and reporting can contribute to a safer environment.'
+                ];
             case 'Medical':
-                return 'Ensure that first-aid kits are fully stocked and accessible. Provide first-aid training to staff and ensure that emergency contact information is readily available. ';
+                return [
+                    'Ensure that first-aid kits are fully stocked and accessible. Provide first-aid training to staff and ensure that emergency contact information is readily available.',
+                    'Promoting health awareness campaigns can help in addressing medical emergencies proactively.'
+                ];
             case 'Assistance':
-                return 'Ensure that resources are allocated efficiently to assist those in need. Consider setting up an efficient communication system to respond to assistance requests promptly. ';
+                return [
+                    'Ensure that resources are allocated efficiently to assist those in need. Consider setting up an efficient communication system to respond to assistance requests promptly.',
+                    'Fostering partnerships with local organizations can improve the community’s capacity to provide assistance.'
+                ];
             default:
-                return 'No specific actions recommended for the prevalent report type. Continue monitoring the situation closely. ';
+                return [
+                    'No specific actions recommended for the prevalent report type. Continue monitoring the situation closely.',
+                    'Maintaining open lines of communication with community members can help in understanding their needs better.'
+                ];
         }
     };
 

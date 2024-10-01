@@ -22,7 +22,7 @@ const TypeSummary = ({ dateFrom, dateTo }) => {
                 const data = response.data;
 
                 if (data && data.length > 0) {
-                    generateReportDescription(data);  // Call the auto-generative report logic after data is fetched
+                    generateReportDescription(data, dateFrom, dateTo);  // Include date range
                 } else {
                     setNoData(true);  // No data available for the selected date range
                 }
@@ -38,50 +38,72 @@ const TypeSummary = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    };
+
     // Function to generate unified report trends based on the data
-    const generateReportDescription = (data) => {
-        let reportDescription = "";
+    const generateReportDescription = (data, dateFrom, dateTo) => {
+        let reportDescription = `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, `;
 
         const totalRequests = data.reduce((sum, type) => sum + type.totalRequests, 0);
         const totalItemsRequested = data.reduce((sum, type) => sum + type.totalQuantity, 0);
 
         if (totalRequests > 100) {
-            reportDescription += `There has been a significant volume of requests with over ${totalRequests} total requests recorded. `;
+            reportDescription += `there has been a significant volume of requests, with over ${totalRequests} total requests recorded. `;
         } else {
-            reportDescription += `The total number of requests is relatively low, with only ${totalRequests} requests recorded for the selected period. `;
+            reportDescription += `a relatively low number of requests were recorded, with only ${totalRequests} requests during this period. `;
         }
 
         if (totalItemsRequested > 500) {
             reportDescription += `A substantial amount of items were requested, totaling ${totalItemsRequested} across all types. `;
         } else {
-            reportDescription += `A lower volume of items were requested, with only ${totalItemsRequested} items requested during this period. `;
+            reportDescription += `A lower volume of items were requested, with only ${totalItemsRequested} items requested during this time. `;
         }
 
-        // Find the type with the most and least requests
+        // Most requested type narrative with continuous sentence flow
         const mostRequestedType = data.reduce((prev, current) => (prev.totalRequests > current.totalRequests) ? prev : current, {});
-        const leastRequestedType = data.reduce((prev, current) => (prev.totalRequests < current.totalRequests) ? prev : current, {});
-
         if (mostRequestedType) {
-            reportDescription += `The most requested type is "${mostRequestedType._id}" with ${mostRequestedType.totalRequests} requests. `;
+            reportDescription += `The most requested item type is "${mostRequestedType._id}". `;
+
+            switch (mostRequestedType._id) {
+                case 'Food':
+                    reportDescription += `Indicating that this period shows a significant demand for food items. `;
+                    break;
+                case 'Non-Food':
+                    reportDescription += `Indicating that Non-food items are highly requested in this time frame. `;
+                    break;
+                case 'Beverage':
+                    reportDescription += `Indicating that there has been a frequent request for beverages. `;
+                    break;
+                case 'Essentials':
+                    reportDescription += `Indicating that Essential items, such as toiletries, were in demand during this period, indicating a need for common supplies. `;
+                    break;
+                case 'Medical':
+                    reportDescription += `Indicating that Medical supplies have been urgently requested, signaling a resupply need in barangays. `;
+                    break;
+                case 'Hygiene':
+                    reportDescription += `Indicating that Hygiene products were highly requested during this period and should be monitored closely. `;
+                    break;
+                case 'Shelter':
+                    reportDescription += `Indicating that there were several requests for shelter materials, indicating a need for resources. `;
+                    break;
+                case 'Power':
+                    reportDescription += `Indicating that Power-related resources have been requested multiple times. `;
+                    break;
+                case 'Assistance':
+                    reportDescription += `Indicating that there were significant requests for assistance during this time frame. `;
+                    break;
+                case 'Others':
+                    reportDescription += `Indicating that other miscellaneous items have also been requested in this period. Further investigate what other items have been investigated by viewing the request history. `;
+                    break;
+                default:
+                    reportDescription += `It would seem that various types of items were requested and are currently scattered to determine which is prevalent. `;
+            }
         }
 
-        if (leastRequestedType && leastRequestedType.totalRequests > 0) {
-            reportDescription += `The least requested type is "${leastRequestedType._id}" with only ${leastRequestedType.totalRequests} requests. `;
-        }
-
-        // Find the type with the highest total quantity of items requested
-        const typeWithMostItemsRequested = data.reduce((prev, current) => (prev.totalQuantity > current.totalQuantity) ? prev : current, {});
-        if (typeWithMostItemsRequested && typeWithMostItemsRequested.totalQuantity > 100) {
-            reportDescription += `A notable number of items (${typeWithMostItemsRequested.totalQuantity}) were requested for the type "${typeWithMostItemsRequested._id}". `;
-        }
-
-        // Analyze if there are significant gaps in the type distribution
-        const gapThreshold = 10;  // Adjust this value to reflect what a "significant gap" means
-        if (mostRequestedType.totalRequests - leastRequestedType.totalRequests > gapThreshold) {
-            reportDescription += `There is a significant gap between the most and least requested types, indicating uneven distribution of requests across different types. `;
-        }
-
-        setReportSummary(reportDescription || "There are no significant trends to report.");
+        setReportSummary(reportDescription || "There are no significant trends to report for this period.");
     };
 
     return (

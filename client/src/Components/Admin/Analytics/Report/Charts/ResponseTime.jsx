@@ -7,6 +7,11 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
     : import.meta.env.VITE_API_BASE_URL;
 
+const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
+
 const ResponseTime = ({ dateFrom, dateTo }) => {
     const [chartData, setChartData] = useState({
         labels: [], // X-axis labels for responders
@@ -29,19 +34,34 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
                     // Prepare labels and datasets
                     const responders = data.map(item => item._id.responder);
                     const averageResponseTimes = data.map(item => item.averageResponseTime / 1000); // Convert ms to seconds
+                    const months = data.map(item => monthNames[item._id.month - 1]); // Convert month number to month name
 
-                    // Create datasets for each barangay
-                    const datasets = responders.map((responder, index) => ({
-                        label: responder,
-                        data: [averageResponseTimes[index]], // Data point for the responder
+                    // Combine responders, averageResponseTimes, and month names into an array of objects
+                    const combinedData = responders.map((responder, index) => ({
+                        responder,
+                        averageResponseTime: averageResponseTimes[index],
+                        month: months[index], // Add month name for display
+                    }));
+
+                    // Sort combined data in descending order based on averageResponseTime
+                    combinedData.sort((a, b) => b.averageResponseTime - a.averageResponseTime);
+
+                    // Prepare sorted labels and datasets
+                    const sortedLabels = combinedData.map(item => `${item.responder} (${item.month})`); // Combine responder and month name
+                    const sortedAverageResponseTimes = combinedData.map(item => item.averageResponseTime);
+
+                    // Create a single dataset for the bar chart
+                    const datasets = [{
+                        label: 'Average Response Time',
+                        data: sortedAverageResponseTimes, // All data points for the responders
                         backgroundColor: '#0E267C',
                         borderColor: '#0E267C',
                         borderWidth: 1,
-                    }));
+                    }];
 
                     setChartData({
-                        labels: ['Average Response Time'], // Single label for the X-axis
-                        datasets: datasets, // Set each barangay as its own dataset
+                        labels: sortedLabels, // Set combined labels as X-axis labels
+                        datasets: datasets, // Set the dataset
                     });
                 } else {
                     setNoData(true);
@@ -80,13 +100,13 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
                                 x: {
                                     title: {
                                         display: true,
-                                        text: 'Responders',
+                                        text: 'Responders (with Month)',
                                     },
                                 },
                                 y: {
                                     title: {
                                         display: true,
-                                        text: 'Time (minutes and seconds)',
+                                        text: 'Time (seconds)',
                                     },
                                     ticks: {
                                         callback: function(value) {
@@ -101,10 +121,10 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
-                                            const totalSeconds = context.dataset.data[0];
+                                            const totalSeconds = context.dataset.data[context.dataIndex]; // Use context.dataIndex for the correct data point
                                             const minutes = Math.floor(totalSeconds / 60);
                                             const seconds = Math.floor(totalSeconds % 60);
-                                            return `${context.dataset.label}: ${minutes}m ${seconds}s`; // Format tooltip
+                                            return `${context.dataset.label} - ${context.label}: ${minutes}m ${seconds}s`; // Format tooltip
                                         }
                                     }
                                 }

@@ -8,14 +8,14 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 
 const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
     const [responseData, setResponseData] = useState([]);
-    const [reportSummary, setReportSummary] = useState(""); // Unified state for trends
+    const [reportSummary, setReportSummary] = useState("");
     const [loading, setLoading] = useState(true);
-    const [noData, setNoData] = useState(false); // To track if no data is available
+    const [noData, setNoData] = useState(false);
 
     useEffect(() => {
         const fetchResponseTimeSummary = async () => {
             setLoading(true);
-            setNoData(false); // Reset no data state
+            setNoData(false);
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/analytics/response-time-summary`, {
                     params: { dateFrom, dateTo }
@@ -23,7 +23,6 @@ const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
                 const data = response.data;
 
                 if (data && data.length > 0) {
-                    // Transform data into a more usable format
                     const transformedData = data.map(item => ({
                         responder: item._id.responder,
                         year: item._id.year,
@@ -31,9 +30,9 @@ const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
                         averageResponseTime: item.averageResponseTime,
                     }));
                     setResponseData(transformedData);
-                    generateReportDescription(transformedData); // Generate the descriptive report
+                    generateReportDescription(transformedData);
                 } else {
-                    setNoData(true); // No data available for the selected date range
+                    setNoData(true);
                 }
             } catch (error) {
                 console.error('Error fetching response time data:', error);
@@ -43,11 +42,10 @@ const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
         };
 
         if (dateFrom && dateTo) {
-            fetchResponseTimeSummary(); // Fetch data only when both dateFrom and dateTo are set
+            fetchResponseTimeSummary();
         }
     }, [dateFrom, dateTo]);
 
-    // Function to generate descriptive report based on trends
     const generateReportDescription = (data) => {
         let reportDescription = "";
 
@@ -58,15 +56,11 @@ const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
             return;
         }
 
-        // Calculate average response time
         const avgResponseTime = data.reduce((sum, report) => sum + report.averageResponseTime, 0) / totalReports;
-
-        // Convert average response time to minutes and seconds for the report
         const avgMinutes = Math.floor(avgResponseTime / (1000 * 60));
         const avgSeconds = Math.floor((avgResponseTime % (1000 * 60)) / 1000);
-        reportDescription += `The general average response time across all barangays is at ${avgMinutes}m ${avgSeconds}s. `;
+        reportDescription += `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, the general average response time across all barangays is ${avgMinutes} minutes and ${avgSeconds} seconds. `;
 
-        // Fastest and slowest barangays
         const fastestBarangay = data.reduce((prev, curr) => (curr.averageResponseTime < prev.averageResponseTime ? curr : prev), data[0]);
         const slowestBarangay = data.reduce((prev, curr) => (curr.averageResponseTime > prev.averageResponseTime ? curr : prev), data[0]);
 
@@ -74,16 +68,39 @@ const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
             const fastestAvgMinutes = Math.floor(fastestBarangay.averageResponseTime / (1000 * 60));
             const fastestAvgSeconds = Math.floor((fastestBarangay.averageResponseTime % (1000 * 60)) / 1000);
             const percentageFastest = ((fastestBarangay.averageResponseTime / avgResponseTime) * 100).toFixed(2);
-            reportDescription += `The fastest average response time was from Barangay ${fastestBarangay.responder} at ${fastestAvgMinutes}m ${fastestAvgSeconds}s, which is ${percentageFastest}% of the overall average. `;
+            reportDescription += `The fastest average response time was from Barangay ${fastestBarangay.responder} at ${fastestAvgMinutes} minutes and ${fastestAvgSeconds} seconds, which is ${percentageFastest}% of the overall average. `;
         }
 
         if (slowestBarangay && slowestBarangay.responder !== fastestBarangay.responder) {
             const slowestAvgMinutes = Math.floor(slowestBarangay.averageResponseTime / (1000 * 60));
             const slowestAvgSeconds = Math.floor((slowestBarangay.averageResponseTime % (1000 * 60)) / 1000);
-            reportDescription += `Barangay ${slowestBarangay.responder} had the slowest response time, averaging ${slowestAvgMinutes}m ${slowestAvgSeconds}s. `;
+            reportDescription += `Barangay ${slowestBarangay.responder} had the slowest response time, averaging ${slowestAvgMinutes} minutes and ${slowestAvgSeconds} seconds in ${getMonthName(slowestBarangay.month)}. `;
         }
 
+        const suggestiveEndings = [
+            "To enhance response efforts, consider analyzing the factors contributing to the faster response times and applying those lessons to areas needing improvement.",
+            "Implementing targeted training for responders in barangays with slower response times could help reduce response delays.",
+            "Monitoring the effectiveness of response times over the next few months may provide insight into whether the improvements are effective.",
+            "Encouraging community involvement and reporting can help in identifying and resolving issues that lead to delayed response times."
+        ];
+
+        const randomEnding = suggestiveEndings[Math.floor(Math.random() * suggestiveEndings.length)];
+        reportDescription += randomEnding;
+
         setReportSummary(reportDescription || "There were no significant trends in the data.");
+    };
+
+    const getMonthName = (month) => {
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        return monthNames[month - 1];
+    };
+
+    const formatDate = (date) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(date).toLocaleDateString(undefined, options);
     };
 
     return (

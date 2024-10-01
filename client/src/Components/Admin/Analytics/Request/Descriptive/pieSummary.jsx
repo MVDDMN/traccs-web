@@ -22,7 +22,7 @@ const PieSummary = ({ dateFrom, dateTo }) => {
                 const data = response.data;
 
                 if (data && data.length > 0) {
-                    generateReportDescription(data);  // Call the auto-generative report logic after data is fetched
+                    generateReportDescription(data, dateFrom, dateTo);  // Call the auto-generative report logic after data is fetched
                 } else {
                     setNoData(true);  // No data available for the selected date range
                 }
@@ -38,37 +38,79 @@ const PieSummary = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
+    // Function to format the date as "Month Day, Year"
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    };
+
     // Function to generate the unified report description based on the data
-    const generateReportDescription = (data) => {
-        let reportDescription = "";
+    const generateReportDescription = (data, dateFrom, dateTo) => {
+        let reportDescription = `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, `;
 
         const totalRequests = data.reduce((sum, barangay) => sum + barangay.totalRequests, 0);
 
+        // Ensure we don't divide by zero
+        if (totalRequests === 0) {
+            setReportSummary("There are no requests to report for this period.");
+            return;
+        }
+
         if (totalRequests > 100) {
-            reportDescription += `There has been a significant number of requests, with over ${totalRequests} total requests recorded across all barangays. `;
+            reportDescription += `there was a significant number of requests, with over ${totalRequests} total requests recorded across all barangays. `;
         } else {
-            reportDescription += `The total number of requests is relatively low, with only ${totalRequests} requests recorded for the selected period. `;
+            reportDescription += `the total number of requests was relatively low, with only ${totalRequests} requests recorded during this period. `;
         }
 
-        // Find the barangay with the most and least requests
-        const mostRequestedBarangay = data.reduce((prev, current) => (prev.totalRequests > current.totalRequests) ? prev : current, {});
-        const leastRequestedBarangay = data.reduce((prev, current) => (prev.totalRequests < current.totalRequests) ? prev : current, {});
+        // Calculate percentage for each barangay
+        const barangayPercentages = data.map(barangay => ({
+            _id: barangay._id,
+            percentage: (barangay.totalRequests / totalRequests * 100).toFixed(2)
+        }));
 
-        if (mostRequestedBarangay) {
-            reportDescription += `The barangay with the highest number of requests is "${mostRequestedBarangay._id}" with ${mostRequestedBarangay.totalRequests} requests. `;
-        }
+        // Group barangays by the same percentage
+        const percentageGroups = barangayPercentages.reduce((acc, curr) => {
+            acc[curr.percentage] = acc[curr.percentage] ? [...acc[curr.percentage], curr._id] : [curr._id];
+            return acc;
+        }, {});
 
-        if (leastRequestedBarangay && leastRequestedBarangay.totalRequests > 0) {
-            reportDescription += `The barangay with the lowest number of requests is "${leastRequestedBarangay._id}" with only ${leastRequestedBarangay.totalRequests} requests. `;
-        }
+        // Add narrative for each percentage group, with "and" or "while" for the last group
+        const percentageGroupEntries = Object.entries(percentageGroups);
+        percentageGroupEntries.forEach((entry, index) => {
+            const [percentage, barangays] = entry;
+            const barangayList = barangays.join(", ");
+            
+            if (index === percentageGroupEntries.length - 1 && percentageGroupEntries.length > 1) {
+                reportDescription += `and Barangay(s) ${barangayList} accounted for ${percentage}% of the total requests. `;
+            } else if (index === percentageGroupEntries.length - 1) {
+                reportDescription += `while Barangay(s) ${barangayList} accounted for ${percentage}% of the total requests. `;
+            } else {
+                reportDescription += `Barangay(s) ${barangayList} accounted for ${percentage}% of the total requests. `;
+            }
+        });
 
-        // Analyze if there are significant gaps in request distribution between barangays
+        // Analyze gaps in percentage between the most and least requested barangays
+        const mostRequestedPercentage = Math.max(...barangayPercentages.map(b => parseFloat(b.percentage)));
+        const leastRequestedPercentage = Math.min(...barangayPercentages.map(b => parseFloat(b.percentage)));
+        const leastRequestedBarangay = barangayPercentages.find(b => parseFloat(b.percentage) === leastRequestedPercentage);
         const gapThreshold = 10;  // Adjust this value to reflect what a "significant gap" means
-        if (mostRequestedBarangay.totalRequests - leastRequestedBarangay.totalRequests > gapThreshold) {
-            reportDescription += `There is a significant gap between the most requested barangay and the least requested barangay, indicating unequal distribution of requests. `;
+
+        if (mostRequestedPercentage - leastRequestedPercentage > gapThreshold) {
+            reportDescription += `There was a significant gap in requests, with the highest percentage accounting for ${mostRequestedPercentage}% and the lowest for ${leastRequestedPercentage}%. `;
         }
 
-        setReportSummary(reportDescription || "There are no significant trends to report.");
+        // Suggestive narrative outcomes based on the data trends
+        if (totalRequests > 100) {
+            reportDescription += `Given the high number of requests, it may be necessary to allocate more resources to the barangays with higher demand. Further analysis can identify which specific items are in demand. `;
+        } else {
+            reportDescription += `With a lower number of requests, it would be beneficial to review the distribution of resources and ensure that barangays with fewer requests, such as Barangay ${leastRequestedBarangay._id}, are sufficiently supplied. `;
+        }
+
+        if (mostRequestedPercentage - leastRequestedPercentage > gapThreshold) {
+            reportDescription += `The significant gap between the highest and lowest requested barangays suggests a need for further investigation into why certain areas have more needs than others. Community outreach may be required in areas with lower request volumes. `;
+        }
+
+        setReportSummary(reportDescription || "There are no significant trends to report for this period.");
     };
 
     return (

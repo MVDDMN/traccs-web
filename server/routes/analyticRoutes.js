@@ -121,7 +121,6 @@ router.get('/analytics/response-time-summary', async (req, res) => {
     try {
         const { dateFrom, dateTo } = req.query;
 
-        // Build the query for filtering by date range
         const dateFilter = {};
         if (dateFrom && dateTo) {
             dateFilter.report_date_time = {
@@ -160,6 +159,9 @@ router.get('/analytics/response-time-summary', async (req, res) => {
                     },
                     averageResponseTime: { $avg: "$responseTime" }
                 }
+            },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1 }
             }
         ]);
 
@@ -169,7 +171,6 @@ router.get('/analytics/response-time-summary', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 // Analytics Module - Route to fetch report frequency data with date range filtering
 router.get('/analytics/report-frequency', async (req, res) => {
@@ -189,7 +190,7 @@ router.get('/analytics/report-frequency', async (req, res) => {
 
         const reportFrequency = await archiveModel.aggregate([
             { 
-                $match: matchStage // Apply the date range filter 
+                $match: matchStage
             },
             {
                 $group: {
@@ -197,21 +198,21 @@ router.get('/analytics/report-frequency', async (req, res) => {
                         month: { $month: "$report_date_time" }, // Group by month
                         type: "$type"
                     },
-                    count: { $sum: 1 }, // Sum the number of reports for each type per month
+                    count: { $sum: 1 },
                 },
             },
             {
                 $project: {
-                    _id: 0,                      // Remove default _id
-                    month: "$_id.month",          // Extract month from the _id
-                    type: "$_id.type",            // Extract type from the _id
-                    count: 1                      // Include count in the output
+                    _id: 0,
+                    month: "$_id.month",
+                    type: "$_id.type",
+                    count: 1
                 }
             },
             {
                 $sort: {
-                    month: 1, // Sort by month in ascending order
-                    type: 1   // Sort by type for better organization in charting
+                    month: 1,
+                    type: 1
                 }
             }
         ]);
@@ -223,12 +224,13 @@ router.get('/analytics/report-frequency', async (req, res) => {
     }
 });
 
-// Analytics Module - Report Stats with Date Filtering
+// Analytics Module - Report Stats with Date Filtering from Two Models
 router.get('/analytics/report-stats', async (req, res) => {
     try {
         const { dateFrom, dateTo } = req.query;
         let reportsQuery = {};
 
+        // Filter by date range if provided
         if (dateFrom && dateTo) {
             reportsQuery = {
                 report_date_time: {
@@ -238,97 +240,48 @@ router.get('/analytics/report-stats', async (req, res) => {
             };
         }
 
-        const totalReports = await archiveModel.countDocuments(reportsQuery);
-        const reports = await archiveModel.find(reportsQuery);
+        // Aggregation pipeline for archiveModel to get total, resolved, and denied reports
+        const archiveStats = await archiveModel.aggregate([
+            { $match: reportsQuery },  // Match the date range
+            {
+                $group: {
+                    _id: null,
+                    totalReports: { $sum: 1 },  // Count total reports
+                    resolvedReports: { $sum: { $cond: [{ $eq: ["$status", "Archived"] }, 1, 0] } },
+                    deniedReports: { $sum: { $cond: [{ $eq: ["$status", "Denied"] }, 1, 0] } }
+                }
+            }
+        ]);
 
-        // Initialize statistics
-        let resolvedReports = 0;
-        let deniedReports = 0;
-        let reportsByDate = {};
-        let respondersCount = {};
+        // Get pending reports and reports for today from reportPendingModel
         const today = new Date();
-        const todayISO = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' format
-        let reportsThisMonth = 0;
-        let reportsToday = 0;
-        let reportTypesSummary = {};
+        const todayISO = today.toISOString().split('T')[0];
 
-        reports.forEach(report => {
-            const reportDate = new Date(report.report_date_time);
-            const reportISO = reportDate.toISOString().split('T')[0];
+        // Query for pending reports within the period
+        const reportsPendingPeriod = await reportsModel.countDocuments({
+            report_date_time: { $gte: new Date(dateFrom), $lte: new Date(dateTo) },
+            status: 'Pending'
+        });
 
-            // Count resolved and denied reports
-            if (report.status === 'Archived') {
-                resolvedReports++;
-            } else if (report.status === 'Denied') {
-                deniedReports++;
-            }
-
-            // Track reports by date for highest report day
-            if (!reportsByDate[reportISO]) {
-                reportsByDate[reportISO] = 0;
-            }
-            reportsByDate[reportISO]++;
-
-            // Count the number of responses by responder
-            if (report.responder) {
-                if (!respondersCount[report.responder]) {
-                    respondersCount[report.responder] = 0;
-                }
-                respondersCount[report.responder]++;
-            }
-
-            // Track report types
-            if (report.type) {
-                if (!reportTypesSummary[report.type]) {
-                    reportTypesSummary[report.type] = 0;
-                }
-                reportTypesSummary[report.type]++;
-            }
-
-            // Check if it's the same month as today
-            if (
-                reportDate.getFullYear() === today.getFullYear() &&
-                reportDate.getMonth() === today.getMonth()
-            ) {
-                reportsThisMonth++;
-            }
-
-            // Check if it's the same day as today
-            if (reportISO === todayISO) {
-                reportsToday++;
+        // Query for reports today
+        const reportsToday = await reportsModel.countDocuments({
+            report_date_time: {
+                $gte: new Date().setHours(0, 0, 0, 0), // Start of today
+                $lte: new Date().setHours(23, 59, 59, 999) // End of today
             }
         });
 
-        // Determine the date with the highest number of reports
-        let highestReportDate = null;
-        let highestReportCount = 0;
-        for (let [date, count] of Object.entries(reportsByDate)) {
-            if (count > highestReportCount) {
-                highestReportDate = date;
-                highestReportCount = count;
-            }
-        }
-
-        // Determine the responder with the highest responses
-        let highestResponder = null;
-        let highestResponseCount = 0;
-        for (let [responder, count] of Object.entries(respondersCount)) {
-            if (count > highestResponseCount) {
-                highestResponder = responder;
-                highestResponseCount = count;
-            }
-        }
+        // Return the aggregated stats
+        const totalReports = archiveStats[0]?.totalReports || 0;
+        const resolvedReports = archiveStats[0]?.resolvedReports || 0;
+        const deniedReports = archiveStats[0]?.deniedReports || 0;
 
         res.json({
-            totalReports,
-            reportsThisMonth,
-            reportsToday,
-            resolvedReports,
-            deniedReports,
-            highestReportDate,
-            highestReportCount,
-            highestResponder,
-            reportTypesSummary
+            totalReports,  // From archiveModel
+            reportsPendingPeriod,  // From reportPendingModel
+            reportsToday,  // From reportPendingModel
+            resolvedReports,  // From archiveModel
+            deniedReports  // From archiveModel
         });
     } catch (error) {
         console.error('Error fetching report stats:', error);
@@ -438,13 +391,13 @@ router.get('/analytics/report-frequency-by-hour', async (req, res) => {
     }
 });
 
-
 // Analytics Module - Requests Stats
 router.get('/analytics/requests-stats', async (req, res) => {
     try {
         const { dateFrom, dateTo } = req.query;
         const dateFilter = {};
 
+        // Check if dateFrom and dateTo are provided and valid
         if (dateFrom && dateTo) {
             dateFilter.date_time = {
                 $gte: new Date(dateFrom),
@@ -453,11 +406,9 @@ router.get('/analytics/requests-stats', async (req, res) => {
         }
 
         // Total Requests within the date range
-        const totalRequests = await requestsModel.countDocuments(dateFilter);
+        const totalRequests = await requestarchiveModel.countDocuments(dateFilter);
 
-        // Requests This Month within the date range
-        const currentMonth = new Date().getMonth() + 1;
-        const currentYear = new Date().getFullYear();
+        // Requests Pending This Period
         const requestsThisMonth = await requestsModel.aggregate([
             {
                 $addFields: {
@@ -467,9 +418,9 @@ router.get('/analytics/requests-stats', async (req, res) => {
             },
             {
                 $match: {
-                    month: currentMonth,
-                    year: currentYear,
-                    ...dateFilter // Apply date range filter if available
+                    month: { $gte: new Date(dateFrom).getMonth() + 1, $lte: new Date(dateTo).getMonth() + 1 },
+                    year: { $gte: new Date(dateFrom).getFullYear(), $lte: new Date(dateTo).getFullYear() },
+                    ...dateFilter
                 }
             },
             {
@@ -477,8 +428,7 @@ router.get('/analytics/requests-stats', async (req, res) => {
             }
         ]);
 
-        // Requests Today within the date range
-        const currentDay = new Date().getDate();
+        // Requests Today within the selected date range
         const requestsToday = await requestsModel.aggregate([
             {
                 $addFields: {
@@ -489,10 +439,10 @@ router.get('/analytics/requests-stats', async (req, res) => {
             },
             {
                 $match: {
-                    day: currentDay,
-                    month: currentMonth,
-                    year: currentYear,
-                    ...dateFilter // Apply date range filter if available
+                    day: new Date().getDate(),
+                    month: new Date(dateTo).getMonth() + 1,
+                    year: new Date(dateTo).getFullYear(),
+                    ...dateFilter
                 }
             },
             {
@@ -500,16 +450,34 @@ router.get('/analytics/requests-stats', async (req, res) => {
             }
         ]);
 
+        // Barangay with the most requests
+        const majorityBarangay = await requestarchiveModel.aggregate([
+            { $match: dateFilter },
+            { $group: { _id: "$barangay", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 1 }
+        ]);
+
+        // Barangay responders and their request counts
+        const barangayResponders = await requestarchiveModel.aggregate([
+            { $match: dateFilter },
+            { $group: { _id: "$responder", requestsCount: { $sum: 1 } } },
+            { $sort: { requestsCount: -1 } }
+        ]);
+
         res.json({
             totalRequests,
             requestsThisMonth: requestsThisMonth.length > 0 ? requestsThisMonth[0].requestsThisMonth : 0,
             requestsToday: requestsToday.length > 0 ? requestsToday[0].requestsToday : 0,
+            majorityBarangay: majorityBarangay.length > 0 ? majorityBarangay[0] : null,
+            barangayResponders // Send barangay responders data
         });
     } catch (error) {
         console.error('Error fetching requests stats:', error);
         res.status(500).send('Server error');
     }
 });
+
 
 // Analytics Module - Summary of reports status
 router.get('/analytics/reports-summary-status', async (req, res) => {

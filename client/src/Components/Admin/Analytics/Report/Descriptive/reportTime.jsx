@@ -63,7 +63,7 @@ const ReportTime = ({ dateFrom, dateTo }) => {
         if (totalReports > 100) {
             reportDescription += `There has been a high volume of reports, with over ${totalReports} incidents recorded across the selected date range. `;
         } else {
-            reportDescription += `There is a total of ${totalReports} incidents recorded within the selected period. `;
+            reportDescription += `A total of ${totalReports} incidents were recorded within the selected period. `;
         }
 
         // Find the most active hour and the least active hour
@@ -73,11 +73,8 @@ const ReportTime = ({ dateFrom, dateTo }) => {
         // If the most active hour exists, show the most prevalent report type
         if (mostActiveHour.count > 0) {
             const breakdown = data.breakdownByHour[mostActiveHour.hour];  // Access the breakdown by hour
-
-            // Find the report type with the highest count within the most active hour
             const highestType = Object.keys(breakdown).reduce((a, b) => breakdown[a] > breakdown[b] ? a : b);
-
-            reportDescription += `The prevalent time at which a large amount of reports occurred at is on ${formatHour12(mostActiveHour.hour)}, and the most prevalent issue involved was '${highestType}' with ${breakdown[highestType]} occurrences. `;
+            reportDescription += `The prevalent time for reports was at ${formatHour12(mostActiveHour.hour)}, with '${highestType}' being the most common issue at ${breakdown[highestType]} occurrences. `;
         }
 
         // Check for trends in peak hours
@@ -94,10 +91,22 @@ const ReportTime = ({ dateFrom, dateTo }) => {
         }
 
         if (leastActiveHour.count > 0 && leastActiveHour.count !== Infinity) {
-            reportDescription += `The hour with the least reports was at ${formatHour12(leastActiveHour.hour)}, with only ${leastActiveHour.count} reports. which is ideal potentially for maintenance hours.`;
+            reportDescription += `The hour with the least reports was at ${formatHour12(leastActiveHour.hour)}, with only ${leastActiveHour.count} reports, suggesting this time could be utilized for maintenance activities. `;
         } else {
             reportDescription += "Some hours had no reports, indicating periods of inactivity. ";
         }
+
+        // Suggestive ending narratives
+        const suggestiveEndings = [
+            "To enhance response efforts, consider focusing resources during peak reporting hours identified in this analysis.",
+            "It may be beneficial to implement preventive measures during high activity times to mitigate incidents effectively.",
+            "To ensure community safety, ongoing monitoring and timely interventions during reported peak hours are essential.",
+            "Encouraging community awareness and education during identified peak times can further reduce incidents and improve safety."
+        ];
+
+        // Randomly select a suggestive ending
+        const randomEnding = suggestiveEndings[Math.floor(Math.random() * suggestiveEndings.length)];
+        reportDescription += randomEnding;
 
         setReportSummary(reportDescription || "There were no significant trends in the data.");
     };

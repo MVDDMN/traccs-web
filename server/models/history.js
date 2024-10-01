@@ -9,9 +9,9 @@ const historySchema = new mongoose.Schema({
     location: String,
     address: String,
     status: String,
-    report_date_time: { type: Date },
-    respond_date_time: { type: Date },
-    completion_date_time: { type: Date },
+    report_date_time: { type: Date, index: true },
+    respond_date_time: { type: Date, index: true },
+    completion_date_time: { type: Date, index: true },
     images: [String],
     description: {
         fire_type: String,

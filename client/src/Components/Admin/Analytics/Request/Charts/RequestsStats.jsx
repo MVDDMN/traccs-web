@@ -28,6 +28,7 @@ const RequestsStats = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo
                 }
             } catch (error) {
                 console.error('Error fetching requests stats:', error);
+                setNoData(true); // Handle error by showing no data
             } finally {
                 setLoading(false);
             }
@@ -37,6 +38,10 @@ const RequestsStats = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo
             fetchStats();  // Fetch data when both dateFrom and dateTo are set
         }
     }, [dateFrom, dateTo]);
+
+    // Format dates for display (optional, if you want to show the selected range)
+    const formattedDateFrom = dateFrom ? new Date(dateFrom).toLocaleDateString() : '';
+    const formattedDateTo = dateTo ? new Date(dateTo).toLocaleDateString() : '';
 
     return (
         <div className='requests-stats-container'>
@@ -52,24 +57,24 @@ const RequestsStats = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo
                 <div className="requests-stats">
                     <div className="requests-stats-item">
                         <div className="requests-stats-info">
-                            <a className='requests-stats-item-title'>Total Requests</a>
+                            <a className='requests-stats-item-title'>Total Requests Completed</a>
                             <p>{stats.totalRequests}</p>
                         </div>
-                        <img className='requests-stat-icon' src={usericon} />
+                        <img className='requests-stat-icon' src={usericon} alt="User Icon" />
                     </div>
                     <div className="requests-stats-item">
                         <div className="requests-stats-info">
-                            <a className='requests-stats-item-title'>Requests This Month</a>
+                            <a className='requests-stats-item-title'>Requests Pending This Period</a>
                             <p>{stats.requestsThisMonth}</p>
                         </div>
-                        <img className='requests-stat-icon' src={usericon} />
+                        <img className='requests-stat-icon' src={usericon} alt="User Icon" />
                     </div>
                     <div className="requests-stats-item">
                         <div className="requests-stats-info">
                             <a className='requests-stats-item-title'>Requests Today</a>
                             <p>{stats.requestsToday}</p>
                         </div>
-                        <img className='requests-stat-icon' src={usericon} />
+                        <img className='requests-stat-icon' src={usericon} alt="User Icon" />
                     </div>
                 </div>
             )}

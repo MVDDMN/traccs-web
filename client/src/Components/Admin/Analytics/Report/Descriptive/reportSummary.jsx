@@ -40,16 +40,20 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
     const generateReportDescription = (data) => {
         let reportDescription = "";
 
         const totalReports = data.reduce((sum, report) => sum + report.totalReports, 0);
 
-        if (totalReports > 100) {
-            reportDescription += `There have been over ${totalReports} reports during the selected period. `;
-        } else {
-            reportDescription += `A total of ${totalReports} reports were submitted in the selected period. `;
-        }
+        reportDescription += `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, a total of ${totalReports} reports were submitted. `;
 
         // Mapping report types to descriptions
         const reportTypes = {
@@ -68,35 +72,35 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
         });
 
         // Generate detailed breakdown for non-zero report types
-        let detailedBreakdown = `Within the selected dates, there are ${totalReports} reports: `;
-        detailedBreakdown += nonZeroReportTypes.map(type => {
-            const count = data.find(report => report._id === type)?.totalReports || 0;
-            return `${count} ${reportTypes[type]} reports`;
-        }).join(", ") + ".";
-
-        reportDescription += detailedBreakdown + " ";
+        if (nonZeroReportTypes.length > 0) {
+            reportDescription += `Within this period, there were ${totalReports} reports: `;
+            reportDescription += nonZeroReportTypes.map(type => {
+                const count = data.find(report => report._id === type)?.totalReports || 0;
+                return `${count} ${reportTypes[type]} reports`;
+            }).join(", ") + ". ";
+        }
 
         // Determine the most common type of report and apply its narrative
         const mostCommonType = data.reduce((prev, current) => (prev.totalReports > current.totalReports) ? prev : current, {});
         if (mostCommonType) {
             switch (mostCommonType._id) {
                 case "Accident":
-                    reportDescription += "The most frequently submitted reports pertain to vehicular accidents. These reports highlight the urgent need for increased awareness and safety measures during the specified reporting period. ";
+                    reportDescription += "The most frequently submitted reports pertain to vehicular accidents, highlighting the urgent need for increased awareness and safety measures. ";
                     break;
                 case "Medical":
-                    reportDescription += "A substantial number of medical reports document health-related incidents. This underscores the importance of timely medical assistance and the necessity for ongoing health education throughout the reporting period. ";
+                    reportDescription += "A substantial number of medical reports document health-related incidents, underscoring the importance of timely medical assistance and ongoing health education. ";
                     break;
                 case "Fire":
-                    reportDescription += "Reports related to fire incidents emphasize the critical need for fire safety protocols and community preparedness in response to these emergencies during the reporting period. ";
+                    reportDescription += "Reports related to fire incidents emphasize the critical need for fire safety protocols and community preparedness. ";
                     break;
                 case "Police":
-                    reportDescription += "The low frequency of police reports indicates a need for greater community engagement and awareness regarding law enforcement issues during the specified timeframe. ";
+                    reportDescription += "The low frequency of police reports indicates a need for greater community engagement and awareness regarding law enforcement issues. ";
                     break;
                 case "Assistance":
-                    reportDescription += "Reports concerning community assistance showcase the support available to residents. They highlight the significance of collaboration in addressing community needs during the reporting period. ";
+                    reportDescription += "Reports concerning community assistance showcase the support available to residents, highlighting the significance of collaboration in addressing community needs. ";
                     break;
                 case "Hazard":
-                    reportDescription += "Hazard reports identify potential environmental risks, emphasizing the importance of hazard recognition and mitigation efforts during the specified reporting period. ";
+                    reportDescription += "Hazard reports identify potential environmental risks, emphasizing the importance of hazard recognition and mitigation efforts. ";
                     break;
                 default:
                     reportDescription += "There is no significant trend for any specific report type. ";
@@ -104,34 +108,17 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
             }
         }
 
-        // Check each non-zero report type for exceeding 10 reports and append alarm messages
-        //nonZeroReportTypes.forEach(type => {
-        //    const count = data.find(report => report._id === type)?.totalReports || 0;
-        //    if (count > 10) {
-        //        switch (type) {
-        //            case "Accident":
-        //                reportDescription += `Alert: With ${count} vehicular accident reports, immediate implementation of traffic safety measures is recommended to mitigate further incidents. `;
-        //                break;
-        //            case "Medical":
-        //                reportDescription += `Alert: The high number of medical reports (${count}) necessitates enhanced medical resources and rapid response teams to address health emergencies effectively. `;
-        //                break;
-        //            case "Fire":
-        //               reportDescription += `Alert: ${count} fire-related reports indicate a pressing need for reinforced fire safety protocols and community training programs to prevent future occurrences. `;
-        //                break;
-        //            case "Police":
-        //                reportDescription += `Alert: An increase to ${count} police reports suggests the necessity for heightened community policing efforts and public awareness campaigns to ensure law and order. `;
-        //                break;
-        //            case "Assistance":
-        //                reportDescription += `Alert: With ${count} assistance reports, it's crucial to bolster community support systems and resource allocation to address residents' needs promptly. `;
-        //               break;
-        //            case "Hazard":
-        //                reportDescription += `Alert: The ${count} hazard reports highlight urgent environmental risks that require immediate attention and mitigation strategies to ensure community safety. `;
-        //                break;
-        //            default:
-        //                break;
-        //        }
-        //    }
-        //});
+        // Suggestive ending narratives
+        const suggestiveEndings = [
+            "Moving forward, addressing the identified trends and ensuring timely responses can enhance community safety and resilience during future incidents.",
+            "It is crucial to consider implementing proactive measures based on the trends observed in this report to improve community response efforts.",
+            "Given the data, barangays should prioritize strategies that mitigate the risks identified in the reports to foster a safer environment.",
+            "To further enhance community safety, increased collaboration and communication among responders is recommended, particularly concerning the identified report types."
+        ];
+
+        // Randomly select a suggestive ending
+        const randomEnding = suggestiveEndings[Math.floor(Math.random() * suggestiveEndings.length)];
+        reportDescription += randomEnding;
 
         setReportSummary(reportDescription || "There are no significant trends to report at the moment.");
     };
