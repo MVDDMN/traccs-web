@@ -22,7 +22,10 @@ const ReportStats = ({ dateFrom, dateTo }) => {
                     params: { dateFrom, dateTo } // Send dateFrom and dateTo as query parameters
                 });
 
-                if (response.data) {
+                // If response contains data but totalReports is 0, set noData to true
+                if (response.data && response.data.totalReports === 0) {
+                    setNoData(true);
+                } else if (response.data) {
                     setStats(response.data);
                 } else {
                     setNoData(true);  // No data available for the selected date range
@@ -55,7 +58,7 @@ const ReportStats = ({ dateFrom, dateTo }) => {
             return "Loading report analysis...";
         }
 
-        if (noData) {
+        if (noData || stats.totalReports === 0) {  // Check if no data or totalReports is 0
             return "No data available for the selected date range."; 
         }
 
