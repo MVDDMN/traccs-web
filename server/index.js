@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const helmet = require("helmet");  // Add helmet for security headers
 require('dotenv').config();
 
 // Middlewares
@@ -25,6 +26,37 @@ app.use(handlePreflightRequests);
 
 // Apply CORS middleware before any other middleware or routes
 app.use(corsMiddleware);
+
+// Apply helmet middleware for security headers
+app.use(helmet());
+
+// Customize specific headers not covered by Helmet defaults
+app.use(helmet.frameguard({ action: 'deny' }));  // X-Frame-Options
+app.use(helmet.referrerPolicy({ policy: 'no-referrer' }));  // Referrer-Policy
+
+// Apply Content-Security-Policy (CSP) rules
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: [
+            "'self'",
+            process.env.PROD_BASE_URL,
+            process.env.PROD_ALT_URL
+        ],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+    },
+}));
+
+// Set Strict-Transport-Security (HSTS) policy
+app.use(helmet.hsts({
+    maxAge: 63072000, // 2 years
+    includeSubDomains: true,
+    preload: true
+}));
 
 // Body parsers
 app.use(express.json({ limit: '2mb' }));
