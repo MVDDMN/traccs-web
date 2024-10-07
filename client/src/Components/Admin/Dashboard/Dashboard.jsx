@@ -100,6 +100,7 @@ const Dashboard = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
     const [denyDescription, setDenyDescription] = useState('');
+    const mapRef = useRef();
 
 
     const fetchReports = async () => {
@@ -391,6 +392,7 @@ const Dashboard = () => {
         });
     };
 
+
     return (
         <div className="dashboard-container">
             <div className='dashboard-content'>
@@ -553,9 +555,29 @@ const Dashboard = () => {
                     </div>
                     <MapContainer
                         id="map"
-                        center={[14.5591613626185, 121.14011670582923]}
-                        zoom={15}
+                        center={[14.5591613626185, 121.14011670582923]} // Initial center of the map
+                        zoom={15} // Initial zoom level
                         scrollWheelZoom={false}
+                        minZoom={6} // Set the minimum zoom level to prevent zooming out too far
+                        maxBounds={[[5.0, 116.0], [21.0, 127.0]]} // Set the maximum bounds for the map
+                        maxBoundsViscosity={1.0} // Set viscosity to 1 to prevent panning outside the bounds
+                        whenCreated={(map) => {
+                            // Define the bounds for the Philippines
+                            const bounds = L.latLngBounds(
+                                L.latLng(5.0, 116.0),  // Southwest corner of the Philippines
+                                L.latLng(21.0, 127.0)  // Northeast corner of the Philippines
+                            );
+
+                            map.setMaxBounds(bounds); // Set maximum bounds for the map
+
+                            // Optional: Enforce keeping the view strictly within the bounds if at the minimum zoom level
+                            map.on('drag', () => {
+                                if (map.getZoom() <= 6) {
+                                    // Only prevent dragging when the zoom level is at or below the minimum zoom level
+                                    map.panInsideBounds(bounds, { animate: false });
+                                }
+                            });
+                        }}
                         aria-hidden="true"
                         aria-label="Interactive map showing various reports"
                     >
