@@ -251,12 +251,11 @@
 }
 
 .users-details-text {
+    color: #000;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
     padding: 10px;
-    text-align: left;
-    font-size: 15px;
-    border: none;
-    border-bottom: 2px solid gray;
-    outline: none;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
 }

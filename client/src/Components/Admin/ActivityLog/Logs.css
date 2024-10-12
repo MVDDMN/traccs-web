@@ -230,10 +230,12 @@
 
 .logs-content-text {
     color: #000;
-    border-bottom: 2px solid gray;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
-    padding: 5px;
 }
 
 .logs-description-box {

@@ -476,66 +476,49 @@ const Live = () => {
                             </div>
 
                             <div className='live-reports-details-container'>
+
                                 <div className='live-reports-details-modal-box'>
-                                    <div className='live-reports-text-box'>
-                                        <a className='live-reports-title-text'>
-                                            Report ID:
-                                            <b className='live-reports-content-text'>{selectedReport._id}</b>
-                                        </a>
-                                        <a className='live-reports-title-text'>
-                                            Report Type:
-                                            <b className='live-reports-content-text'>{selectedReport.type}</b>
-                                        </a>
-                                        {selectedReport.responder && (
+
+                                    <div className='live-reports-details-section-box'>
+                                        <div className='live-reports-text-box'>
                                             <a className='live-reports-title-text'>
-                                                Responder:
-                                                <b className='live-reports-content-text'>{selectedReport.responder}</b>
+                                                Status:
+                                                <b className='live-reports-content-text'>{selectedReport.status}</b>
                                             </a>
-                                        )}
-                                    </div>
-                                    <div className='live-reports-text-box'>
-                                        <a className='live-reports-title-text'>
-                                            Name:
-                                            <b className='live-reports-content-text'>{selectedReport.name}</b>
-                                        </a>
-                                        {selectedReport.phone && (
                                             <a className='live-reports-title-text'>
-                                                Contact no.:
-                                                <b className='live-reports-content-text'>{selectedReport.phone}</b>
+                                                Report Type:
+                                                <b className='live-reports-content-text'>{selectedReport.type}</b>
                                             </a>
-                                        )}
-                                        {selectedReport.email && (
+                                            {selectedReport.responder && (
+                                                <a className='live-reports-title-text'>
+                                                    Responder:
+                                                    <b className='live-reports-content-text'>{selectedReport.responder}</b>
+                                                </a>
+                                            )}
+                                        </div>
+                                        <div className='live-reports-text-box'>
                                             <a className='live-reports-title-text'>
-                                                Email:
-                                                <b className='live-reports-content-text'>{selectedReport.email}</b>
+                                                Name:
+                                                <b className='live-reports-content-text'>{selectedReport.name}</b>
                                             </a>
-                                        )}
-                                    </div>
-                                    <div className='live-reports-text-box'>
-                                        <a className='live-reports-title-text'>
-                                            Report Date & Time:
-                                            <b className='live-reports-content-text'>
-                                                {new Date(selectedReport.report_date_time).toLocaleString
-                                                    ('en-US',
-                                                        {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit',
-                                                            second: '2-digit',
-                                                            hour12: true,
-                                                            timeZone: 'UTC'
-                                                        }
-                                                    )
-                                                }
-                                            </b>
-                                        </a>
-                                        {selectedReport.respond_date_time && (
+                                            {selectedReport.phone && (
+                                                <a className='live-reports-title-text'>
+                                                    Contact no.:
+                                                    <b className='live-reports-content-text'>{selectedReport.phone}</b>
+                                                </a>
+                                            )}
+                                            {selectedReport.email && (
+                                                <a className='live-reports-title-text'>
+                                                    Email:
+                                                    <b className='live-reports-content-text'>{selectedReport.email}</b>
+                                                </a>
+                                            )}
+                                        </div>
+                                        <div className='live-reports-text-box'>
                                             <a className='live-reports-title-text'>
-                                                Respond Date & Time:
+                                                Report Date & Time:
                                                 <b className='live-reports-content-text'>
-                                                    {new Date(selectedReport.respond_date_time).toLocaleString
+                                                    {new Date(selectedReport.report_date_time).toLocaleString
                                                         ('en-US',
                                                             {
                                                                 year: 'numeric',
@@ -551,25 +534,43 @@ const Live = () => {
                                                     }
                                                 </b>
                                             </a>
-                                        )}
-                                    </div>
-                                    <div className='live-reports-text-box'>
-                                        <a className='live-reports-title-text'>
-                                            Status:
-                                            <b className='live-reports-content-text'>{selectedReport.status}</b>
-                                        </a>
-                                        {selectedReport.address && (
-                                            <a className='live-reports-title-text'>
-                                                Address:
-                                                <b className='live-reports-content-text'>{selectedReport.address}</b>
-                                            </a>
-                                        )}
-                                        {selectedReport.location && (
-                                            <a className='live-reports-title-text'>
-                                                Location:
-                                                <b className='live-reports-content-text'>{selectedReport.location}</b>
-                                            </a>
-                                        )}
+                                            {selectedReport.respond_date_time && (
+                                                <a className='live-reports-title-text'>
+                                                    Respond Date & Time:
+                                                    <b className='live-reports-content-text'>
+                                                        {new Date(selectedReport.respond_date_time).toLocaleString
+                                                            ('en-US',
+                                                                {
+                                                                    year: 'numeric',
+                                                                    month: 'long',
+                                                                    day: 'numeric',
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                    second: '2-digit',
+                                                                    hour12: true,
+                                                                    timeZone: 'UTC'
+                                                                }
+                                                            )
+                                                        }
+                                                    </b>
+                                                </a>
+                                            )}
+                                        </div>
+                                        <div className='live-reports-text-box'>
+                                            {selectedReport.address && (
+                                                <a className='live-reports-title-text'>
+                                                    Address:
+                                                    <b className='live-reports-content-text'>{selectedReport.address}</b>
+                                                </a>
+                                            )}
+                                            {selectedReport.location && (
+                                                <a className='live-reports-title-text'>
+                                                    Location:
+                                                    <b className='live-reports-content-text'>{selectedReport.location}</b>
+                                                </a>
+                                            )}
+                                        </div>
+
                                     </div>
                                     <div className='live-reports-details-container'>
                                         <div className='live-reports-description-box'>

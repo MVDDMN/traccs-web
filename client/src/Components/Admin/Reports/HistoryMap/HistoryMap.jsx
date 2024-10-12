@@ -445,71 +445,72 @@ const HistoryMap = () => {
 
                             <div className='historymap-reports-details-container'>
                                 <div className='historymap-reports-details-modal-box'>
-                                    <div className='historymap-reports-text-box'>
-                                        <a className='historymap-reports-title-text'>
-                                            ID:
-                                            <b className='historymap-reports-content-text'>{selectedHistory._id}</b>
-                                        </a>
-                                        <a className='historymap-reports-title-text'>
-                                            Report Type:
-                                            <b className='historymap-reports-content-text'>{selectedHistory.type}</b>
-                                        </a>
-                                        <a className='historymap-reports-title-text'>
-                                            Responder:
-                                            <b className='historymap-reports-content-text'>{selectedHistory.responder}</b>
-                                        </a>
-                                    </div>
-                                    <div className='historymap-reports-text-box'>
-                                        <a className='historymap-reports-title-text'>
-                                            Name:
-                                            <b className='historymap-reports-content-text'>{selectedHistory.name}</b>
-                                        </a>
-                                        {selectedHistory.phone && (
-                                            <a className='historymap-reports-title-text'>
-                                                Contact no.:
-                                                <b className='historymap-reports-content-text'>{selectedHistory.phone}</b>
-                                            </a>
-                                        )}
-                                        {selectedHistory.email && (
-                                            <a className='historymap-reports-title-text'>
-                                                Email:
-                                                <b className='historymap-reports-content-text'>{selectedHistory.email}</b>
-                                            </a>
-                                        )}
-                                    </div>
-                                    <div className='historymap-reports-text-box'>
-                                        <a className='historymap-reports-title-text'>
-                                            Report Date & Time:
-                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
-                                        </a>
-                                        <a className='historymap-reports-title-text'>
-                                            Respond Date & Time:
-                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
-                                        </a>
-                                        <a className='historymap-reports-title-text'>
-                                            Completion Date & Time:
-                                            <b className='historymap-reports-content-text'>{new Date(selectedHistory.completion_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
-                                        </a>
 
-                                    </div>
+                                    <div className='historymap-reports-details-section-box'>
 
-                                    <div className='historymap-reports-text-box'>
-                                        <a className='historymap-reports-title-text'>
-                                            Status:
-                                            <b className='historymap-reports-content-text'>{selectedHistory.status}</b>
-                                        </a>
-                                        {selectedHistory.address && (
+                                        <div className='historymap-reports-text-box'>
                                             <a className='historymap-reports-title-text'>
-                                                Address:
-                                                <b className='historymap-reports-content-text'>{selectedHistory.address}</b>
+                                                Status:
+                                                <b className='historymap-reports-content-text'>{selectedHistory.status}</b>
                                             </a>
-                                        )}
-                                        {selectedHistory.location && (
                                             <a className='historymap-reports-title-text'>
-                                                Location:
-                                                <b className='historymap-reports-content-text'>{selectedHistory.location}</b>
+                                                Report Type:
+                                                <b className='historymap-reports-content-text'>{selectedHistory.type}</b>
                                             </a>
-                                        )}
+                                            <a className='historymap-reports-title-text'>
+                                                Responder:
+                                                <b className='historymap-reports-content-text'>{selectedHistory.responder}</b>
+                                            </a>
+                                        </div>
+                                        <div className='historymap-reports-text-box'>
+                                            <a className='historymap-reports-title-text'>
+                                                Name:
+                                                <b className='historymap-reports-content-text'>{selectedHistory.name}</b>
+                                            </a>
+                                            {selectedHistory.phone && (
+                                                <a className='historymap-reports-title-text'>
+                                                    Contact no.:
+                                                    <b className='historymap-reports-content-text'>{selectedHistory.phone}</b>
+                                                </a>
+                                            )}
+                                            {selectedHistory.email && (
+                                                <a className='historymap-reports-title-text'>
+                                                    Email:
+                                                    <b className='historymap-reports-content-text'>{selectedHistory.email}</b>
+                                                </a>
+                                            )}
+                                        </div>
+                                        <div className='historymap-reports-text-box'>
+                                            <a className='historymap-reports-title-text'>
+                                                Report Date & Time:
+                                                <b className='historymap-reports-content-text'>{new Date(selectedHistory.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
+                                            </a>
+                                            <a className='historymap-reports-title-text'>
+                                                Respond Date & Time:
+                                                <b className='historymap-reports-content-text'>{new Date(selectedHistory.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
+                                            </a>
+                                            <a className='historymap-reports-title-text'>
+                                                Completion Date & Time:
+                                                <b className='historymap-reports-content-text'>{new Date(selectedHistory.completion_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'UTC' })}</b>
+                                            </a>
+
+                                        </div>
+
+                                        <div className='historymap-reports-text-box'>
+                                            {selectedHistory.address && (
+                                                <a className='historymap-reports-title-text'>
+                                                    Address:
+                                                    <b className='historymap-reports-content-text'>{selectedHistory.address}</b>
+                                                </a>
+                                            )}
+                                            {selectedHistory.location && (
+                                                <a className='historymap-reports-title-text'>
+                                                    Location:
+                                                    <b className='historymap-reports-content-text'>{selectedHistory.location}</b>
+                                                </a>
+                                            )}
+                                        </div>
+
                                     </div>
 
                                     <div className='historymap-reports-details-container'>

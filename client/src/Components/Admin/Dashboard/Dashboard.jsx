@@ -206,7 +206,7 @@ const Dashboard = () => {
             ));
 
             await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
-            
+
             setIsSubmitting(false);
             closeModal();
         } catch (error) {
@@ -715,75 +715,76 @@ const Dashboard = () => {
                             </div>
 
                             <div className='dashboard-reports-details-container'>
+
                                 <div className='dashboard-reports-details-modal-box'>
 
-                                    <div className='dashboard-reports-text-box'>
-                                        <a className='dashboard-reports-title-text'>
-                                            Report ID:
-                                            <b className='dashboard-reports-content-text'>{selectedReport._id}</b>
-                                        </a>
-                                        <a className='dashboard-reports-title-text'>
-                                            Report Type:
-                                            <b className='dashboard-reports-content-text'>{selectedReport.type}</b>
-                                        </a>
-                                        {selectedReport.responder && (
-                                            <a className='dashboard-reports-title-text'>
-                                                Responder:
-                                                <b className='dashboard-reports-content-text'>{selectedReport.responder}</b>
-                                            </a>
-                                        )}
-                                    </div>
+                                    <div className='dashboard-reports-details-section-box'>
 
-                                    <div className='dashboard-reports-text-box'>
-                                        <a className='dashboard-reports-title-text'>
-                                            Name:
-                                            <b className='dashboard-reports-content-text'>{selectedReport.name}</b>
-                                        </a>
-                                        {selectedReport.phone && (
+                                        <div className='dashboard-reports-text-box'>
                                             <a className='dashboard-reports-title-text'>
-                                                Contact no.:
-                                                <b className='dashboard-reports-content-text'>{selectedReport.phone}</b>
+                                                Status:
+                                                <b className='dashboard-reports-content-text'>{selectedReport.status}</b>
                                             </a>
-                                        )}
-                                        {selectedReport.email && (
                                             <a className='dashboard-reports-title-text'>
-                                                Email:
-                                                <b className='dashboard-reports-content-text'>{selectedReport.email}</b>
+                                                Report Type:
+                                                <b className='dashboard-reports-content-text'>{selectedReport.type}</b>
                                             </a>
-                                        )}
+                                            {selectedReport.responder && (
+                                                <a className='dashboard-reports-title-text'>
+                                                    Responder:
+                                                    <b className='dashboard-reports-content-text'>{selectedReport.responder}</b>
+                                                </a>
+                                            )}
+                                        </div>
 
-                                    </div>
+                                        <div className='dashboard-reports-text-box'>
+                                            <a className='dashboard-reports-title-text'>
+                                                Name:
+                                                <b className='dashboard-reports-content-text'>{selectedReport.name}</b>
+                                            </a>
+                                            {selectedReport.phone && (
+                                                <a className='dashboard-reports-title-text'>
+                                                    Contact no.:
+                                                    <b className='dashboard-reports-content-text'>{selectedReport.phone}</b>
+                                                </a>
+                                            )}
+                                            {selectedReport.email && (
+                                                <a className='dashboard-reports-title-text'>
+                                                    Email:
+                                                    <b className='dashboard-reports-content-text'>{selectedReport.email}</b>
+                                                </a>
+                                            )}
 
-                                    <div className='dashboard-reports-text-box'>
-                                        <a className='dashboard-reports-title-text'>
-                                            Report Date & Time:
-                                            <b className='dashboard-reports-content-text'>{new Date(selectedReport.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'UTC' })}</b>
-                                        </a>
-                                        {selectedReport.respond_date_time && (
-                                            <a className='dashboard-reports-title-text'>
-                                                Respond Date & Time:
-                                                <b className='dashboard-reports-content-text'>{new Date(selectedReport.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'UTC' })}</b>
-                                            </a>
-                                        )}
-                                    </div>
+                                        </div>
 
-                                    <div className='dashboard-reports-text-box'>
-                                        <a className='dashboard-reports-title-text'>
-                                            Status:
-                                            <b className='dashboard-reports-content-text'>{selectedReport.status}</b>
-                                        </a>
-                                        {selectedReport.address && (
+                                        <div className='dashboard-reports-text-box'>
                                             <a className='dashboard-reports-title-text'>
-                                                Address:
-                                                <b className='dashboard-reports-content-text'>{selectedReport.address}</b>
+                                                Report Date & Time:
+                                                <b className='dashboard-reports-content-text'>{new Date(selectedReport.report_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'UTC' })}</b>
                                             </a>
-                                        )}
-                                        {selectedReport.location && (
-                                            <a className='dashboard-reports-title-text'>
-                                                Location:
-                                                <b className='dashboard-reports-content-text'>{selectedReport.location}</b>
-                                            </a>
-                                        )}
+                                            {selectedReport.respond_date_time && (
+                                                <a className='dashboard-reports-title-text'>
+                                                    Respond Date & Time:
+                                                    <b className='dashboard-reports-content-text'>{new Date(selectedReport.respond_date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'UTC' })}</b>
+                                                </a>
+                                            )}
+                                        </div>
+
+                                        <div className='dashboard-reports-text-box'>
+                                            {selectedReport.address && (
+                                                <a className='dashboard-reports-title-text'>
+                                                    Address:
+                                                    <b className='dashboard-reports-content-text'>{selectedReport.address}</b>
+                                                </a>
+                                            )}
+                                            {selectedReport.location && (
+                                                <a className='dashboard-reports-title-text'>
+                                                    Location:
+                                                    <b className='dashboard-reports-content-text'>{selectedReport.location}</b>
+                                                </a>
+                                            )}
+                                        </div>
+
                                     </div>
 
                                     <div className='dashboard-reports-details-container'>
@@ -819,7 +820,9 @@ const Dashboard = () => {
                                                 ))}
                                             </div>
                                         </div>
+
                                     </div>
+
                                 </div>
 
                             </div>
@@ -850,6 +853,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             )}
+
         </div>
     );
 };

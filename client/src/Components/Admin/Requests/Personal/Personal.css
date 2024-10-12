@@ -260,9 +260,11 @@
 }
 
 .request-content-text {
+    color: #aeaeae;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
     padding: 10px;
-    color: #ac0000;
-    border-bottom: 2px solid gray;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
 }
@@ -273,10 +275,14 @@
 }
 
 .request-input {
-    padding: 12px;
+    color: #000;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    width: auto;
     text-align: left;
-    font-size: 15px;
-    border: none;
+    font-size: 16px;
     border-bottom: 2px solid gray;
     outline: none;
     font-weight: bold;
@@ -296,6 +302,13 @@
     border-radius: 5px;
     padding: 10px;
     resize: none;
+}
+
+.request-description-hint-text {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
 }
 
 .update-modal-button-box {

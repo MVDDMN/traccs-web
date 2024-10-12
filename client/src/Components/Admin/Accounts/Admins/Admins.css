@@ -255,12 +255,11 @@
 }
 
 .admin-input {
-    padding: 5px;
-    text-align: left;
-    font-size: 16px;
-    border: none;
-    border-bottom: 2px solid gray;
-    outline: none;
+    color: #000;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
 }
@@ -276,6 +275,7 @@
     font-size: 16px;
     font-weight: bold;
     color: #000;
+    margin-right: 5px;
     
 }
 

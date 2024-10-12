@@ -121,7 +121,6 @@
     border-width: 10px;
     border-style: solid;
     border-color: transparent transparent transparent #555;
-    /* Adjust the border-color to make the left side visible */
 }
 
 .dashboard-map-tooltip:hover .dashboard-map-tooltip-box {
@@ -518,6 +517,17 @@
     width: 100%;
 }
 
+.dashboard-reports-details-section-box {
+    display: inline-flex;
+    flex-direction: column;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 5px;
+    height: 225px;
+    width: 100%;
+    overflow-y: auto;
+}
+
 .dashboard-reports-text-box {
     display: inline-flex;
     flex-direction: row;
@@ -537,7 +547,10 @@
 
 .dashboard-reports-content-text {
     color: #000;
-    border-bottom: 2px solid gray;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
 }
@@ -602,8 +615,8 @@
 }
 
 .dashboard-reports-image-box img {
-    height: 165px;
-    width: 185px;
+    height: 250px;
+    width: 300px;
     border-radius: 5px;
 }
 
@@ -836,7 +849,7 @@
 
     /*Report Modal Content*/
     .dashboard-reports-modal-content {
-        height: 505px;
+        height: 86%;
         width: 800px;
     }
 
@@ -858,7 +871,8 @@
     }
 
     .dashboard-reports-image-box img {
-        width: 170px;
+        height: 180px;
+        width: 250px;
     }
 
     .dashboard-update-modal-button {

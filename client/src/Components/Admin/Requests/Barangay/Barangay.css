@@ -196,8 +196,8 @@
 .requests-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 560px;
-    width: 850px;
+    height: 60%;
+    width: 50%;
     padding: 25px;
     background-color: white;
     border-radius: 5px;
@@ -208,6 +208,17 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
+}
+
+.requests-details-section-box {
+    display: inline-flex;
+    flex-direction: column;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 5px;
+    height: 225px;
+    width: 100%;
+    overflow-y: auto;
 }
 
 .close-modal-button {
@@ -269,7 +280,10 @@
 
 .requests-content-text {
     color: #000;
-    border-bottom: 2px solid gray;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
 }
@@ -282,11 +296,39 @@
 }
 
 .requests-description-area {
-    height: 50px;
+    height: 175px;
     width: auto;
     border-radius: 5px;
     padding: 10px;
     resize: none;
+}
+
+.requests-update-modal-button-box {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: last baseline;
+    gap: 20px;
+    padding: 5px;
+    height: 100%;
+    width: 100%;
+}
+
+.requests-update-modal-button {
+    background-color: #0E267C;
+    height: 50px;
+    width: 150px;
+    color: white;
+    border: none;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 2px 1px;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 15px;
 }
 /*End of Request Modal*/
 
@@ -369,6 +411,12 @@
         height: 35px;
         width: 75px;
     }
+
+    /* Modal */
+    .requests-modal-content {
+        height: 65%;
+        width: 50%;
+    }
 }
 
 /* For screen sizes 1600px and below */
@@ -384,6 +432,12 @@
     .barangay-view-requests-button {
         height: 32px;
         width: 75px;
+    }
+
+    /* Modal */
+    .requests-modal-content {
+        height: 74%;
+        width: 50%;
     }
 }
 
@@ -405,11 +459,12 @@
         height: 22px;
         width: 55px;
     }
+    /* Modal */
     .requests-modal-content {
-        height: 510px;
-        width: 850px;
+        height: 89%;
+        width: 60%;
     }
     .requests-title-text {
-        font-size: 14px;
+        font-size: 18px;
     }
 }

@@ -68,7 +68,7 @@ const ResourceHistory = () => {
                         <a className='history-table-title-text'>Revoked Donations</a>
                         <a className='donations-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page contains all the donations revoked by you or the administrators saved as history while not keeping private details.</span>
+                            <span className='tooltip-text'>This page contains the donation details revoked by you or the administrators saved as history while not keeping any private details.</span>
                         </a>
                     </div>
                     {isLoading ? (
@@ -136,8 +136,8 @@ const ResourceHistory = () => {
                                     <label className='resource-tooltip-icon'>ⓘ</label>
                                     <div className='resource-tooltip-box'>
                                         <label className='resource-tooltip-sub-text'>
-                                            This section contains all information about the selected donation.
-                                            All donations that have been revoked are recorded within the system for reference.
+                                            This section contains the information about the selected donation that is revoked by you or the administrators.
+                                            All donations that have been revoked are recorded within the system for reference only.
                                         </label>
                                     </div>
                                 </div>

@@ -238,49 +238,54 @@ const Barangay = () => {
 
                             </div>
 
+
                             <div className='requests-details-container'>
+
                                 <div className='requests-details-modal-box'>
-                                    <div className='requests-text-box'>
-                                        <a className='requests-title-text'>
-                                            Request ID:
-                                            <b className='requests-content-text'>{selectedRequest._id}</b>
-                                        </a>
-                                    </div>
-                                    <div className='requests-text-box'>
-                                        <a className='requests-title-text'>
-                                            Name of Requestor:
-                                            <b className='requests-content-text'>{selectedRequest.username}</b>
-                                        </a>
-                                        <a className='requests-title-text'>
-                                            Responder:
-                                            <b className='requests-content-text'>{selectedRequest.responder}</b>
-                                        </a>
-                                    </div>
-                                    <div className='requests-text-box'>
-                                        <a className='requests-title-text'>
-                                            Barangay in Need:
-                                            <b className='requests-content-text'>{selectedRequest.barangay}</b>
-                                        </a>
-                                        <a className='requests-title-text'>
-                                            Item Name:
-                                            <b className='requests-content-text'>{selectedRequest.itemname}</b>
-                                        </a>
-                                    </div>
-                                    <div className='requests-text-box'>
-                                        <a className='requests-title-text'>
-                                            Type:
-                                            <b className='requests-content-text'>{selectedRequest.type}</b>
-                                        </a>
-                                        <a className='requests-title-text'>
-                                            Quantity:
-                                            <b className='requests-content-text'>{selectedRequest.quantity}</b>
-                                        </a>
-                                    </div>
-                                    <div className='requests-text-box'>
-                                        <a className='requests-title-text'>
-                                            Date & Time:
-                                            <b className='dashboard-reports-content-text'>{new Date(selectedRequest.date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
-                                        </a>
+
+                                    <div className='requests-details-section-box'>
+                                        <div className='requests-text-box'>
+                                            <a className='requests-title-text'>
+                                                Request ID:
+                                                <b className='requests-content-text'>{selectedRequest._id}</b>
+                                            </a>
+                                        </div>
+                                        <div className='requests-text-box'>
+                                            <a className='requests-title-text'>
+                                                Name of Requestor:
+                                                <b className='requests-content-text'>{selectedRequest.username}</b>
+                                            </a>
+                                            <a className='requests-title-text'>
+                                                Responder:
+                                                <b className='requests-content-text'>{selectedRequest.responder}</b>
+                                            </a>
+                                        </div>
+                                        <div className='requests-text-box'>
+                                            <a className='requests-title-text'>
+                                                Barangay in Need:
+                                                <b className='requests-content-text'>{selectedRequest.barangay}</b>
+                                            </a>
+                                            <a className='requests-title-text'>
+                                                Item Name:
+                                                <b className='requests-content-text'>{selectedRequest.itemname}</b>
+                                            </a>
+                                        </div>
+                                        <div className='requests-text-box'>
+                                            <a className='requests-title-text'>
+                                                Type:
+                                                <b className='requests-content-text'>{selectedRequest.type}</b>
+                                            </a>
+                                            <a className='requests-title-text'>
+                                                Quantity:
+                                                <b className='requests-content-text'>{selectedRequest.quantity}</b>
+                                            </a>
+                                        </div>
+                                        <div className='requests-text-box'>
+                                            <a className='requests-title-text'>
+                                                Date & Time:
+                                                <b className='requests-content-text'>{new Date(selectedRequest.date_time).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
+                                            </a>
+                                        </div>
                                     </div>
                                     <div className='requests-description-box'>
                                         <a className='description-title-text'>Description</a>
@@ -288,8 +293,8 @@ const Barangay = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='update-modal-button-box'>
-                                <button className='update-modal-button' onClick={handleRespond}>Respond</button>
+                            <div className='requests-update-modal-button-box'>
+                                <button className='requests-update-modal-button' onClick={handleRespond}>Respond</button>
                             </div>
                         </div>
                     </div>

@@ -143,7 +143,7 @@
     display: inline-flex;
     flex-direction: column;
     height: auto;
-    max-height: 34em;
+    max-height: 37em;
     width: 55%;
     padding: 25px;
     background-color: white;
@@ -326,7 +326,10 @@
 
 .donations-content-text {
     color: #000;
-    border-bottom: 2px solid gray;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
 }
@@ -500,7 +503,11 @@
         width: 75px;
     }
     .donations-modal-content {
-        width: 750px;
+        max-height: 34em;
+        width: 80%
+    }
+    .donations-content-text {
+        padding: 5px;
     }
     .full-image {
         width: 90%;

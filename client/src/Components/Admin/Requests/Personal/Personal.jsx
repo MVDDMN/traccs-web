@@ -18,6 +18,7 @@ const Personal = () => {
     const [userUsername, setUserUsername] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [requestToDelete, setRequestToDelete] = useState(null);
+    const [descriptionLength, setDescriptionLength] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [formData, setFormData] = useState({
         itemname: '',
@@ -131,6 +132,10 @@ const Personal = () => {
             ...formData,
             [name]: value,
         });
+
+        if (name === "description") {
+            setDescriptionLength(value.length);
+        }
 
         // If editing existing request, update selectedRequest with new values
         if (selectedRequest) {
@@ -297,8 +302,8 @@ const Personal = () => {
                                     <div className='requests-tooltip-box'>
                                         <label className='requests-tooltip-sub-text'>
                                             This section contains all information about the requests.
-                                            You can choose to either "Update Requests" after editing the requests. 
-                                            If you select "Update Requests" the requests will be updated with the new details. 
+                                            You can choose to either "Update Requests" after editing the requests.
+                                            If you select "Update Requests" the requests will be updated with the new details.
                                         </label>
                                     </div>
                                 </div>
@@ -377,11 +382,12 @@ const Personal = () => {
                                             <label className='request-label'>Description:</label>
                                             <textarea
                                                 name="description"
-                                                value={selectedRequest.description}
+                                                value={formData.description}
                                                 onChange={handleInputChange}
                                                 className="request-description-area"
+                                                maxLength={150}
                                             ></textarea>
-
+                                            <p className='request-description-hint-text'>{150 - descriptionLength} characters remaining</p>
                                         </div>
                                     </div>
                                     <div className='personal-error-text-box'>
@@ -419,12 +425,12 @@ const Personal = () => {
                                     <div className='requests-tooltip-box'>
                                         <label className='requests-tooltip-sub-text'>
                                             This section contains contains about all the information needed for a requests.
-                                            You can choose to either "Add Request" after filling all the needed information the requests. 
-                                            If you select "Add" the requests will be added to the table and be visible to others for response. 
+                                            You can choose to either "Add Request" after filling all the needed information the requests.
+                                            If you select "Add" the requests will be added to the table and be visible to others for response.
                                         </label>
                                     </div>
                                 </div>
-                                
+
                             </div>
 
                             <div className='request-details-container'>
@@ -500,7 +506,9 @@ const Personal = () => {
                                                 value={formData.description}
                                                 onChange={handleInputChange}
                                                 className="request-description-area"
+                                                maxLength={150}
                                             ></textarea>
+                                            <p className='request-description-hint-text'>{150 - descriptionLength} characters remaining</p>
                                         </div>
                                     </div>
                                     <div className='personal-error-text-box'>

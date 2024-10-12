@@ -25,6 +25,7 @@ const ResourceTable = () => {
         quantity: 0,
         description: ''
     });
+    const [charCount, setCharCount] = useState(0);
     const [errorMessages, setErrorMessages] = useState([]);
     const itemsPerPage = 7;
 
@@ -57,7 +58,7 @@ const ResourceTable = () => {
 
         fetchResources();
         fetchUserData();
-        const interval = setInterval(fetchResources, 10000);
+        const interval = setInterval(fetchResources, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -119,10 +120,18 @@ const ResourceTable = () => {
             quantity: 0,
             description: ''
         });
+        setCharCount(0);
+        setErrorMessages([]);
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
+        // Update character count for description
+        if (name === "description") {
+            setCharCount(value.length);
+        }
+
         setFormData({
             ...formData,
             [name]: value,
@@ -157,6 +166,12 @@ const ResourceTable = () => {
     };
 
     const handleUpdateResource = async () => {
+        const errors = validateFormData();
+        if (errors.length > 0) {
+            setErrorMessages(errors);
+            return;
+        }
+
         try {
             await axios.put(`${apiBaseUrl}/api/resources/${selectedResource._id}`, formData);
             await logAdminAction('Edit', { updatedData: formData }, 'Edited resource details');
@@ -359,9 +374,18 @@ const ResourceTable = () => {
                                                 value={formData.description}
                                                 onChange={handleInputChange}
                                                 className='resource-description-area'
+                                                maxLength={150}
                                             />
+                                            <p className='resource-description-hint-text'>{150 - charCount} characters remaining</p>
                                         </div>
                                     </div>
+                                    {errorMessages.length > 0 && (
+                                        <div className="resource-error-messages">
+                                            {errorMessages.map((msg, index) => (
+                                                <p key={index} className="resource-error-message">{msg}</p>
+                                            ))}
+                                        </div>
+                                    )}
 
                                 </div>
                             </div>
@@ -453,13 +477,15 @@ const ResourceTable = () => {
                                                 value={formData.description}
                                                 onChange={handleInputChange}
                                                 className='resource-description-area'
+                                                maxLength={150}
                                             />
+                                            <p className='resource-description-hint-text'>{150 - charCount} characters remaining</p>
                                         </div>
                                     </div>
                                     {errorMessages.length > 0 && (
-                                        <div className="error-messages">
+                                        <div className="resource-error-messages">
                                             {errorMessages.map((msg, index) => (
-                                                <p key={index} className="error-message">{msg}</p>
+                                                <p key={index} className="resource-error-message">{msg}</p>
                                             ))}
                                         </div>
                                     )}

@@ -314,7 +314,7 @@
 .live-reports-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 42em;
+    height: 70%;
     width: 50%;
     padding: 25px;
     background-color: white;
@@ -327,6 +327,17 @@
     height: 100%;
     width: 100%;
     gap: 5px;
+}
+
+.live-reports-details-section-box {
+    display: inline-flex;
+    flex-direction: column;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 5px;
+    height: 225px;
+    width: 100%;
+    overflow-y: auto;
 }
 
 .live-close-modal-button {
@@ -397,7 +408,10 @@
 
 .live-reports-content-text {
     color: #000;
-    border-bottom: 2px solid gray;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
 }
@@ -462,8 +476,8 @@
 }
 
 .live-reports-image-box img {
-    height: 165px;
-    width: 185px;
+    height: 250px;
+    width: 300px;
     border-radius: 5px;
 }
 
@@ -699,6 +713,11 @@
     .tooltip-text::after {
         margin-left: -4px;
     }
+
+    /*Report Modal Content*/
+    .live-reports-modal-content {
+        height: 77%;
+    }
 }
 
 /* For screen sizes 1600px and below */
@@ -722,8 +741,7 @@
 
     /*Report Modal Content*/
     .live-reports-modal-content {
-        height: 41em;
-        width: 800px;
+        height: 88%;
     }
 
     .live-reports-title-text {
@@ -766,8 +784,7 @@
 
     /*Report Modal Content*/
     .live-reports-modal-content {
-        height: 33em;
-        width: 700px;
+        height: 88%;
     }
 
     .live-reports-title-box-text {
@@ -788,7 +805,8 @@
     }
 
     .live-reports-image-box img {
-        width: 150px;
+        height: 180px;
+        width: 250px;
     }
 
     .live-update-modal-button {

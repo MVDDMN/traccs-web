@@ -365,13 +365,13 @@ const Archive = () => {
                                 <a className='archive-reports-title-box-text'>
                                     Historical Report Details
                                 </a>
-                                
+
                                 <div className='archive-reports-tooltip'>
                                     <label className='archive-reports-tooltip-icon'>ⓘ</label>
                                     <div className='archive-reports-tooltip-box'>
                                         <label className='archive-reports-tooltip-sub-text'>
                                             This section contains all information about the incident and the reporter.
-                                            You can choose to "Add to History Map" the report. 
+                                            You can choose to "Add to History Map" the report.
                                             If the report is denied you can "Delete" the report from the table.
                                         </label>
                                     </div>
@@ -381,114 +381,115 @@ const Archive = () => {
 
                             <div className='archive-reports-details-container'>
                                 <div className='archive-reports-details-modal-box'>
-                                    <div className='archive-reports-text-box'>
-                                        <a className='archive-reports-title-text'>
-                                            ID:
-                                            <b className='archive-reports-content-text'>{selectedArchive._id}</b>
-                                        </a>
-                                        <a className='archive-reports-title-text'>
-                                            Report Type:
-                                            <b className='archive-reports-content-text'>{selectedArchive.type}</b>
-                                        </a>
-                                        <a className='archive-reports-title-text'>
-                                            Responder:
-                                            <b className='archive-reports-content-text'>{selectedArchive.responder}</b>
-                                        </a>
-                                    </div>
-                                    <div className='archive-reports-text-box'>
-                                        <a className='archive-reports-title-text'>
-                                            Name:
-                                            <b className='archive-reports-content-text'>{selectedArchive.name}</b>
-                                        </a>
-                                        {selectedArchive.phone && (
+
+                                    <div className='archive-reports-details-section-box'>
+
+                                        <div className='archive-reports-text-box'>
                                             <a className='archive-reports-title-text'>
-                                                Contact No.:
-                                                <b className='archive-reports-content-text'>{selectedArchive.phone}</b>
+                                                Status:
+                                                <b className='archive-reports-content-text'>{selectedArchive.status}</b>
                                             </a>
-                                        )}
-                                        {selectedArchive.email && (
                                             <a className='archive-reports-title-text'>
-                                                Email:
-                                                <b className='archive-reports-content-text'>{selectedArchive.email}</b>
+                                                Report Type:
+                                                <b className='archive-reports-content-text'>{selectedArchive.type}</b>
                                             </a>
-                                        )}
-                                    </div>
-                                    <div className='archive-reports-text-box'>
-                                        <a className='archive-reports-title-text'>
-                                            Report Date & Time:
-                                            <b className='archive-reports-content-text'>
-                                                {new Date(selectedArchive.report_date_time).toLocaleString
-                                                    ('en-US',
-                                                        {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit',
-                                                            second: '2-digit',
-                                                            hour12: true,
-                                                            timeZone: 'UTC'
-                                                        }
-                                                    )
-                                                }
-                                            </b>
-                                        </a>
-                                        <a className='archive-reports-title-text'>
-                                            Respond Date & Time:
-                                            <b className='archive-reports-content-text'>
-                                                {new Date(selectedArchive.respond_date_time).toLocaleString
-                                                    ('en-US',
-                                                        {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit',
-                                                            second: '2-digit',
-                                                            hour12: true,
-                                                            timeZone: 'UTC'
-                                                        }
-                                                    )
-                                                }
-                                            </b>
-                                        </a>
-                                        <a className='archive-reports-title-text'>
-                                            Completion Date & Time:
-                                            <b className='archive-reports-content-text'>
-                                                {new Date(selectedArchive.completion_date_time).toLocaleString
-                                                    ('en-US',
-                                                        {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit',
-                                                            second: '2-digit',
-                                                            hour12: true,
-                                                            timeZone: 'UTC'
-                                                        }
-                                                    )
-                                                }
-                                            </b>
-                                        </a>
-                                    </div>
-                                    <div className='archive-reports-text-box'>
-                                        <a className='archive-reports-title-text'>
-                                            Status:
-                                            <b className='archive-reports-content-text'>{selectedArchive.status}</b>
-                                        </a>
-                                        {selectedArchive.address && (
                                             <a className='archive-reports-title-text'>
-                                                Address:
-                                                <b className='archive-reports-content-text'>{selectedArchive.address}</b>
+                                                Responder:
+                                                <b className='archive-reports-content-text'>{selectedArchive.responder}</b>
                                             </a>
-                                        )}
-                                        {selectedArchive.location && (
+                                        </div>
+                                        <div className='archive-reports-text-box'>
                                             <a className='archive-reports-title-text'>
-                                                Location:
-                                                <b className='archive-reports-content-text'>{selectedArchive.location}</b>
+                                                Name:
+                                                <b className='archive-reports-content-text'>{selectedArchive.name}</b>
                                             </a>
-                                        )}
+                                            {selectedArchive.phone && (
+                                                <a className='archive-reports-title-text'>
+                                                    Contact No.:
+                                                    <b className='archive-reports-content-text'>{selectedArchive.phone}</b>
+                                                </a>
+                                            )}
+                                            {selectedArchive.email && (
+                                                <a className='archive-reports-title-text'>
+                                                    Email:
+                                                    <b className='archive-reports-content-text'>{selectedArchive.email}</b>
+                                                </a>
+                                            )}
+                                        </div>
+                                        <div className='archive-reports-text-box'>
+                                            <a className='archive-reports-title-text'>
+                                                Report Date & Time:
+                                                <b className='archive-reports-content-text'>
+                                                    {new Date(selectedArchive.report_date_time).toLocaleString
+                                                        ('en-US',
+                                                            {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                                second: '2-digit',
+                                                                hour12: true,
+                                                                timeZone: 'UTC'
+                                                            }
+                                                        )
+                                                    }
+                                                </b>
+                                            </a>
+                                            <a className='archive-reports-title-text'>
+                                                Respond Date & Time:
+                                                <b className='archive-reports-content-text'>
+                                                    {new Date(selectedArchive.respond_date_time).toLocaleString
+                                                        ('en-US',
+                                                            {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                                second: '2-digit',
+                                                                hour12: true,
+                                                                timeZone: 'UTC'
+                                                            }
+                                                        )
+                                                    }
+                                                </b>
+                                            </a>
+                                            <a className='archive-reports-title-text'>
+                                                Completion Date & Time:
+                                                <b className='archive-reports-content-text'>
+                                                    {new Date(selectedArchive.completion_date_time).toLocaleString
+                                                        ('en-US',
+                                                            {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                                second: '2-digit',
+                                                                hour12: true,
+                                                                timeZone: 'UTC'
+                                                            }
+                                                        )
+                                                    }
+                                                </b>
+                                            </a>
+                                        </div>
+                                        <div className='archive-reports-text-box'>
+                                            {selectedArchive.address && (
+                                                <a className='archive-reports-title-text'>
+                                                    Address:
+                                                    <b className='archive-reports-content-text'>{selectedArchive.address}</b>
+                                                </a>
+                                            )}
+                                            {selectedArchive.location && (
+                                                <a className='archive-reports-title-text'>
+                                                    Location:
+                                                    <b className='archive-reports-content-text'>{selectedArchive.location}</b>
+                                                </a>
+                                            )}
+                                        </div>
+
                                     </div>
 
                                     <div className='archive-reports-details-container'>

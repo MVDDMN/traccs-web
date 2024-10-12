@@ -146,8 +146,8 @@
 .requestarchive-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 500px;
-    width: 850px;
+    height: 70%;
+    width: 50%;
     padding: 25px;
     background-color: white;
     border-radius: 5px;
@@ -219,7 +219,10 @@
 
 .requestarchive-content-text {
     color: #000;
-    border-bottom: 2px solid gray;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
     font-weight: bold;
     width: auto;
 }
@@ -250,6 +253,10 @@
         padding: 4px;
         height: 25px;
     }
+    .requestarchive-modal-content {
+        height: 75%;
+        width: 50%;
+    }
 }
 
 /* For screen sizes 1600px and below */
@@ -265,6 +272,10 @@
     .requestarchives-view-requests-button {
         height: 32px;
         width: 75px;
+    }
+    .requestarchive-modal-content {
+        height: 85%;
+        width: 50%;
     }
 }
 
@@ -282,5 +293,16 @@
     .requestarchives-view-requests-button {
         height: 22px;
         width: 75px;
+    }
+    .requestarchive-modal-content {
+        height: 86%;
+        width: 50%;
+    }
+    .requestarchive-content-text {
+        font-size: 12px;
+        padding: 5px;
+        border-radius: 10px;
+        font-weight: bold;
+        width: auto;
     }
 }
