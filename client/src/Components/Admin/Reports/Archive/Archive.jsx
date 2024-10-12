@@ -28,7 +28,8 @@ const Archive = () => {
         Accident: true,
         Police: true,
         Medical: true,
-        Hazard: true
+        Hazard: true,
+        Assistance: true
     });
     const [selectedMonths, setSelectedMonths] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -324,7 +325,7 @@ const Archive = () => {
                                         <td>{archive.status}</td>
                                         <td>
                                             <button onClick={() => handleViewArchive(archive)} className='archive-table-view-button'>
-                                                View Information
+                                                View
                                             </button>
                                         </td>
                                     </tr>
@@ -508,6 +509,7 @@ const Archive = () => {
                                                 {selectedArchive.description.consciousness && <p><b>Consciousness:</b> {selectedArchive.description.consciousness}</p>}
                                                 {selectedArchive.description.hazard_type && <p><b>Hazard Type:</b> {selectedArchive.description.hazard_type}</p>}
                                                 {selectedArchive.description.deny_description && <p><b>Deny Description:</b> {selectedArchive.description.deny_description}</p>}
+                                                {selectedArchive.description.assistance_type && <p><b>Assistance Type:</b> {selectedArchive.description.assistance_type}</p>}
                                                 <p><b>Additional Description:</b> {selectedArchive.description.additional_description}</p>
                                             </div>
                                         </div>

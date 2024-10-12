@@ -68,7 +68,7 @@ const ResourceHistory = () => {
                         <a className='history-table-title-text'>Revoked Donations</a>
                         <a className='donations-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page contains all the donations revoked by the administrator saved as history while not keeping some private details.</span>
+                            <span className='tooltip-text'>This page contains all the donations revoked by you or the administrators saved as history while not keeping private details.</span>
                         </a>
                     </div>
                     {isLoading ? (

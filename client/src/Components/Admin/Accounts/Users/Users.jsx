@@ -109,7 +109,7 @@ const Users = () => {
                         <a className='accounts-table-description'>
                             ⓘ
                             <span className='tooltip-text'>
-                                This page displays all mobile user accounts, allowing you to verify or unverify an account. Invalid accounts will be deemed for deletion.
+                                This page displays all mobile user accounts, allowing you to verify or unverify an account and invalid accounts will be deemed for deletion.
                             </span>
                         </a>
                     </div>

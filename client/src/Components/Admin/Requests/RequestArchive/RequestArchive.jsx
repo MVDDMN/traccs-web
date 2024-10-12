@@ -88,7 +88,7 @@ const RequestArchive = () => {
                             <a className='requestarchives-table-title-text'>Requests History</a>
                             <a className='requestarchives-table-description'>
                                 ⓘ
-                                <span className='tooltip-text'>This page displays the history of barangay requests along with their details.</span>
+                                <span className='tooltip-text'>This page allows you to view and filter the history of barangay requests details.</span>
                             </a>
                         </div>
 

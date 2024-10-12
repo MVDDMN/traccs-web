@@ -206,13 +206,13 @@ const Dashboard = () => {
             ));
 
             await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
-
+            
+            setIsSubmitting(false);
             closeModal();
         } catch (error) {
             console.error('Error responding to report:', error);
         } finally {
             fetchReports();
-            setIsSubmitting(false);
         }
     };
 
@@ -232,13 +232,13 @@ const Dashboard = () => {
 
             await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
 
+            setIsSubmitting(false);
             closeDenyModal(); // Close the deny description modal
             closeModal(); // Close the main modal
         } catch (error) {
             console.error('Error denying report:', error);
         } finally {
             fetchReports();
-            setIsSubmitting(false);
         }
     };
 
@@ -254,12 +254,12 @@ const Dashboard = () => {
 
             await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
 
+            setIsSubmitting(false);
             closeModal();
         } catch (error) {
             console.error('Error archiving report:', error);
         } finally {
             fetchReports();
-            setIsSubmitting(false);
         }
     };
 
@@ -392,7 +392,6 @@ const Dashboard = () => {
         });
     };
 
-
     return (
         <div className="dashboard-container">
             <div className='dashboard-content'>
@@ -406,7 +405,7 @@ const Dashboard = () => {
                                     Map Marker Filtering
                                 </label>
                                 <label className='dashboard-tooltip-sub-text'>
-                                    This allows the user to filter amongst the available report types.
+                                    This allows you to filter amongst the available report types.
                                 </label>
                             </div>
                         </div>
@@ -511,7 +510,7 @@ const Dashboard = () => {
                                         Auto Tracking
                                     </label>
                                     <label className='dashboard-map-tooltip-sub-text'>
-                                        Interacting with the button allows the user to toggle the tracking of a recent report marker location.
+                                        Interacting with the button allows you to toggle the tracking of a recent report marker location.
                                     </label>
                                 </div>
 
@@ -520,7 +519,7 @@ const Dashboard = () => {
                                         Heatmap
                                     </label>
                                     <label className='dashboard-map-tooltip-sub-text'>
-                                        Interacting with the button allows the user to see visible heatmap density based on reports.
+                                        Interacting with the button allows you to see visible heatmap density based on reports.
                                     </label>
                                 </div>
 
@@ -805,6 +804,7 @@ const Dashboard = () => {
                                                 {selectedReport.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedReport.description.medical_emergency_type}</p>}
                                                 {selectedReport.description.consciousness && <p><b>Consciousness:</b> {selectedReport.description.consciousness}</p>}
                                                 {selectedReport.description.hazard_type && <p><b>Hazard Type:</b> {selectedReport.description.hazard_type}</p>}
+                                                {selectedReport.description.assistance_type && <p><b>Assistance Type:</b> {selectedReport.description.assistance_type}</p>}
                                                 <p><b>Additional Description:</b> {selectedReport.description.additional_description}</p>
                                             </div>
                                         </div>

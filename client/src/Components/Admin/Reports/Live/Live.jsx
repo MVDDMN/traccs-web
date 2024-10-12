@@ -155,12 +155,12 @@ const Live = () => {
                 report._id === selectedReport._id ? { ...report, status: 'Responded', responder: userBarangay } : report
             ));
 
+            setIsSubmitting(false); // End loading state
             closeModal(); // Close modal after successful response
         } catch (error) {
             console.error('Error responding to report:', error);
         } finally {
             fetchReports();
-            setIsSubmitting(false); // End loading state
         }
     };
 
@@ -181,12 +181,12 @@ const Live = () => {
                 report._id === selectedReport._id ? { ...report, status: 'Done' } : report
             ));
 
+            setIsSubmitting(false); // End loading state
             closeModal(); // Close modal after successful response
         } catch (error) {
             console.error('Error archiving report:', error);
         } finally {
             fetchReports();
-            setIsSubmitting(false); // End loading state
         }
     };
 
@@ -206,13 +206,13 @@ const Live = () => {
                 report._id === selectedReport._id ? { ...report, status: 'Denied', responder: userBarangay } : report
             ));
 
+            setIsSubmitting(false); // End loading state
             closeDenyModal(); // Close deny modal after submission
             closeModal(); // Close main modal
         } catch (error) {
             console.error('Error denying report:', error);
         } finally {
             fetchReports();
-            setIsSubmitting(false); // End loading state
         }
     };
 
@@ -394,7 +394,7 @@ const Live = () => {
                                         <td>{report.status}</td>
                                         <td>
                                             <button onClick={() => handleViewReport(report)} className='live-table-view-button'>
-                                                View Information
+                                                View
                                             </button>
                                         </td>
                                     </tr>
@@ -588,6 +588,7 @@ const Live = () => {
                                                 {selectedReport.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedReport.description.medical_emergency_type}</p>}
                                                 {selectedReport.description.consciousness && <p><b>Consciousness:</b> {selectedReport.description.consciousness}</p>}
                                                 {selectedReport.description.hazard_type && <p><b>Hazard Type:</b> {selectedReport.description.hazard_type}</p>}
+                                                {selectedReport.description.assistance_type && <p><b>Assistance Type:</b> {selectedReport.description.assistance_type}</p>}
                                                 <p><b>Additional Description:</b> {selectedReport.description.additional_description}</p>
                                             </div>
                                         </div>

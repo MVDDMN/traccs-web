@@ -35,7 +35,7 @@ const AnalyticsRequests = () => {
                     <a className='analyticsrequests-table-description'>
                         ⓘ
                         <span className='tooltip-text'>
-                            This page contains all the request analytics recorded within the system displaying their charts and descriptive summarized data.
+                            This page allows you to view  all the historical request data recorded within the system displaying their analytical charts and descriptive summarized data.
                         </span>
                     </a>
                 </div>

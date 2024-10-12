@@ -249,7 +249,7 @@ const ResourceTable = () => {
                                         <td>{resource.quantity}</td>
                                         <td>
                                             <div className='action-button-box'>
-                                                <button className='view-resource-button' onClick={() => openModal(resource)}>Edit</button>
+                                                <button className='view-resource-button' onClick={() => openModal(resource)}>Update</button>
                                                 <button className='delete-resource-button' onClick={() => openDeleteModal(resource)}>Delete</button>
                                             </div>
                                         </td>

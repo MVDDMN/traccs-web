@@ -39,6 +39,7 @@ const PrintComponent = forwardRef(({ data }, ref) => {
                   {entry.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {entry.description.medical_emergency_type}</p>}
                   {entry.description.consciousness && <p><b>Consciousness:</b> {entry.description.consciousness}</p>}
                   {entry.description.hazard_type && <p><b>Hazard Type:</b> {entry.description.hazard_type}</p>}
+                  {entry.description.assistance_type && <p><b>Assistance Type:</b> {entry.description.assistance_type}</p>}
                   {entry.description.additional_description && <p><b>Additional Description:</b> {entry.description.additional_description}</p>}
                 </div>
               </td>

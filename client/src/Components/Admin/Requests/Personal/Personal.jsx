@@ -261,7 +261,7 @@ const Personal = () => {
                                         <td>{request.date_time}</td>
                                         <td>
                                             <div className='action-button-box'>
-                                                <button className='personal-view-requests-button' onClick={() => openModal(request)}>Edit</button>
+                                                <button className='personal-view-requests-button' onClick={() => openModal(request)}>Update</button>
                                                 <button className='personal-delete-requests-button' onClick={() => openDeleteModal(request)}>Delete</button>
                                             </div>
                                         </td>

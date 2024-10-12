@@ -529,6 +529,7 @@ const HistoryMap = () => {
                                                 {selectedHistory.description.medical_emergency_type && <p><b>Medical Emergency Type:</b> {selectedHistory.description.medical_emergency_type}</p>}
                                                 {selectedHistory.description.consciousness && <p><b>Consciousness:</b> {selectedHistory.description.consciousness}</p>}
                                                 {selectedHistory.description.hazard_type && <p><b>Hazard Type:</b> {selectedHistory.description.hazard_type}</p>}
+                                                {selectedHistory.description.assistance_type && <p><b>Assistance Type:</b> {selectedHistory.description.assistance_type}</p>}
                                                 <p><b>Additional Description:</b> {selectedHistory.description.additional_description}</p>
                                             </div>
                                         </div>
@@ -548,7 +549,7 @@ const HistoryMap = () => {
                             </div>
                             <div className='historymap-update-modal-button-box'>
                                 {userType !== "Barangay" && (
-                                    <button onClick={addToArchive} className="historymap-deny-modal-button">Remove</button>
+                                    <button onClick={addToArchive} className="historymap-deny-modal-button">Remove from History Map</button>
                                 )}
                             </div>
                         </div>

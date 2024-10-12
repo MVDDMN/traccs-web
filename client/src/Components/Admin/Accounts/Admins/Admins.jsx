@@ -226,7 +226,7 @@ const Admins = () => {
                         <a className='admins-table-title-text'>Admin Accounts</a>
                         <a className='admins-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page allows to view, create, edit and delete all listed administrator account but some information can not be tampered with on this page.</span>
+                            <span className='tooltip-text'>This page allows you to view, create, edit and delete all listed administrator account.</span>
                         </a>
                     </div>
 
@@ -266,7 +266,7 @@ const Admins = () => {
                                             </td>
                                             <td>
                                                 <div className='action-button-box'>
-                                                    <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Edit</button>
+                                                    <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Update</button>
                                                     {userUsername !== admin.username && (
                                                         <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
                                                     )}

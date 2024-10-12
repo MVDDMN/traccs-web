@@ -287,7 +287,7 @@ const ResourceDonate = () => {
                         <a className='donations-table-title-text'>Donations</a>
                         <a className='donations-table-description'>
                             ⓘ
-                            <span className='tooltip-text'>This page contains all the donations made by the users, where the user can view and must update unrecorded donations to revoke or update it.</span>
+                            <span className='tooltip-text'>This page contains all the donations made by the users, where you can view and update unrecorded donations to revoke or update it.</span>
                         </a>
                     </div>
                     {isLoading ? (
@@ -700,7 +700,7 @@ const ResourceDonate = () => {
                                                     onClick={handleDeleteDonation}
                                                     disabled={isButtonLoading}
                                                 >
-                                                    Delete Donation
+                                                    Revoke Donation
                                                 </button>
                                             )}
 
