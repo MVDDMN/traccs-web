@@ -69,7 +69,7 @@
 .historymap-reports-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 70%;
+    height: 83%;
     width: 50%;
     padding: 25px;
     background-color: white;
@@ -90,9 +90,8 @@
     background-color: #f0f0f0;
     border-radius: 10px;
     padding: 5px;
-    height: 225px;
+    height: 100%;
     width: 100%;
-    overflow-y: auto;
 }
 
 .historymap-close-modal-button {
@@ -333,7 +332,29 @@
         height: 650px;
         width: 800px;
     }
+
+    /*Report Modal Content*/
+    .historymap-reports-modal-content {
+        height: 79%;
+        width: 50%;
+    }
+    .historymap-reports-content-text {
+        padding: 10px;
+        font-size: 14px;
+    }
+    .historymap-reports-description-area {
+        height: 175px;
+        font-size: 12px;
+    }
+    .historymap-reports-image-box {
+        height: 190px;
+    }
+    .historymap-reports-image-box img {
+        height: 180px;
+        width: 250px;
+    }
 }
+
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     #history-map {
@@ -347,8 +368,12 @@
     .historymap-reports-title-text {
         font-size: 14px;
     }
-
+    .historymap-reports-content-text {
+        padding: 10px;
+        font-size: 12px;
+    }
 }
+
 /* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
     #history-map {
@@ -359,6 +384,10 @@
         height: 87%;
         width: 700px;
     }
+    .historymap-reports-content-text {
+        padding: 5px;
+        font-size: 10px;
+    }
     .historymap-reports-title-box-text{
         font-size: 16px;
     }
@@ -366,19 +395,19 @@
         font-size: 12px;
     }
     .historymap-reports-description-area {
-        height: 175px;
+        height: 140px;
         font-size: 12px;
     }
     .historymap-reports-image-box {
-        height: 190px;
+        height: 155px;
     }
     .historymap-reports-image-box img {
-        height: 180px;
-        width: 250px;
+        height: 140px;
+        width: 225px;
     }
     .historymap-deny-modal-button {
         padding: 10px;
-        width: 100px;
+        width: 120px;
         font-size: 10px;
     }
 }

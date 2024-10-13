@@ -314,7 +314,7 @@
 .live-reports-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 70%;
+    height: 83%;
     width: 50%;
     padding: 25px;
     background-color: white;
@@ -335,9 +335,8 @@
     background-color: #f0f0f0;
     border-radius: 10px;
     padding: 5px;
-    height: 225px;
+    height: 100%;
     width: 100%;
-    overflow-y: auto;
 }
 
 .live-close-modal-button {
@@ -716,7 +715,8 @@
 
     /*Report Modal Content*/
     .live-reports-modal-content {
-        height: 77%;
+        height: 91%;
+        width: 50%;
     }
 }
 
@@ -741,11 +741,25 @@
 
     /*Report Modal Content*/
     .live-reports-modal-content {
-        height: 88%;
+        height: 90%;
     }
 
     .live-reports-title-text {
         font-size: 14px;
+    }
+
+    .live-reports-description-area {
+        height: 185px;
+        font-size: 12px;
+    }
+
+    .live-reports-image-box {
+        height: 200px;
+    }
+
+    .live-reports-image-box img {
+        height: 180px;
+        width: 250px;
     }
 }
 
@@ -784,11 +798,15 @@
 
     /*Report Modal Content*/
     .live-reports-modal-content {
-        height: 88%;
+        height: 90%;
     }
 
     .live-reports-title-box-text {
         font-size: 16px;
+    }
+
+    .live-reports-content-text {
+        padding: 5px;
     }
 
     .live-reports-title-text {
@@ -796,28 +814,28 @@
     }
 
     .live-reports-description-area {
-        height: 185px;
+        height: 155px;
         font-size: 12px;
     }
 
     .live-reports-image-box {
-        height: 200px;
+        height: 170px;
     }
 
     .live-reports-image-box img {
-        height: 180px;
+        height: 150px;
         width: 250px;
     }
 
     .live-update-modal-button {
         height: 40px;
-        width: 100px;
+        width: 120px;
         font-size: 10px;
     }
 
     .live-deny-modal-button {
         height: 40px;
-        width: 100px;
+        width: 120px;
         font-size: 10px;
     }
 }
