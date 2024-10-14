@@ -91,15 +91,15 @@ const FilterControl = ({ selectedTypes, setSelectedTypes, selectedMonths, setSel
         filterDiv.innerHTML = `
         <div class="filter-content-box">
             <div class="type-dropdown-box">
-                <button id="type-dropdown-button" class="type-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report type" style="margin-right: 10px;">Sort by Type</button>
+                <button id="type-dropdown-button" class="type-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report type" style="margin-right: 10px;">Filter by Type</button>
                 <div id="type-dropdown-content" class="type-dropdown-content" style="display: none; width: 94%;"></div>
             </div>
             <div class="month-dropdown-box">
-                <button id="month-dropdown-button" class="month-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report month" style="margin-right: 10px;">Sort by Month</button>
+                <button id="month-dropdown-button" class="month-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report month" style="margin-right: 10px;">Filter by Month</button>
                 <div id="month-dropdown-content" class="month-dropdown-content" style="display: none; width: 93%;"></div>
             </div>
             <div class="year-dropdown-box">
-                <button id="year-dropdown-button" class="year-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report year" >Sort by Year</button>
+                <button id="year-dropdown-button" class="year-dropdown-button" aria-controls="type-dropdown-content" aria-expanded="false" aria-label="Filter by report year" >Filter by Year</button>
                 <div id="year-dropdown-content" class="year-dropdown-content" style="display: none; width: 99%;"></div>
             </div>
         </div>

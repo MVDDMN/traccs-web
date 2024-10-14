@@ -292,7 +292,7 @@ const Live = () => {
             <div className="filters-content-box">
 
                 <div className='type-dropdown-box'>
-                    <button onClick={toggleDropdown} className="type-dropdown-button">Sort by Type</button>
+                    <button onClick={toggleDropdown} className="type-dropdown-button">Filter by Type</button>
                     {dropdownOpen && (
                         <div className="type-dropdown-content">
                             {Object.keys(selectedTypes).map(type => (
@@ -311,7 +311,7 @@ const Live = () => {
                 </div>
 
                 <div className="month-dropdown-box">
-                    <button onClick={toggleMonthDropdown} className="month-dropdown-button">Sort by Month</button>
+                    <button onClick={toggleMonthDropdown} className="month-dropdown-button">Filter by Month</button>
                     {monthDropdownOpen && (
                         <div className="month-dropdown-content">
                             {months.map(month => (
@@ -330,7 +330,7 @@ const Live = () => {
                 </div>
 
                 <div className="year-dropdown-box">
-                    <button onClick={toggleYearDropdown} className="year-dropdown-button">Sort by Year</button>
+                    <button onClick={toggleYearDropdown} className="year-dropdown-button">Filter by Year</button>
                     {yearDropdownOpen && (
                         <div className="year-dropdown-content">
                             {years.map(year => (
