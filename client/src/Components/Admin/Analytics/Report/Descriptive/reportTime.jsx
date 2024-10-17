@@ -11,11 +11,26 @@ const ReportTime = ({ dateFrom, dateTo }) => {
     const [reportSummary, setReportSummary] = useState(""); // Unified state for trends
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false); // Track if no data is available
+    const [error, setError] = useState(null); // Track if there is an error in the date range
 
     useEffect(() => {
         const fetchReportFrequency = async () => {
             setLoading(true);
             setNoData(false); // Reset no data state
+            setError(null);  // Reset error state
+
+            // Check if the date range is within 24 hours
+            const startDate = new Date(dateFrom);
+            const endDate = new Date(dateTo);
+            const timeDifference = endDate.getTime() - startDate.getTime();
+
+            // If the difference is greater than 24 hours, show an error
+            if (timeDifference > 24 * 60 * 60 * 1000) {
+                setError('The selected date range must be within a single day (24 hours). For example: "1 September 2024 -> 2 September 2024".');
+                setLoading(false);
+                return;
+            }
+
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/analytics/report-frequency-by-hour`, {
                     params: { dateFrom, dateTo }
@@ -122,6 +137,8 @@ const ReportTime = ({ dateFrom, dateTo }) => {
             <div className='desc-reporttime-content-box'>
                 {loading ? (
                     <p>Loading trends...</p>
+                ) : error ? (
+                    <p className="report-time-error-message">{error}</p>
                 ) : noData ? (
                     <p>No data available for the selected date range.</p>
                 ) : (

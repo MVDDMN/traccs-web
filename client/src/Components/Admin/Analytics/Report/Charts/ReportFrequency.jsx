@@ -39,23 +39,38 @@ const ReportFrequency = ({ dateFrom, dateTo }) => {
             setLoading(true);
             setNoData(false);
             setError(null); // Reset states before fetching data
-
+    
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/analytics/report-frequency`, {
                     params: { dateFrom, dateTo }
                 });
-
+    
                 const data = response.data;
-
+    
                 if (data && data.length > 0 && data.some(item => item.count > 0)) {
                     const monthNames = [
                         'January', 'February', 'March', 'April', 'May', 'June',
                         'July', 'August', 'September', 'October', 'November', 'December'
                     ];
-
+    
+                    // Define the report types and the color map
+                    const typeColorMap = {
+                        Fire: '#E74C3C',
+                        Police: '#F1C40F',
+                        Accident: '#3498DB',
+                        Hazard: '#E67E22',
+                        Medical: '#9B59B6',
+                        Assistance: '#1ABC9C',
+                    };
+    
+                    // Define the desired order for the legend
+                    const legendOrder = ['Fire', 'Police', 'Accident', 'Hazard', 'Medical', 'Assistance'];
+    
+                    // Extract unique types and map the data
                     const types = [...new Set(data.map(item => item.type))];
-
-                    const datasets = types.map((type, index) => {
+    
+                    // Generate datasets
+                    let datasets = types.map((type) => {
                         const dataValues = Array.from({ length: 12 }, () => 0);
                         data.forEach(item => {
                             if (item.type === type && item.month) {
@@ -63,21 +78,21 @@ const ReportFrequency = ({ dateFrom, dateTo }) => {
                                 dataValues[monthIndex] += item.count;
                             }
                         });
-
-                        const vibrantColors = [
-                            '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
-                            '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
-                        ];
-
+    
                         return {
                             label: type || 'Unknown',
                             data: dataValues,
-                            backgroundColor: vibrantColors[index % vibrantColors.length],
-                            borderColor: vibrantColors[index % vibrantColors.length],
+                            backgroundColor: typeColorMap[type] || '#cccccc',  // Default to gray if type not found
+                            borderColor: typeColorMap[type] || '#cccccc',
                             borderWidth: 1,
                         };
                     });
-
+    
+                    // Sort the datasets based on the desired order for the legend
+                    datasets = datasets.sort((a, b) => {
+                        return legendOrder.indexOf(a.label) - legendOrder.indexOf(b.label);
+                    });
+    
                     setChartData({ labels: monthNames, datasets });
                 } else {
                     setNoData(true); // No data available for the selected range
@@ -89,7 +104,7 @@ const ReportFrequency = ({ dateFrom, dateTo }) => {
                 setLoading(false); // Loading completed
             }
         };
-
+    
         if (dateFrom && dateTo) {
             fetchReportFrequency();
         }

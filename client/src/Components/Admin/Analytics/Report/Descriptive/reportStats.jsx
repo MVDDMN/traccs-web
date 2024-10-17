@@ -59,46 +59,69 @@ const ReportStats = ({ dateFrom, dateTo }) => {
         }
 
         if (noData || stats.totalReports === 0) {  // Check if no data or totalReports is 0
-            return "No data available for the selected date range."; 
+            return "No data available for the selected date range.";
         }
 
-        let reportDescription = `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, a total of ${stats.totalReports} reports were submitted. Of these, ${stats.resolvedReports} have been resolved, and ${stats.deniedReports} were denied due to valid reasons. `;
+        let reportDescription = `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, a total of ${stats.totalReports} reports were submitted.`;
+
+        // Add resolved reports if greater than 0
+        if (stats.resolvedReports > 0) {
+            reportDescription += ` Of these, ${stats.resolvedReports} have been resolved.`;
+        } else {
+            reportDescription += ` No reports have been resolved during this period.`;
+        }
+
+        // Add denied reports if greater than 0
+        if (stats.deniedReports > 0) {
+            reportDescription += ` ${stats.deniedReports} reports were denied due to valid reasons.`;
+        } else {
+            reportDescription += ` No reports have been denied.`;
+        }
 
         // Pending reports narrative
-        reportDescription += `During this period, there are ${stats.reportsPendingPeriod} reports pending resolution. `;
-
-        // Reports today narrative
-        if (stats.reportsToday > 0) {
-            reportDescription += `Today, ${stats.reportsToday} reports have been submitted. `;
+        if (stats.reportsPendingPeriod > 0) {
+            reportDescription += ` There are ${stats.reportsPendingPeriod} reports pending resolution.`;
+        } else {
+            reportDescription += ` No reports are pending resolution during this period.`;
         }
 
-        // Narrative for the day with the highest reports
+        // Reports today narrative if reportsToday > 0
+        if (stats.reportsToday > 0) {
+            reportDescription += ` Today, ${stats.reportsToday} reports have been submitted.`;
+        }
+
+        // Narrative for the day with the highest reports if any
         if (stats.highestReportDate && stats.highestReportCount > 0) {
             const highestReportDate = new Date(stats.highestReportDate);
-            const formattedDate = highestReportDate.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+            const formattedDate = highestReportDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
-            reportDescription += `Notably, on ${formattedDate}, there was a peak with ${stats.highestReportCount} reports. `;
+            reportDescription += ` On ${formattedDate}, there was a peak with ${stats.highestReportCount} reports.`;
         }
 
-        // Add the highest responder in today's reports
+        // Add the highest responder in today's reports if present
         if (stats.highestResponder) {
-            reportDescription += `The highest number of responses today came from ${stats.highestResponder}. `;
+            reportDescription += ` The highest number of responses today came from ${stats.highestResponder}.`;
         }
 
-        // Summary of report types and their counts
-        if (stats.reportTypesSummary) {
+        // Summary of report types and their counts if available
+        if (stats.reportTypesSummary && Object.keys(stats.reportTypesSummary).length > 0) {
             const typesSummary = Object.entries(stats.reportTypesSummary)
                 .map(([type, count]) => `${type}: ${count}`)
                 .join(', ');
 
-            reportDescription += `In summary, the report types included: ${typesSummary}. `;
+            reportDescription += ` Report types included: ${typesSummary}.`;
         }
 
-        // Suggestive ending narrative
-        reportDescription += `Moving forward, it may be beneficial to focus on addressing the pending reports to ensure timely resolution and improve response efforts in the community. `;
+        // Check if all main values are 0, if so do not add the ending narrative
+        if (stats.resolvedReports === 0 && stats.deniedReports === 0 && stats.reportsPendingPeriod === 0 && stats.reportsToday === 0) {
+            reportDescription += ` No significant activity was recorded during this period.`;
+        } else if (stats.reportsPendingPeriod > 0) {
+            // Suggestive ending narrative only if there are pending reports
+            reportDescription += ` Moving forward, it may be beneficial to focus on addressing the pending reports to ensure timely resolution and improve response efforts in the community.`;
+        }
 
         return reportDescription;
     };

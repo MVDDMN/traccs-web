@@ -32,23 +32,45 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                     params: { dateFrom, dateTo } // Pass the date range as query parameters
                 });
                 const data = response.data.reportSummary;
-
+    
                 if (data && data.length > 0) {
                     const types = data.map(item => item._id);
                     const totalReports = data.map(item => item.totalReports);
-
-                    // Use predefined contrasting colors for better visibility
-                    const colors = [
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8DFF57', '#FF6384', '#36A2EB', '#FFCE56'
-                    ];
-
+    
+                    // Predefined order for the legend
+                    const legendOrder = ['Fire', 'Police', 'Accident', 'Hazard', 'Medical', 'Assistance'];
+    
+                    // Predefined colors
+                    const colors = {
+                        'Fire': '#E74C3C',
+                        'Accident': '#3498DB',
+                        'Police': '#F1C40F',
+                        'Medical': '#9B59B6',
+                        'Assistance': '#1ABC9C',
+                        'Hazard': '#E67E22',
+                    };
+    
+                    // Sort types and totalReports by the legendOrder
+                    const sortedTypes = [];
+                    const sortedReports = [];
+                    const sortedColors = [];
+    
+                    legendOrder.forEach(type => {
+                        const index = types.indexOf(type);
+                        if (index !== -1) {
+                            sortedTypes.push(type);
+                            sortedReports.push(totalReports[index]);
+                            sortedColors.push(colors[type]);
+                        }
+                    });
+    
                     setChartData({
-                        labels: types,
+                        labels: sortedTypes,
                         datasets: [
                             {
                                 label: 'Total Reports',
-                                data: totalReports,
-                                backgroundColor: colors.slice(0, types.length),
+                                data: sortedReports,
+                                backgroundColor: sortedColors,
                                 borderColor: '#fff',
                                 borderWidth: 1,
                             }
@@ -63,7 +85,7 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                 setLoading(false);
             }
         };
-
+    
         if (dateFrom && dateTo) {
             fetchReportSummary();
         }
