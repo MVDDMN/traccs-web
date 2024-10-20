@@ -71,8 +71,8 @@ app.use(sessionMiddleware);
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    maxPoolSize: 5,
-    minPoolSize: 3
+    maxPoolSize: 10,
+    minPoolSize: 5
 })
     .then(() => {
         console.log("Connected to MongoDB with connection pooling");
