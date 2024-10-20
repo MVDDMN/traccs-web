@@ -67,10 +67,15 @@ app.use(express.text({ limit: '2mb' }));
 app.use(cookieParser());
 app.use(sessionMiddleware);
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI)
+// MongoDB connection with connection pool options
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    maxPoolSize: 5,
+    minPoolSize: 3
+})
     .then(() => {
-        console.log("Connected to MongoDB");
+        console.log("Connected to MongoDB with connection pooling");
     })
     .catch(err => {
         console.error("Failed to connect to MongoDB", err);
