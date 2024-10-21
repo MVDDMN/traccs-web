@@ -12,6 +12,9 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
   ? import.meta.env.VITE_PROD_API_BASE_URL
   : import.meta.env.VITE_API_BASE_URL;
 
+// Move previousReports outside of the component to persist across renders
+let previousReports = [];
+
 function Admin({ routes }) {
   const [showModal, setShowModal] = useState(false);
   const [userName, setUserName] = useState('');
@@ -23,8 +26,6 @@ function Admin({ routes }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let previousReports = [];
-
     const fetchUserData = async () => {
       try {
         const userId = sessionStorage.getItem('userId');
@@ -48,16 +49,19 @@ function Admin({ routes }) {
         const response = await axios.get(`${apiBaseUrl}/api/reports`);
         const newReports = response.data;
 
-        if (previousReports.length > 0 && newReports.length > previousReports.length) {
+        // Ensure previousReports is not empty and new reports have been added
+        if (previousReports.length && newReports.length > previousReports.length) {
           const latestReport = newReports[newReports.length - 1];
           const newReportNotificationMessage = `New report received from ${latestReport.name} for ${latestReport.type}`;
 
           await axios.post(`${apiBaseUrl}/api/notifications`, { message: newReportNotificationMessage });
 
+          // Play sound only once
           const audio = new Audio(notificationSound);
           audio.play();
         }
 
+        // Update previousReports after processing
         previousReports = newReports;
       } catch (error) {
         console.error("Error fetching new reports:", error);
@@ -77,11 +81,13 @@ function Admin({ routes }) {
     fetchNotifications();
     fetchNewReports();
 
-    const userDataInterval = setInterval(fetchUserData, 5000);
+    // Update user data every 10 seconds
+    const userDataInterval = setInterval(fetchUserData, 10000);
+    // Update notifications and reports every 5 seconds
     const notificationsInterval = setInterval(() => {
       fetchNotifications();
       fetchNewReports();
-    }, 5000);
+    }, 3000);
 
     return () => {
       clearInterval(userDataInterval);
