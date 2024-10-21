@@ -33,6 +33,13 @@
     align-items: center;
 }
 
+.donations-table-title-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+}
+
 .loading-message {
     font-size: 1.5rem;
     color: #333;
@@ -40,6 +47,23 @@
     align-content: center;
     height: 100%;
     animation: fadeInOut 5s infinite;
+}
+
+.donations-filter-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    width: 20em;
+}
+
+.donations-filter-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
 }
 
 @keyframes fadeInOut {

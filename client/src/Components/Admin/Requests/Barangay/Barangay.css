@@ -114,6 +114,15 @@
     cursor: pointer;
 }
 
+.barangay-filter-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
 .barangay-table th,
 .barangay-table td {
     padding: 10px;

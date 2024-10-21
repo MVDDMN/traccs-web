@@ -31,6 +31,21 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.history-table-title-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+}
+
+.history-table-description {
+    align-items: center;
+    color: gray;
+    font-weight: 300;
 }
 
 .loading-message {
@@ -42,9 +57,35 @@
     animation: fadeInOut 5s infinite;
 }
 
+.history-filter-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    width: 20em;
+}
+
+.history-filter-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
 @keyframes fadeInOut {
-    0%, 100% { opacity: 0; color: #0E267C;}
-    50% { opacity: 1; color: #0A1B57;}
+
+    0%,
+    100% {
+        opacity: 0;
+        color: #0E267C;
+    }
+
+    50% {
+        opacity: 1;
+        color: #0A1B57;
+    }
 }
 
 .history-table-title-text {
@@ -121,11 +162,11 @@
 
 .view-history-button:hover {
     background-color: #0A1B57;
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
 }
 
 /*Modal*/
-.history-modal { 
+.history-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -139,7 +180,7 @@
     z-index: 9999;
 }
 
-.history-modal-content { 
+.history-modal-content {
     display: inline-flex;
     flex-direction: column;
     height: auto;
@@ -149,7 +190,7 @@
     border-radius: 5px;
 }
 
-.history-modal-content-box { 
+.history-modal-content-box {
     display: inline-flex;
     flex-direction: column;
     height: 100%;
@@ -263,6 +304,7 @@
     .history-table-box {
         height: 529px;
     }
+
     .history-table th,
     .history-table td {
         padding: 4px;
@@ -273,12 +315,14 @@
     .history-table-box {
         height: 427px;
     }
+
     .history-table th,
     .history-table td {
         padding: 3px;
         height: 20px;
         font-size: 12px;
     }
+
     .view-history-button {
         height: 32px;
         width: 75px;
@@ -289,16 +333,19 @@
     .history-table-box {
         height: 319px;
     }
+
     .history-table th,
     .history-table td {
         padding: 2px;
         height: 20px;
         font-size: 10px;
     }
+
     .view-history-button {
         height: 22px;
         width: 75px;
     }
+
     .history-content-text {
         padding: 5px;
     }

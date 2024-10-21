@@ -87,7 +87,7 @@ function Admin({ routes }) {
     const notificationsInterval = setInterval(() => {
       fetchNotifications();
       fetchNewReports();
-    }, 3000);
+    }, 5000);
 
     return () => {
       clearInterval(userDataInterval);

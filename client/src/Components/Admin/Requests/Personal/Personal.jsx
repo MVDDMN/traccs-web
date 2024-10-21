@@ -20,6 +20,7 @@ const Personal = () => {
     const [requestToDelete, setRequestToDelete] = useState(null);
     const [descriptionLength, setDescriptionLength] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [sortOrder, setSortOrder] = useState('newest');
     const [formData, setFormData] = useState({
         itemname: '',
         barangay: '',
@@ -51,7 +52,7 @@ const Personal = () => {
                 const response = await axios.get(`${apiBaseUrl}/api/requests`);
                 const formattedRequests = response.data.map(request => ({
                     ...request,
-                    date_time: formatDate(new Date(request.date_time))
+                    formatted_date: formatDate(new Date(request.date_time)), // Keep date_time for sorting
                 }));
                 setRequests(formattedRequests);
                 setIsLoading(false); // Data is loaded
@@ -80,14 +81,28 @@ const Personal = () => {
         return new Date(date).toLocaleString('en-US', options);
     };
 
-    // Filter requests based on user barangay
+    const sortRequests = (requests, order) => {
+        return requests.slice().sort((a, b) => {
+            const dateA = new Date(a.date_time).getTime();
+            const dateB = new Date(b.date_time).getTime();
+
+            if (order === 'newest') {
+                return dateB - dateA; // Newest first
+            } else if (order === 'oldest') {
+                return dateA - dateB; // Oldest first
+            }
+            return 0;
+        });
+    };
+
     const filteredRequests = requests.filter(request => request.barangay === userBarangay);
 
-    // Pagination calculations
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentRequests = filteredRequests.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+
+    const sortedRequests = sortRequests(filteredRequests, sortOrder); // Apply sorting
+    const currentRequests = sortedRequests.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(sortedRequests.length / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -103,12 +118,25 @@ const Personal = () => {
 
     const openModal = (request) => {
         setSelectedRequest(request);
+    
+        // Populate formData with the selected request details, including the description
+        setFormData({
+            itemname: request.itemname,
+            barangay: request.barangay,
+            type: request.type,
+            quantity: request.quantity,
+            description: request.description // Ensure description is set
+        });
+    
+        // Set the description length
+        setDescriptionLength(request.description.length);
+    
+        // Open the modal
         setIsModalOpen(true);
     };
 
     const openAddModal = () => {
         setIsModalAdd(true);
-        // Reset formData to initial state
         setFormData({
             itemname: '',
             barangay: userBarangay,
@@ -116,6 +144,7 @@ const Personal = () => {
             quantity: 0,
             description: ''
         });
+        setDescriptionLength(0); // Reset description length
         setFormErrors({});
     };
 
@@ -123,6 +152,14 @@ const Personal = () => {
         setIsModalOpen(false);
         setIsModalAdd(false);
         setSelectedRequest(null);
+        setFormData({
+            itemname: '',
+            barangay: '',
+            type: '',
+            quantity: 0,
+            description: ''
+        });
+        setDescriptionLength(0); // Reset description length when closing modal
         setFormErrors({});
     };
 
@@ -137,13 +174,16 @@ const Personal = () => {
             setDescriptionLength(value.length);
         }
 
-        // If editing existing request, update selectedRequest with new values
         if (selectedRequest) {
             setSelectedRequest({
                 ...selectedRequest,
                 [name]: value,
             });
         }
+    };
+
+    const handleSortChange = (event) => {
+        setSortOrder(event.target.value);
     };
 
     const logAdminAction = async (action, adminData, description) => {
@@ -193,7 +233,7 @@ const Personal = () => {
                 ...formData,
                 username: userUsername,
                 barangay: userBarangay,
-                date_time: formatDate(new Date()) // Format current date and time
+                date_time: new Date().toISOString() // Use ISO format for proper date sorting
             };
             await axios.post(`${apiBaseUrl}/api/requests`, requestData);
             await logAdminAction('Add', { username: userUsername, updatedData: formData }, 'Added a request');
@@ -233,11 +273,18 @@ const Personal = () => {
             <div className='personal-table-container'>
                 <div className='personal-table-box'>
                     <div className='personal-table-title-box'>
-                        <a className='personal-table-title-text'>My Requests</a>
-                        <a className='personal-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>This page allows you to create, edit, or delete your own requests.</span>
-                        </a>
+
+                        <div className='personal-table-title-content'>
+                            <a className='personal-table-title-text'>My Requests</a>
+                        </div>
+
+                        <div className='personal-filter-box'>
+                            <label htmlFor="personal-filter">Sort by: </label>
+                            <select id="personal-filter" value={sortOrder} onChange={handleSortChange}>
+                                <option value="newest">Newest to Oldest</option>
+                                <option value="oldest">Oldest to Newest</option>
+                            </select>
+                        </div>
                     </div>
 
                     {isLoading ? (
@@ -263,7 +310,7 @@ const Personal = () => {
                                         <td>{request.itemname}</td>
                                         <td>{request.type}</td>
                                         <td>{request.quantity}</td>
-                                        <td>{request.date_time}</td>
+                                        <td>{request.formatted_date}</td> {/* Display formatted date */}
                                         <td>
                                             <div className='action-button-box'>
                                                 <button className='personal-view-requests-button' onClick={() => openModal(request)}>Update</button>
@@ -328,7 +375,6 @@ const Personal = () => {
                                                 onChange={handleInputChange}
                                                 className="request-input"
                                             />
-
                                         </div>
                                     </div>
                                     <div className='request-content-cont'>
@@ -357,7 +403,6 @@ const Personal = () => {
                                                 <option value="Assistance">Assistance</option>
                                                 <option value="Others">Others</option>
                                             </select>
-
                                         </div>
                                     </div>
                                     <div className='request-content-cont'>
@@ -370,7 +415,6 @@ const Personal = () => {
                                                 onChange={handleInputChange}
                                                 className="request-input"
                                             />
-
                                         </div>
                                         <div className='request-text-box'>
                                             <label className='request-label'>Date & Time:</label>

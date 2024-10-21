@@ -33,6 +33,8 @@ const ResourceDonate = () => {
     });
     const itemsPerPage = 9;
 
+    const [sortOrder, setSortOrder] = useState('newest'); // Added state for sorting
+
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -262,9 +264,22 @@ const ResourceDonate = () => {
         document.getElementById('image-upload').click();
     };
 
+    const handleSortChange = (event) => {
+        setSortOrder(event.target.value);
+    };
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentDonations = donations.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Sort donations before pagination
+    const sortedDonations = [...donations].sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+
+        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+
+    const currentDonations = sortedDonations.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(donations.length / itemsPerPage);
 
     const handleNextPage = () => {
@@ -284,11 +299,21 @@ const ResourceDonate = () => {
             <div className='donations-table-container'>
                 <div className='donations-table-box'>
                     <div className='donations-table-title-box'>
-                        <a className='donations-table-title-text'>Donations</a>
-                        <a className='donations-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>This page contains all the donations made by the users, where you can view and update unrecorded donations to revoke or update it.</span>
-                        </a>
+                        <div className='donations-table-title-content'>
+                            <a className='donations-table-title-text'>Donations</a>
+                            <a className='donations-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>This page contains all the donations made by the users, where you can view and update unrecorded donations to revoke or update it.</span>
+                            </a>
+                        </div>
+
+                        <div className='donations-filter-box'>
+                            <label htmlFor="donations-filter">Sort by:</label>
+                            <select id="donations-filter" value={sortOrder} onChange={handleSortChange}>
+                                <option value="newest">Newest to Oldest</option>
+                                <option value="oldest">Oldest to Newest</option>
+                            </select>
+                        </div>
                     </div>
                     {isLoading ? (
                         <div className='loading-message'>Loading table, please wait...</div>

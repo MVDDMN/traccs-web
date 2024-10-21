@@ -17,6 +17,7 @@ const Archive = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState('');
     const [selectedYears, setSelectedYears] = useState([]);
+    const [sortOrder, setSortOrder] = useState('newest');
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -34,16 +35,20 @@ const Archive = () => {
     const [selectedMonths, setSelectedMonths] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [monthDropdownOpen, setMonthDropdownOpen] = useState(false);
+    const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
 
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const years = Array.from(new Set(archives.map(archive => new Date(archive.report_date_time).getFullYear())));
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const userId = sessionStorage.getItem('userId');
-                if (!userId) {
-                    // Handle the case when userId is not available
-                    return;
-                }
+                if (!userId) return;
                 const response = await axios.get(`${apiBaseUrl}/api/user/${userId}`, { withCredentials: true });
                 setUserType(response.data.type);
                 setUserUsername(response.data.username);
@@ -60,10 +65,10 @@ const Archive = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/archives`);
                 setArchives(response.data);
-                setIsLoading(false); // Data is loaded
+                setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching archives:', error);
-                setIsLoading(false); // Data is still loaded
+                setIsLoading(false);
             }
         };
 
@@ -73,9 +78,25 @@ const Archive = () => {
         return () => clearInterval(interval);
     }, []);
 
+    // Sorting function
+    const sortArchives = (archives, order) => {
+        return archives.slice().sort((a, b) => {
+            const dateA = new Date(a.report_date_time);
+            const dateB = new Date(b.report_date_time);
+
+            if (order === 'newest') {
+                return dateB - dateA; // Newest first
+            } else if (order === 'oldest') {
+                return dateA - dateB; // Oldest first
+            }
+            return 0;
+        });
+    };
+
     // Pagination calculations
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
     const filteredArchives = archives.filter(archive => {
         const archiveDate = new Date(archive.report_date_time);
         const archiveMonth = archiveDate.toLocaleString('default', { month: 'long' });
@@ -85,19 +106,17 @@ const Archive = () => {
             (selectedMonths.length === 0 || selectedMonths.includes(archiveMonth)) &&
             (selectedYears.length === 0 || selectedYears.includes(archiveYear));
     });
-    const currentArchives = filteredArchives.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredArchives.length / itemsPerPage);
+
+    const sortedArchives = sortArchives(filteredArchives, sortOrder);
+    const currentArchives = sortedArchives.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(sortedArchives.length / itemsPerPage);
 
     const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
     const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
     };
 
     const handleViewArchive = (archive) => {
@@ -167,29 +186,28 @@ const Archive = () => {
         }
     };
 
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
+    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+    const toggleMonthDropdown = () => setMonthDropdownOpen(!monthDropdownOpen);
+    const toggleYearDropdown = () => setYearDropdownOpen(!yearDropdownOpen);
+
+    const handleYearChange = (event) => {
+        const { value, checked } = event.target;
+        if (checked) {
+            setSelectedYears([...selectedYears, parseInt(value)]);
+        } else {
+            setSelectedYears(selectedYears.filter(year => year !== parseInt(value)));
+        }
     };
 
-    const toggleMonthDropdown = () => {
-        setMonthDropdownOpen(!monthDropdownOpen);
-    };
-
-    const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+    const handleSortChange = (event) => setSortOrder(event.target.value);
 
     const renderImage = (image) => {
         if (image.startsWith('http://') || image.startsWith('https://')) {
-            // URL image
             return <img src={image} alt="Report Image" />;
         } else if (image.startsWith('data:image') || /^[A-Za-z0-9+/]{4}/.test(image)) {
-            // Base64 image
             const base64Image = image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`;
             return <img src={base64Image} alt="Report Image" />;
         } else {
-            // Handle case where image is neither a URL nor base64
             return <p>Invalid image format</p>;
         }
     };
@@ -198,25 +216,6 @@ const Archive = () => {
         setSelectedImage(img);
         setShowImageModal(true);
     };
-
-    const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
-
-    const years = Array.from(new Set(archives.map(archive => new Date(archive.report_date_time).getFullYear())));
-
-    const toggleYearDropdown = () => {
-        setYearDropdownOpen(!yearDropdownOpen);
-    };
-
-    const handleYearChange = (event) => {
-        const { value, checked } = event.target;
-
-        if (checked) {
-            setSelectedYears([...selectedYears, parseInt(value)]);
-        } else {
-            setSelectedYears(selectedYears.filter(year => year !== parseInt(value)));
-        }
-    };
-
 
     return (
         <div className='archive-content-box'>
@@ -285,11 +284,23 @@ const Archive = () => {
             <div className='archive-table-container'>
                 <div className='archive-table-box'>
                     <div className='archive-table-title-box'>
-                        <a className='archive-table-title-text'>History Reports</a>
-                        <a className='archive-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>This page displays all user-submitted historical reports. You can add reports to the history map or delete denied reports.</span>
-                        </a>
+
+                        <div className='archive-table-title-content'>
+                            <a className='archive-table-title-text'>History Reports</a>
+                            <a className='archive-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>This page displays all user-submitted historical reports. You can add reports to the history map or delete denied reports.</span>
+                            </a>
+                        </div>
+
+                        <div className='archive-filter-box'>
+                            <label htmlFor="archive-filter">Sort by:</label>
+                            <select id="archive-filter" value={sortOrder} onChange={handleSortChange}>
+                                <option value="newest">Newest to Oldest</option>
+                                <option value="oldest">Oldest to Newest</option>
+                            </select>
+                        </div>
+
                     </div>
 
                     {isLoading ? (

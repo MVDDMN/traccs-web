@@ -20,6 +20,7 @@ const Live = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
     const [denyDescription, setDenyDescription] = useState('');
+    const [sortOrder, setSortOrder] = useState('newest');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -74,11 +75,15 @@ const Live = () => {
     const [selectedMonths, setSelectedMonths] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [monthDropdownOpen, setMonthDropdownOpen] = useState(false);
+    const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
+
+    const years = Array.from(new Set(reports.map(report => new Date(report.report_date_time).getFullYear())));
 
     // Pagination calculations
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
+    // Filters and sorting
     const filteredReports = reports.filter(report => {
         const reportDate = new Date(report.report_date_time);
         const reportMonth = reportDate.toLocaleString('default', { month: 'long' });
@@ -89,8 +94,24 @@ const Live = () => {
             (selectedYears.length === 0 || selectedYears.includes(reportYear));
     });
 
-    const currentReports = filteredReports.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+    const sortReports = (reports, order) => {
+        return reports.slice().sort((a, b) => {
+            const dateA = new Date(a.report_date_time);
+            const dateB = new Date(b.report_date_time);
+
+            if (order === 'newest') {
+                return dateB - dateA;  // Sort by newest first
+            } else if (order === 'oldest') {
+                return dateA - dateB;  // Sort by oldest first
+            }
+            return 0;
+        });
+    };
+
+    // Sort the filtered reports
+    const sortedReports = sortReports(filteredReports, sortOrder);
+    const currentReports = sortedReports.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(sortedReports.length / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -116,6 +137,10 @@ const Live = () => {
         }
     };
 
+    const handleSortChange = (event) => {
+        setSortOrder(event.target.value);
+    };
+
     const openDenyModal = () => {
         setIsDenyModalOpen(true);
     };
@@ -125,22 +150,24 @@ const Live = () => {
         setDenyDescription(''); // Clear deny description on close
     };
 
-
-    const logAdminAction = async (action, adminData, description) => {
-        const logEntry = {
-            username: userUsername,
-            action,
-            adminData,
-            type: 'Report Module',
-            description,
-            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
-        };
-
+    const denyReport = async () => {
+        setIsSubmitting(true); // Start loading state
         try {
-            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
+            await axios.post(`${apiBaseUrl}/api/deny`, {
+                reportId: selectedReport._id,
+                responder: userBarangay,
+                deny_description: denyDescription // Send deny description
+            });
+
+            setReports(prevReports => prevReports.map(report =>
+                report._id === selectedReport._id ? { ...report, status: 'Denied', responder: userBarangay } : report
+            ));
+
+            setIsSubmitting(false); // End loading state
+            closeDenyModal(); // Close deny modal after submission
+            closeModal(); // Close main modal
         } catch (error) {
-            console.error("Error logging admin action:", error);
+            console.error('Error denying report:', error);
         }
     };
 
@@ -148,9 +175,7 @@ const Live = () => {
         setIsSubmitting(true); // Start loading state
         try {
             await axios.post(`${apiBaseUrl}/api/respondtoreport`, { reportId: selectedReport._id, responder: userBarangay });
-            await logAdminAction('Respond', { reportId: selectedReport._id, responder: userBarangay }, 'Responded to a report');
 
-            // Update the status of the selected report in the state
             setReports(prevReports => prevReports.map(report =>
                 report._id === selectedReport._id ? { ...report, status: 'Responded', responder: userBarangay } : report
             ));
@@ -159,8 +184,6 @@ const Live = () => {
             closeModal(); // Close modal after successful response
         } catch (error) {
             console.error('Error responding to report:', error);
-        } finally {
-            fetchReports();
         }
     };
 
@@ -174,9 +197,7 @@ const Live = () => {
             };
 
             await axios.post(`${apiBaseUrl}/api/archivereport`, reportToArchive);
-            await logAdminAction('Archive', { reportId: selectedReport._id }, 'Archived a report');
 
-            // Update the status of the selected report in the state
             setReports(prevReports => prevReports.map(report =>
                 report._id === selectedReport._id ? { ...report, status: 'Done' } : report
             ));
@@ -185,35 +206,24 @@ const Live = () => {
             closeModal(); // Close modal after successful response
         } catch (error) {
             console.error('Error archiving report:', error);
-        } finally {
-            fetchReports();
         }
     };
 
-    const denyReport = async () => {
-        setIsSubmitting(true); // Start loading state
-        try {
-            await axios.post(`${apiBaseUrl}/api/deny`, {
-                reportId: selectedReport._id,
-                responder: userBarangay,
-                deny_description: denyDescription // Send deny description
-            });
+    const handleImageClick = (img) => {
+        setSelectedImage(img);
+        setShowImageModal(true);
+    };
 
-            await logAdminAction('Deny', { reportId: selectedReport._id, responder: userBarangay }, 'Denied a report');
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
 
-            // Update the status in the state to reflect the changes
-            setReports(prevReports => prevReports.map(report =>
-                report._id === selectedReport._id ? { ...report, status: 'Denied', responder: userBarangay } : report
-            ));
+    const toggleMonthDropdown = () => {
+        setMonthDropdownOpen(!monthDropdownOpen);
+    };
 
-            setIsSubmitting(false); // End loading state
-            closeDenyModal(); // Close deny modal after submission
-            closeModal(); // Close main modal
-        } catch (error) {
-            console.error('Error denying report:', error);
-        } finally {
-            fetchReports();
-        }
+    const toggleYearDropdown = () => {
+        setYearDropdownOpen(!yearDropdownOpen);
     };
 
     const handleCheckboxChange = (event) => {
@@ -235,46 +245,6 @@ const Live = () => {
         }
     };
 
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    };
-
-    const toggleMonthDropdown = () => {
-        setMonthDropdownOpen(!monthDropdownOpen);
-    };
-
-    const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-
-    const renderImage = (image) => {
-        if (image.startsWith('http://') || image.startsWith('https://')) {
-            // URL image
-            return <img src={image} alt="Report Image" />;
-        } else if (image.startsWith('data:image') || /^[A-Za-z0-9+/]{4}/.test(image)) {
-            // Base64 image
-            const base64Image = image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`;
-            return <img src={base64Image} alt="Report Image" />;
-        } else {
-            // Handle case where image is neither a URL nor base64
-            return <p>Invalid image format</p>;
-        }
-    };
-
-    const handleImageClick = (img) => {
-        setSelectedImage(img);
-        setShowImageModal(true);
-    };
-
-    const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
-
-    const years = Array.from(new Set(reports.map(report => new Date(report.report_date_time).getFullYear())));
-
-    const toggleYearDropdown = () => {
-        setYearDropdownOpen(!yearDropdownOpen);
-    };
-
     const handleYearChange = (event) => {
         const { value, checked } = event.target;
 
@@ -285,12 +255,21 @@ const Live = () => {
         }
     };
 
+    const renderImage = (image) => {
+        if (image.startsWith('http://') || image.startsWith('https://')) {
+            return <img src={image} alt="Report Image" />;
+        } else if (image.startsWith('data:image') || /^[A-Za-z0-9+/]{4}/.test(image)) {
+            const base64Image = image.startsWith('data:image') ? image : `data:image/jpeg;base64,${image}`;
+            return <img src={base64Image} alt="Report Image" />;
+        } else {
+            return <p>Invalid image format</p>;
+        }
+    };
 
     return (
         <div className='report-content-box'>
 
             <div className="filters-content-box">
-
                 <div className='type-dropdown-box'>
                     <button onClick={toggleDropdown} className="type-dropdown-button">Filter by Type</button>
                     {dropdownOpen && (
@@ -314,7 +293,7 @@ const Live = () => {
                     <button onClick={toggleMonthDropdown} className="month-dropdown-button">Filter by Month</button>
                     {monthDropdownOpen && (
                         <div className="month-dropdown-content">
-                            {months.map(month => (
+                            {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(month => (
                                 <label key={month}>
                                     <input
                                         type="checkbox"
@@ -347,17 +326,28 @@ const Live = () => {
                         </div>
                     )}
                 </div>
-
             </div>
 
             <div className='report-table-container'>
                 <div className='report-table-box'>
                     <div className='report-table-title-box'>
-                        <a className='report-table-title-text'>Live Reports</a>
-                        <a className='report-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>This page displays all user-submitted reports. You can respond or deny each report as needed.</span>
-                        </a>
+
+                        <div className='report-table-title-content'>
+                            <a className='report-table-title-text'>Live Reports</a>
+                            <a className='report-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>This page displays all user-submitted reports. You can respond or deny each report as needed.</span>
+                            </a>
+                        </div>
+
+                        <div className='report-filter-box'>
+                            <label htmlFor="report-filter">Sort by:</label>
+                            <select id="report-filter" value={sortOrder} onChange={handleSortChange}>
+                                <option value="newest">Newest to Oldest</option>
+                                <option value="oldest">Oldest to Newest</option>
+                            </select>
+                        </div>
+
                     </div>
 
                     {isLoading ? (

@@ -15,6 +15,8 @@ const ResourceHistory = () => {
     const itemsPerPage = 9;
     const [isLoading, setIsLoading] = useState(true);
 
+    const [sortOrder, setSortOrder] = useState('newest'); // Added state for sorting
+
     useEffect(() => {
         const fetchHistory = async () => {
             try {
@@ -28,7 +30,7 @@ const ResourceHistory = () => {
         };
 
         fetchHistory();
-        const interval = setInterval(fetchHistory, 5000); // Refresh data every 15 seconds
+        const interval = setInterval(fetchHistory, 5000); // Refresh data every 5 seconds
 
         return () => clearInterval(interval);
     }, []);
@@ -43,9 +45,22 @@ const ResourceHistory = () => {
         setSelectedRecord(null);
     };
 
+    const handleSortChange = (event) => {
+        setSortOrder(event.target.value);
+    };
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentHistory = history.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Sort history before pagination
+    const sortedHistory = [...history].sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+
+        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+
+    const currentHistory = sortedHistory.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(history.length / itemsPerPage);
 
     const handleNextPage = () => {
@@ -65,11 +80,22 @@ const ResourceHistory = () => {
             <div className='history-table-container'>
                 <div className='history-table-box'>
                     <div className='history-table-title-box'>
-                        <a className='history-table-title-text'>Revoked Donations</a>
-                        <a className='donations-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>This page contains the donation details revoked by you or the administrators saved as history while not keeping any private details.</span>
-                        </a>
+
+                        <div className='history-table-title-content'>
+                            <a className='history-table-title-text'>Revoked Donations</a>
+                            <a className='donations-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>This page contains the donation details revoked by you or the administrators saved as history while not keeping any private details.</span>
+                            </a>
+                        </div>
+
+                        <div className='history-filter-box'>
+                            <label htmlFor="history-filter">Sort by:</label>
+                            <select id="history-filter" value={sortOrder} onChange={handleSortChange}>
+                                <option value="newest">Newest to Oldest</option>
+                                <option value="oldest">Oldest to Newest</option>
+                            </select>
+                        </div>
                     </div>
                     {isLoading ? (
                         <div className='loading-message'>Loading history, please wait...</div>

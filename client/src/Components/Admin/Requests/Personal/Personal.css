@@ -62,6 +62,15 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.personal-table-title-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
 }
 
 .personal-table-title-text {
@@ -87,6 +96,23 @@
 .personal-table-description:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+.personal-filter-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    width: 20em;
+}
+
+.personal-filter-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
 }
 
 .personal-table {

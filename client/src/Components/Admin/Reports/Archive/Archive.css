@@ -128,6 +128,15 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.archive-table-title-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
 }
 
 .archive-table-title-text {
@@ -155,6 +164,24 @@
     opacity: 1;
 }
 
+.archive-filter-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    width: 20em;
+}
+
+.archive-filter-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+/*Archive Table*/
 .archive-table {
     background-color: #f0f0f0;
     overflow-y: auto;

@@ -7,7 +7,6 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
     : import.meta.env.VITE_API_BASE_URL;
 
-
 const Barangay = () => {
     const [userUsername, setUserUsername] = useState('');
     const [userBarangay, setUserBarangay] = useState('');
@@ -17,6 +16,7 @@ const Barangay = () => {
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [selectedBarangay, setSelectedBarangay] = useState('All');
     const [isLoading, setIsLoading] = useState(true);
+    const [sortOrder, setSortOrder] = useState('newest'); // New sorting state
     const itemsPerPage = 9;
 
     useEffect(() => {
@@ -53,14 +53,32 @@ const Barangay = () => {
         return () => clearInterval(interval);
     }, []);
 
+    // Sorting function
+    const sortRequests = (requests, order) => {
+        return requests.slice().sort((a, b) => {
+            const dateA = new Date(a.date_time);
+            const dateB = new Date(b.date_time);
+
+            if (order === 'newest') {
+                return dateB - dateA; // Newest first
+            } else if (order === 'oldest') {
+                return dateA - dateB; // Oldest first
+            }
+            return 0;
+        });
+    };
+
     // Pagination calculations
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
     const filteredRequests = selectedBarangay === 'All'
         ? requests
         : requests.filter(request => request.barangay === selectedBarangay);
-    const currentRequests = filteredRequests.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+
+    const sortedRequests = sortRequests(filteredRequests, sortOrder); // Apply sorting
+    const currentRequests = sortedRequests.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(sortedRequests.length / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -88,6 +106,10 @@ const Barangay = () => {
 
     const handleBarangayChange = (event) => {
         setSelectedBarangay(event.target.value);
+    };
+
+    const handleSortChange = (event) => {
+        setSortOrder(event.target.value);
     };
 
     const logAdminAction = async (action, adminData, description) => {
@@ -146,13 +168,24 @@ const Barangay = () => {
                                 <span className='tooltip-text'>This page displays barangay requests. You can view details and respond to each request.</span>
                             </a>
                         </div>
-                        <div className='barangay-filter-box'>
-                            <label htmlFor="barangay-filter">Filter by Barangay: </label>
-                            <select id="barangay-filter" value={selectedBarangay} onChange={handleBarangayChange}>
-                                {barangayOptions.map(barangay => (
-                                    <option key={barangay} value={barangay}>{barangay}</option>
-                                ))}
-                            </select>
+
+                        <div className='barangay-filter-container'>
+                            <div className='barangay-filter-box'>
+                                <label htmlFor="barangay-filter">Filter by Barangay: </label>
+                                <select id="barangay-filter" value={selectedBarangay} onChange={handleBarangayChange}>
+                                    {barangayOptions.map(barangay => (
+                                        <option key={barangay} value={barangay}>{barangay}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className='barangay-filter-box'>
+                                <label htmlFor="barangay-filter">Sort by: </label>
+                                <select id="barangay-filter" value={sortOrder} onChange={handleSortChange}>
+                                    <option value="newest">Newest to Oldest</option>
+                                    <option value="oldest">Oldest to Newest</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -180,7 +213,6 @@ const Barangay = () => {
                                         <td>{request.type}</td>
                                         <td>{request.quantity}</td>
                                         <td>
-
                                             {new Date(request.date_time).toLocaleString('en-US', {
                                                 year: 'numeric',
                                                 month: 'long',
@@ -238,11 +270,8 @@ const Barangay = () => {
 
                             </div>
 
-
                             <div className='requests-details-container'>
-
                                 <div className='requests-details-modal-box'>
-
                                     <div className='requests-details-section-box'>
                                         <div className='requests-text-box'>
                                             <a className='requests-title-text'>
