@@ -62,27 +62,27 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
             return acc;
         }, Array(12).fill(0)); // Array to store monthly counts
 
-        const monthWithMostReports = reportByMonth.indexOf(Math.max(...reportByMonth));
-        const monthWithMostReportsCount = Math.max(...reportByMonth);
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const previousMonthIndex = monthWithMostReports === 0 ? 11 : monthWithMostReports - 1;
-        const previousMonthCount = reportByMonth[previousMonthIndex];
+        const monthsWithReports = reportByMonth.filter(count => count > 0);
 
-        if (monthWithMostReports >= 0) {
-            reportSummary += `The month with the most reports is ${monthNames[monthWithMostReports]}, totaling ${monthWithMostReportsCount} incidents. `;
-        }
+        if (monthsWithReports.length > 1) {
+            const monthWithMostReports = reportByMonth.indexOf(Math.max(...reportByMonth));
+            const monthWithMostReportsCount = Math.max(...reportByMonth);
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-        // Only show the comparison if there is data for the previous month
-        if (previousMonthCount > 0) {
-            const percentageChange = ((monthWithMostReportsCount - previousMonthCount) / previousMonthCount) * 100;
-            if (percentageChange > 0) {
-                reportSummary += `This reflects an increase of ${percentageChange.toFixed(2)}% in reports compared to ${monthNames[previousMonthIndex]}. `;
-            } else {
-                reportSummary += `This reflects a decrease of ${Math.abs(percentageChange).toFixed(2)}% in reports compared to ${monthNames[previousMonthIndex]}. `;
+            if (monthWithMostReports >= 0 && monthWithMostReportsCount > 0) {
+                reportSummary += `The month with the most reports is ${monthNames[monthWithMostReports]}, totaling ${monthWithMostReportsCount} incidents. `;
             }
         }
 
-        // Find the most prevalent report type in that month
+        // Display message for all months that have data available
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        reportByMonth.forEach((count, index) => {
+            if (count > 0) {
+                reportSummary += `${monthNames[index]} had ${count} reports. `;
+            }
+        });
+
+        // Find the most prevalent report type overall
         const reportByType = data.reduce((acc, curr) => {
             if (!acc[curr.type]) {
                 acc[curr.type] = 0;
@@ -95,7 +95,7 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
         const prevalentReportCount = reportByType[prevalentReportType];
 
         if (prevalentReportType && prevalentReportCount) {
-            reportSummary += `In ${monthNames[monthWithMostReports]}, the most prevalent report type was "${prevalentReportType}", with ${prevalentReportCount} incidents recorded. `;
+            reportSummary += `The most prevalent report type overall was "${prevalentReportType}", with ${prevalentReportCount} incidents recorded. `;
         }
 
         // Add suggestive narratives based on the prevalent report type
