@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navigation from './Navigation/Navigation';
@@ -22,9 +22,9 @@ function Admin({ routes }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
 
-  const previousReportsRef = useRef([]);
-
   useEffect(() => {
+    let previousReports = [];
+
     const fetchUserData = async () => {
       try {
         const userId = sessionStorage.getItem('userId');
@@ -45,31 +45,20 @@ function Admin({ routes }) {
 
     const fetchNewReports = async () => {
       try {
-        const userId = sessionStorage.getItem('userId');
-        if (!userId) {
-          return;
-        }
-        const response = await axios.get(`${apiBaseUrl}/api/reports`, { params: { userId } });
+        const response = await axios.get(`${apiBaseUrl}/api/reports`);
         const newReports = response.data;
 
-        // Optimize fetching by comparing only the latest report timestamp
-        if (newReports.length && (!previousReportsRef.current.length || newReports[newReports.length - 1].timestamp !== previousReportsRef.current[previousReportsRef.current.length - 1].timestamp)) {
+        if (previousReports.length > 0 && newReports.length > previousReports.length) {
           const latestReport = newReports[newReports.length - 1];
           const newReportNotificationMessage = `New report received from ${latestReport.name} for ${latestReport.type}`;
 
-          // Only add a notification if it doesn't already exist
-          const existingNotification = notifications.find((n) => n.message === newReportNotificationMessage);
-          if (!existingNotification) {
-            await axios.post(`${apiBaseUrl}/api/notifications`, { userId, message: newReportNotificationMessage });
+          await axios.post(`${apiBaseUrl}/api/notifications`, { message: newReportNotificationMessage });
 
-            // Play sound only once
-            const audio = new Audio(notificationSound);
-            audio.play();
-          }
+          const audio = new Audio(notificationSound);
+          audio.play();
         }
 
-        // Update previousReportsRef with the latest reports
-        previousReportsRef.current = newReports;
+        previousReports = newReports;
       } catch (error) {
         console.error("Error fetching new reports:", error);
       }
@@ -77,11 +66,7 @@ function Admin({ routes }) {
 
     const fetchNotifications = async () => {
       try {
-        const userId = sessionStorage.getItem('userId');
-        if (!userId) {
-          return;
-        }
-        const response = await axios.get(`${apiBaseUrl}/api/notifications`, { params: { userId } });
+        const response = await axios.get(`${apiBaseUrl}/api/notifications`);
         setNotifications(response.data);
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -92,15 +77,17 @@ function Admin({ routes }) {
     fetchNotifications();
     fetchNewReports();
 
-    // Use longer intervals to avoid overwhelming the database
-    const userDataInterval = setInterval(fetchUserData, 30000); // Update user data every 30 seconds
-    const notificationsInterval = setInterval(fetchNotifications, 5000); // Update notifications every 5 seconds
+    const userDataInterval = setInterval(fetchUserData, 5000);
+    const notificationsInterval = setInterval(() => {
+      fetchNotifications();
+      fetchNewReports();
+    }, 5000);
 
     return () => {
       clearInterval(userDataInterval);
       clearInterval(notificationsInterval);
     };
-  }, [navigate, notifications]);
+  }, [navigate]);
 
   const resetUserState = () => {
     setUserBarangay('');
@@ -120,11 +107,7 @@ function Admin({ routes }) {
 
   const handleClearNotifications = async () => {
     try {
-      const userId = sessionStorage.getItem('userId');
-      if (!userId) {
-        return;
-      }
-      await axios.delete(`${apiBaseUrl}/api/notifications`, { params: { userId } });
+      await axios.delete(`${apiBaseUrl}/api/notifications`);
       setNotifications([]);
     } catch (error) {
       console.error("Error clearing notifications:", error);

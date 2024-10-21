@@ -1,7 +1,6 @@
 const express = require("express");
 const requestsModel = require('../models/request');
 const requestarchiveModel = require('../models/requestarchive');
-const communityModel = require('../models/community');
 const router = express.Router();
 
 // Request Module - Show Requests

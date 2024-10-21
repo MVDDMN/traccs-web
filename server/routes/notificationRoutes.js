@@ -1,57 +1,38 @@
 const express = require("express");
 const router = express.Router();
-const reportsModel = require("../models/reports"); // Assuming you have a reports model
-const Notification = require("../models/notifications"); // Notification model
+const reportsModel = require("../models/reports");  // Assuming you have a reports model
 
-// Create Notification for New Report
-router.post('/notifications', async (req, res) => {
-    const { message, userId } = req.body;
+// Notification Module - Notifications
+let notifications = [];
 
-    if (!message || !userId) {
-        return res.status(400).json({ error: 'Message and userId are required' });
+// Notification Module - Create Notification for New Report
+router.post('/notifications', (req, res) => {
+    const { message } = req.body;
+
+    if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
     }
 
-    try {
-        const newNotification = new Notification({ message, userId });
-        await newNotification.save();
-        return res.status(201).json(newNotification);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to create notification' });
-    }
+    const newNotification = {
+        id: notifications.length + 1,
+        message,
+        timestamp: new Date().toISOString()
+    };
+
+    notifications.push(newNotification);
+
+    return res.status(201).json(newNotification);
 });
 
 // Fetch Notifications
-router.get('/notifications', async (req, res) => {
-    const { userId } = req.query;
-
-    if (!userId) {
-        return res.status(400).json({ error: 'User ID is required' });
-    }
-
-    try {
-        // Fetch only non-cleared notifications for the user
-        const notifications = await Notification.find({ userId, isCleared: false }).sort({ timestamp: -1 }).exec();
-        return res.status(200).json(notifications);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to fetch notifications' });
-    }
+router.get('/notifications', (req, res) => {
+    return res.status(200).json(notifications);
 });
 
-// Delete (Clear) Notifications
-router.delete('/notifications', async (req, res) => {
-    const { userId } = req.query;
-
-    if (!userId) {
-        return res.status(400).json({ error: 'User ID is required' });
-    }
-
-    try {
-        // Mark notifications as cleared
-        await Notification.updateMany({ userId, isCleared: false }, { $set: { isCleared: true } });
-        return res.status(204).end();
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to clear notifications' });
-    }
+// Delete Notifications
+router.delete('/notifications', (req, res) => {
+    notifications = [];
+    return res.status(204).end();
 });
 
 // Create a New Report and Trigger Notification
@@ -60,20 +41,14 @@ router.post('/reports', async (req, res) => {
         const newReport = new reportsModel(req.body);
         await newReport.save();
 
-        // Avoid duplicate notifications by checking if it already exists
-        const existingNotification = await Notification.findOne({
-            message: `New report received from ${newReport.name} for ${newReport.type}`,
-            userId: req.body.userId
-        });
+        // Create a notification for the new report
+        const newNotification = {
+            id: notifications.length + 1,
+            message: `New report received from ${newReport.name}`,
+            timestamp: new Date().toISOString()
+        };
 
-        if (!existingNotification) {
-            // Create a notification for the new report
-            const newNotification = new Notification({
-                message: `New report received from ${newReport.name} for ${newReport.type}`,
-                userId: req.body.userId
-            });
-            await newNotification.save();
-        }
+        notifications.push(newNotification);
 
         return res.status(201).json(newReport);
     } catch (error) {
@@ -81,27 +56,10 @@ router.post('/reports', async (req, res) => {
     }
 });
 
-// Fetch All Reports with Query Optimization
+// Fetch All Reports
 router.get('/reports', async (req, res) => {
     try {
-        const { fromDate, toDate, type } = req.query;
-        const query = {};
-
-        // Add date range filtering if provided
-        if (fromDate && toDate) {
-            query.timestamp = {
-                $gte: new Date(fromDate),
-                $lte: new Date(toDate)
-            };
-        }
-
-        // Add report type filtering if provided
-        if (type) {
-            query.type = type;
-        }
-
-        // Use index on 'timestamp' and 'type' fields for efficient querying
-        const reports = await reportsModel.find(query).sort({ timestamp: -1 }).exec();
+        const reports = await reportsModel.find();
         return res.status(200).json(reports);
     } catch (error) {
         return res.status(500).json({ error: 'Failed to fetch reports' });
