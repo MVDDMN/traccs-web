@@ -46,22 +46,26 @@ function Admin({ routes }) {
 
     const fetchNewReports = async () => {
       try {
-        const response = await axios.get(`${apiBaseUrl}/api/reports`);
+        const userId = sessionStorage.getItem('userId');
+        if (!userId) {
+          return;
+        }
+        const response = await axios.get(`${apiBaseUrl}/api/reports`, { params: { userId } });
         const newReports = response.data;
 
-        // Ensure previousReports is not empty and new reports have been added
-        if (previousReports.length && newReports.length > previousReports.length) {
+        // Optimize fetching by comparing only the latest report timestamp
+        if (newReports.length && (!previousReports.length || newReports[newReports.length - 1].timestamp !== previousReports[previousReports.length - 1].timestamp)) {
           const latestReport = newReports[newReports.length - 1];
           const newReportNotificationMessage = `New report received from ${latestReport.name} for ${latestReport.type}`;
 
-          await axios.post(`${apiBaseUrl}/api/notifications`, { message: newReportNotificationMessage });
+          await axios.post(`${apiBaseUrl}/api/notifications`, { userId, message: newReportNotificationMessage });
 
           // Play sound only once
           const audio = new Audio(notificationSound);
           audio.play();
         }
 
-        // Update previousReports after processing
+        // Update previousReports with only the necessary data to avoid overloading the system
         previousReports = newReports;
       } catch (error) {
         console.error("Error fetching new reports:", error);
@@ -70,7 +74,11 @@ function Admin({ routes }) {
 
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`${apiBaseUrl}/api/notifications`);
+        const userId = sessionStorage.getItem('userId');
+        if (!userId) {
+          return;
+        }
+        const response = await axios.get(`${apiBaseUrl}/api/notifications`, { params: { userId } });
         setNotifications(response.data);
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -81,9 +89,8 @@ function Admin({ routes }) {
     fetchNotifications();
     fetchNewReports();
 
-    // Update user data every 10 seconds
-    const userDataInterval = setInterval(fetchUserData, 10000);
-    // Update notifications and reports every 5 seconds
+    // Use longer intervals to avoid overwhelming the database
+    const userDataInterval = setInterval(fetchUserData, 30000); // Update user data every 30 seconds
     const notificationsInterval = setInterval(() => {
       fetchNotifications();
       fetchNewReports();
@@ -113,7 +120,11 @@ function Admin({ routes }) {
 
   const handleClearNotifications = async () => {
     try {
-      await axios.delete(`${apiBaseUrl}/api/notifications`);
+      const userId = sessionStorage.getItem('userId');
+      if (!userId) {
+        return;
+      }
+      await axios.delete(`${apiBaseUrl}/api/notifications`, { params: { userId } });
       setNotifications([]);
     } catch (error) {
       console.error("Error clearing notifications:", error);
