@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navigation from './Navigation/Navigation';
@@ -12,9 +12,6 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
   ? import.meta.env.VITE_PROD_API_BASE_URL
   : import.meta.env.VITE_API_BASE_URL;
 
-// Move previousReports outside of the component to persist across renders
-let previousReports = [];
-
 function Admin({ routes }) {
   const [showModal, setShowModal] = useState(false);
   const [userName, setUserName] = useState('');
@@ -24,6 +21,8 @@ function Admin({ routes }) {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
+
+  const previousReportsRef = useRef([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -54,19 +53,23 @@ function Admin({ routes }) {
         const newReports = response.data;
 
         // Optimize fetching by comparing only the latest report timestamp
-        if (newReports.length && (!previousReports.length || newReports[newReports.length - 1].timestamp !== previousReports[previousReports.length - 1].timestamp)) {
+        if (newReports.length && (!previousReportsRef.current.length || newReports[newReports.length - 1].timestamp !== previousReportsRef.current[previousReportsRef.current.length - 1].timestamp)) {
           const latestReport = newReports[newReports.length - 1];
           const newReportNotificationMessage = `New report received from ${latestReport.name} for ${latestReport.type}`;
 
-          await axios.post(`${apiBaseUrl}/api/notifications`, { userId, message: newReportNotificationMessage });
+          // Only add a notification if it doesn't already exist
+          const existingNotification = notifications.find((n) => n.message === newReportNotificationMessage);
+          if (!existingNotification) {
+            await axios.post(`${apiBaseUrl}/api/notifications`, { userId, message: newReportNotificationMessage });
 
-          // Play sound only once
-          const audio = new Audio(notificationSound);
-          audio.play();
+            // Play sound only once
+            const audio = new Audio(notificationSound);
+            audio.play();
+          }
         }
 
-        // Update previousReports with only the necessary data to avoid overloading the system
-        previousReports = newReports;
+        // Update previousReportsRef with the latest reports
+        previousReportsRef.current = newReports;
       } catch (error) {
         console.error("Error fetching new reports:", error);
       }
@@ -91,16 +94,13 @@ function Admin({ routes }) {
 
     // Use longer intervals to avoid overwhelming the database
     const userDataInterval = setInterval(fetchUserData, 30000); // Update user data every 30 seconds
-    const notificationsInterval = setInterval(() => {
-      fetchNotifications();
-      fetchNewReports();
-    }, 5000);
+    const notificationsInterval = setInterval(fetchNotifications, 5000); // Update notifications every 5 seconds
 
     return () => {
       clearInterval(userDataInterval);
       clearInterval(notificationsInterval);
     };
-  }, [navigate]);
+  }, [navigate, notifications]);
 
   const resetUserState = () => {
     setUserBarangay('');

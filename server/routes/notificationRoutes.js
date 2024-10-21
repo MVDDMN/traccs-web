@@ -1,38 +1,57 @@
 const express = require("express");
 const router = express.Router();
 const reportsModel = require("../models/reports"); // Assuming you have a reports model
+const Notification = require("../models/notifications"); // Notification model
 
-// Notification Module - Notifications
-let notifications = [];
+// Create Notification for New Report
+router.post('/notifications', async (req, res) => {
+    const { message, userId } = req.body;
 
-// Notification Module - Create Notification for New Report
-router.post('/notifications', (req, res) => {
-    const { message } = req.body;
-
-    if (!message) {
-        return res.status(400).json({ error: 'Message is required' });
+    if (!message || !userId) {
+        return res.status(400).json({ error: 'Message and userId are required' });
     }
 
-    const newNotification = {
-        id: notifications.length + 1,
-        message,
-        timestamp: new Date().toISOString()
-    };
-
-    notifications.push(newNotification);
-
-    return res.status(201).json(newNotification);
+    try {
+        const newNotification = new Notification({ message, userId });
+        await newNotification.save();
+        return res.status(201).json(newNotification);
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to create notification' });
+    }
 });
 
 // Fetch Notifications
-router.get('/notifications', (req, res) => {
-    return res.status(200).json(notifications);
+router.get('/notifications', async (req, res) => {
+    const { userId } = req.query;
+
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    try {
+        // Fetch only non-cleared notifications for the user
+        const notifications = await Notification.find({ userId, isCleared: false }).sort({ timestamp: -1 }).exec();
+        return res.status(200).json(notifications);
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to fetch notifications' });
+    }
 });
 
-// Delete Notifications
-router.delete('/notifications', (req, res) => {
-    notifications = [];
-    return res.status(204).end();
+// Delete (Clear) Notifications
+router.delete('/notifications', async (req, res) => {
+    const { userId } = req.query;
+
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    try {
+        // Mark notifications as cleared
+        await Notification.updateMany({ userId, isCleared: false }, { $set: { isCleared: true } });
+        return res.status(204).end();
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to clear notifications' });
+    }
 });
 
 // Create a New Report and Trigger Notification
@@ -41,16 +60,19 @@ router.post('/reports', async (req, res) => {
         const newReport = new reportsModel(req.body);
         await newReport.save();
 
-        // Avoid duplicate notifications by checking the most recent notification
-        if (!notifications.length || notifications[notifications.length - 1].message !== `New report received from ${newReport.name}`) {
-            // Create a notification for the new report
-            const newNotification = {
-                id: notifications.length + 1,
-                message: `New report received from ${newReport.name} for ${newReport.type}`,
-                timestamp: new Date().toISOString()
-            };
+        // Avoid duplicate notifications by checking if it already exists
+        const existingNotification = await Notification.findOne({
+            message: `New report received from ${newReport.name} for ${newReport.type}`,
+            userId: req.body.userId
+        });
 
-            notifications.push(newNotification);
+        if (!existingNotification) {
+            // Create a notification for the new report
+            const newNotification = new Notification({
+                message: `New report received from ${newReport.name} for ${newReport.type}`,
+                userId: req.body.userId
+            });
+            await newNotification.save();
         }
 
         return res.status(201).json(newReport);
