@@ -55,57 +55,44 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
 
         reportDescription += `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, a total of ${totalReports} reports were submitted. `;
 
-        // Mapping report types to descriptions
-        const reportTypes = {
-            "Fire": "fire-related",
-            "Police": "police-related",
-            "Accident": "vehicular accident-related",
-            "Medical": "medical-related",
-            "Hazard": "hazard-related",
-            "Assistance": "assistance-related"
-        };
-
-        // Filter out report types with zero counts
-        const nonZeroReportTypes = Object.keys(reportTypes).filter(type => {
-            const count = data.find(report => report._id === type)?.totalReports || 0;
-            return count > 0;
+        // Generate percentage breakdown for each report type
+        data.forEach(report => {
+            const percentage = ((report.totalReports / totalReports) * 100).toFixed(2);
+            reportDescription += `${percentage}% of the reports were related to ${report._id.toLowerCase()} incidents. `;
         });
-
-        // Generate detailed breakdown for non-zero report types
-        if (nonZeroReportTypes.length > 0) {
-            reportDescription += `Within this period, there were ${totalReports} reports: `;
-            reportDescription += nonZeroReportTypes.map(type => {
-                const count = data.find(report => report._id === type)?.totalReports || 0;
-                return `${count} ${reportTypes[type]} reports`;
-            }).join(", ") + ". ";
-        }
 
         // Determine the most common type of report and apply its narrative
         const mostCommonType = data.reduce((prev, current) => (prev.totalReports > current.totalReports) ? prev : current, {});
         if (mostCommonType) {
-            switch (mostCommonType._id) {
-                case "Accident":
-                    reportDescription += "The most frequently submitted reports pertain to vehicular accidents, highlighting the urgent need for increased awareness and safety measures. ";
-                    break;
-                case "Medical":
-                    reportDescription += "A substantial number of medical reports document health-related incidents, underscoring the importance of timely medical assistance and ongoing health education. ";
-                    break;
-                case "Fire":
-                    reportDescription += "Reports related to fire incidents emphasize the critical need for fire safety protocols and community preparedness. ";
-                    break;
-                case "Police":
-                    reportDescription += "The low frequency of police reports indicates a need for greater community engagement and awareness regarding law enforcement issues. ";
-                    break;
-                case "Assistance":
-                    reportDescription += "Reports concerning community assistance showcase the support available to residents, highlighting the significance of collaboration in addressing community needs. ";
-                    break;
-                case "Hazard":
-                    reportDescription += "Hazard reports identify potential environmental risks, emphasizing the importance of hazard recognition and mitigation efforts. ";
-                    break;
-                default:
-                    reportDescription += "There is no significant trend for any specific report type. ";
-                    break;
-            }
+            const narratives = {
+                "Accident": [
+                    "The majority of reports involved vehicular accidents, indicating a strong need for enhanced road safety awareness and preventive measures.",
+                    "Vehicular accidents emerged as the most common type of incident, suggesting that road safety initiatives might be beneficial to reduce these occurrences."
+                ],
+                "Medical": [
+                    "A significant number of medical incidents were reported, highlighting the need for accessible healthcare services and community health education.",
+                    "Medical-related reports were prevalent, indicating an ongoing requirement for efficient healthcare response systems and increased medical aid availability."
+                ],
+                "Fire": [
+                    "Fire-related incidents were frequently reported, emphasizing the importance of fire safety protocols and better community preparedness.",
+                    "Reports involving fire hazards were common, pointing to the necessity for widespread fire prevention measures and safety awareness campaigns."
+                ],
+                "Police": [
+                    "Police-related incidents were notably low, which may indicate either effective crime deterrence or a need for improved public trust and engagement with law enforcement.",
+                    "The low frequency of police-related reports suggests either a relatively peaceful period or underreporting of such incidents, warranting further community outreach."
+                ],
+                "Assistance": [
+                    "Reports related to assistance underscore the strong sense of community support, highlighting the importance of collaborative efforts during emergencies.",
+                    "Community assistance requests were notable, showcasing the reliance on communal support systems to address local needs effectively."
+                ],
+                "Hazard": [
+                    "Hazard reports were common, drawing attention to the importance of identifying and mitigating potential environmental risks.",
+                    "Environmental hazards were frequently reported, emphasizing the need for ongoing risk assessments and mitigation strategies in the community."
+                ]
+            };
+
+            const selectedNarrative = narratives[mostCommonType._id]?.[Math.floor(Math.random() * narratives[mostCommonType._id].length)] || "No significant trend emerged for any particular report type.";
+            reportDescription += `${selectedNarrative} `;
         }
 
         // Suggestive ending narratives

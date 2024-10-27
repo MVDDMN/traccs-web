@@ -82,6 +82,29 @@ const ReportMonth = ({ dateFrom, dateTo }) => {
             }
         });
 
+        // Calculate and compare the percentage change between consecutive months if applicable
+        if (reportByMonth.some(count => count > 0)) {
+            let previousMonthIndex = -1;
+            for (let i = 0; i < reportByMonth.length; i++) {
+                if (reportByMonth[i] > 0) {
+                    if (previousMonthIndex >= 0) {
+                        const currentMonthIndex = i;
+                        const previousMonthCount = reportByMonth[previousMonthIndex];
+                        const currentMonthCount = reportByMonth[currentMonthIndex];
+
+                        if (previousMonthCount > 0 && currentMonthCount > 0) {
+                            const percentageChange = (((currentMonthCount - previousMonthCount) / previousMonthCount) * 100).toFixed(2);
+                            const changeDirection = currentMonthCount > previousMonthCount ? 'increased' : 'decreased';
+                            reportSummary += `Compared to ${monthNames[previousMonthIndex]}, the number of reports in ${monthNames[currentMonthIndex]} ${changeDirection} by ${Math.abs(percentageChange)}%. `;
+                        } else if (previousMonthCount > 0 && currentMonthCount === 0) {
+                            reportSummary += `In ${monthNames[currentMonthIndex]}, there were no reports, representing a complete drop compared to ${previousMonthCount} reports in ${monthNames[previousMonthIndex]}. `;
+                        }
+                    }
+                    previousMonthIndex = i;
+                }
+            }
+        }
+
         // Find the most prevalent report type overall
         const reportByType = data.reduce((acc, curr) => {
             if (!acc[curr.type]) {
