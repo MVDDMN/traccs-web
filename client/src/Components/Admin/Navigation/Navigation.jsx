@@ -24,20 +24,20 @@ const Navigation = ({ userType }) => {
             <NavLink to="/admin/request" className={({ isActive }) => isActive ? "active-link" : ""}>Requests</NavLink>
           </div>
 
-          <div className='navigation-title-box'>
-            <a className='navigation-title-text'>Management Modules</a>
-          </div>
+          {userType !== 'Barangay' && (
+            <>
+              <div className='navigation-title-box'>
+                <a className='navigation-title-text'>Management Modules</a>
+              </div>
 
-          <div className='module'>
-            <NavLink to="/admin/resource" className={({ isActive }) => isActive ? "active-link" : ""}>Resources</NavLink>
-            {userType !== 'Barangay' && (
-              <>
+              <div className='module'>
+                <NavLink to="/admin/resource" className={({ isActive }) => isActive ? "active-link" : ""}>Resources</NavLink>
                 <NavLink to="/admin/accounts" className={({ isActive }) => isActive ? "active-link" : ""}>Accounts</NavLink>
                 <NavLink to="/admin/analytics" className={({ isActive }) => isActive ? "active-link" : ""}>Analytics</NavLink>
                 <NavLink to="/admin/logs" className={({ isActive }) => isActive ? "active-link" : ""}>Logs</NavLink>
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -82,9 +82,9 @@ const RequestArchive = () => {
 
             <div className='requestarchives-table-container'>
                 <div className='requestarchives-table-box'>
-                    <div className='requestarchives-table-title-box'>
 
-                        <div className='requestarchives-table-title-content'>
+                    <div className='requestarchives-table-title-container'>
+                        <div className='requestarchives-table-title-box'>
                             <a className='requestarchives-table-title-text'>Requests History</a>
                             <a className='requestarchives-table-description'>
                                 ⓘ
@@ -99,7 +99,6 @@ const RequestArchive = () => {
                                 <option value="oldest">Oldest to Newest</option>
                             </select>
                         </div>
-
                     </div>
 
 

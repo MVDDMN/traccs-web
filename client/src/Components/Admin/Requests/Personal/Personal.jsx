@@ -118,7 +118,7 @@ const Personal = () => {
 
     const openModal = (request) => {
         setSelectedRequest(request);
-    
+
         // Populate formData with the selected request details, including the description
         setFormData({
             itemname: request.itemname,
@@ -127,10 +127,10 @@ const Personal = () => {
             quantity: request.quantity,
             description: request.description // Ensure description is set
         });
-    
+
         // Set the description length
         setDescriptionLength(request.description.length);
-    
+
         // Open the modal
         setIsModalOpen(true);
     };
@@ -193,8 +193,8 @@ const Personal = () => {
             adminData,
             type: 'Requests Module',
             description,
-            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+            date: formatDate(new Date()),
+            time: formatDate(new Date()),
         };
 
         try {
@@ -272,10 +272,16 @@ const Personal = () => {
 
             <div className='personal-table-container'>
                 <div className='personal-table-box'>
-                    <div className='personal-table-title-box'>
 
-                        <div className='personal-table-title-content'>
+                    <div className='personal-table-title-container'>
+                        <div className='personal-table-title-box'>
                             <a className='personal-table-title-text'>My Requests</a>
+                            <a className='personal-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>
+                                    This page displays requests made by the you, allowing you to add, update or delete a requests.
+                                </span>
+                            </a>
                         </div>
 
                         <div className='personal-filter-box'>
@@ -393,13 +399,11 @@ const Personal = () => {
                                                 className="request-input"
                                             >
                                                 <option value="Food">Food</option>
-                                                <option value="Non-Food">Non-Food</option>
-                                                <option value="Beverage">Beverage</option>
-                                                <option value="Essentials">Essentials</option>
                                                 <option value="Medical">Medical</option>
                                                 <option value="Hygiene">Hygiene</option>
                                                 <option value="Shelter">Shelter</option>
                                                 <option value="Power">Power</option>
+                                                <option value="Water">Water</option>
                                                 <option value="Assistance">Assistance</option>
                                                 <option value="Others">Others</option>
                                             </select>
@@ -418,7 +422,7 @@ const Personal = () => {
                                         </div>
                                         <div className='request-text-box'>
                                             <label className='request-label'>Date & Time:</label>
-                                            <span className='request-content-text'>{selectedRequest.date_time}</span>
+                                            <span className='request-content-text'>{formatDate(new Date(selectedRequest.date_time))}</span>
                                         </div>
                                     </div>
                                     <div className='request-content-cont'>
@@ -429,9 +433,9 @@ const Personal = () => {
                                                 value={formData.description}
                                                 onChange={handleInputChange}
                                                 className="request-description-area"
-                                                maxLength={150}
+                                                maxLength={500}
                                             ></textarea>
-                                            <p className='request-description-hint-text'>{150 - descriptionLength} characters remaining</p>
+                                            <p className='request-description-hint-text'>{500 - descriptionLength} characters remaining</p>
                                         </div>
                                     </div>
                                     <div className='personal-error-text-box'>
@@ -512,15 +516,12 @@ const Personal = () => {
                                                 onChange={handleInputChange}
                                                 className="request-input"
                                             >
-                                                <option value="">Select Type</option>
                                                 <option value="Food">Food</option>
-                                                <option value="Non-Food">Non-Food</option>
-                                                <option value="Beverage">Beverage</option>
-                                                <option value="Essentials">Essentials</option>
                                                 <option value="Medical">Medical</option>
                                                 <option value="Hygiene">Hygiene</option>
                                                 <option value="Shelter">Shelter</option>
                                                 <option value="Power">Power</option>
+                                                <option value="Water">Water</option>
                                                 <option value="Assistance">Assistance</option>
                                                 <option value="Others">Others</option>
                                             </select>
@@ -550,9 +551,9 @@ const Personal = () => {
                                                 value={formData.description}
                                                 onChange={handleInputChange}
                                                 className="request-description-area"
-                                                maxLength={150}
+                                                maxLength={500}
                                             ></textarea>
-                                            <p className='request-description-hint-text'>{150 - descriptionLength} characters remaining</p>
+                                            <p className='request-description-hint-text'>{500 - descriptionLength} characters remaining</p>
                                         </div>
                                     </div>
                                     <div className='personal-error-text-box'>

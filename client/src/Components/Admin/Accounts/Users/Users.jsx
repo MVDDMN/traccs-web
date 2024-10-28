@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import searchIcon from '../../../Assets/search.png';
 import axios from 'axios';
 import './Users.css';
 
@@ -8,9 +9,10 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     : import.meta.env.VITE_API_BASE_URL;
 
 const Users = () => {
+    const [searchTerm, setSearchTerm] = useState('');
     const [users, setUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 9;
+    const itemsPerPage = 8;
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
@@ -19,6 +21,9 @@ const Users = () => {
     const [selectedImage, setSelectedImage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isEmailSending, setIsEmailSending] = useState(false);
+
+    const [sortOrder, setSortOrder] = useState('newest');
+    const [filterStatus, setFilterStatus] = useState('Verified');
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -38,11 +43,33 @@ const Users = () => {
         return () => clearInterval(interval);
     }, []);
 
+    // Handle sorting
+    const handleSortChange = (e) => {
+        setSortOrder(e.target.value);
+    };
+
+    // Handle filtering by status
+    const handleFilterChange = (e) => {
+        setFilterStatus(e.target.value);
+    };
+
+    // Apply sorting and filtering
+    const filteredAndSortedUsers = users
+        .filter(user => user.fullName.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter(user => user.status === filterStatus)
+        .sort((a, b) => {
+            if (sortOrder === 'newest') {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            } else {
+                return new Date(a.createdAt) - new Date(b.createdAt);
+            }
+        });
+
     // Pagination calculations
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentUsers = users.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(users.length / itemsPerPage);
+    const currentUsers = filteredAndSortedUsers.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredAndSortedUsers.length / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -93,7 +120,6 @@ const Users = () => {
         }
     };
 
-
     const handleImageClick = (img) => {
         setSelectedImage(img);
         setShowImageModal(true);
@@ -102,16 +128,52 @@ const Users = () => {
     return (
         <div className="accounts-content-box">
 
+            <div className='search-container'>
+                <div className='search-box'>
+                    <img
+                        src={searchIcon}
+                        alt='Search Icon'
+                        className='search-icon'
+                    />
+                    <input
+                        type='text'
+                        placeholder='Search users...'
+                        className='search-input'
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
+
             <div className='accounts-table-container'>
                 <div className='accounts-table-box'>
-                    <div className='accounts-table-title-box'>
-                        <a className='accounts-table-title-text'>User Accounts</a>
-                        <a className='accounts-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>
-                                This page displays all mobile user accounts, allowing you to verify or unverify an account and invalid accounts will be deemed for deletion.
-                            </span>
-                        </a>
+
+                    <div className='accounts-table-title-container'>
+                        <div className='accounts-table-title-box'>
+                            <a className='accounts-table-title-text'>User Accounts</a>
+                            <a className='accounts-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>
+                                    This page displays all mobile user accounts, allowing you to verify or unverify an account.
+                                </span>
+                            </a>
+                        </div>
+
+                        <div className='accounts-filter-container'>
+                            <div className='accounts-filter-box'>
+                                <label htmlFor="accounts-filter">Sort by: </label>
+                                <select id="accounts-filter" value={sortOrder} onChange={handleSortChange}>
+                                    <option value="newest">Newest to Oldest</option>
+                                    <option value="oldest">Oldest to Newest</option>
+                                </select>
+                            </div>
+                            <div className='accounts-filter-box'>
+                                <label htmlFor="status-filter">Filter by Status: </label>
+                                <select id="status-filter" value={filterStatus} onChange={handleFilterChange}>
+                                    <option value="Verified">Verified</option>
+                                    <option value="Unverified">Unverified</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     {isLoading ? (

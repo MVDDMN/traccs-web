@@ -79,9 +79,9 @@ const ResourceHistory = () => {
         <div className="history-content-box">
             <div className='history-table-container'>
                 <div className='history-table-box'>
-                    <div className='history-table-title-box'>
 
-                        <div className='history-table-title-content'>
+                    <div className='history-table-title-container'>
+                        <div className='history-table-title-box'>
                             <a className='history-table-title-text'>Revoked Donations</a>
                             <a className='donations-table-description'>
                                 ⓘ
@@ -97,6 +97,7 @@ const ResourceHistory = () => {
                             </select>
                         </div>
                     </div>
+
                     {isLoading ? (
                         <div className='loading-message'>Loading history, please wait...</div>
                     ) : (

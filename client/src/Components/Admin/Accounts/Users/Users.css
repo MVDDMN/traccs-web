@@ -51,11 +51,65 @@
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
 }
 
+.search-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 10px;
+    gap: 5px;
+    width: 95%;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+}
+
 /*Resource Table*/
 .accounts-table-box {
     display: inline-flex;
     flex-direction: column;
-    height: 610px;
+    height: 550px;
+}
+
+.accounts-table-title-container {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.accounts-filter-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.accounts-filter-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
 }
 
 .accounts-table-title-box {
@@ -403,12 +457,20 @@
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .accounts-table-box {
-        height: 529px;
+        height: 478px;
     }
     .accounts-table th,
     .accounts-table td {
         padding: 4px;
         height: 25px;
+    }
+    .view-accounts-button {
+        height: 40px;
+        width: 75px;
+    }
+    .delete-accounts-button {
+        height: 40px;
+        width: 75px;
     }
     
 }
@@ -416,7 +478,7 @@
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
     .accounts-table-box {
-        height: 427px;
+        height: 377px;
     }
     .accounts-table th,
     .accounts-table td {
@@ -424,11 +486,11 @@
         height: 25px;
     }
     .view-accounts-button {
-        height: 31px;
+        height: 30px;
         width: 75px;
     }
     .delete-accounts-button {
-        height: 31px;
+        height: 30px;
         width: 75px;
     }
 }
@@ -436,7 +498,10 @@
 /* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
     .accounts-table-box {
-        height: 319px;
+        height: 278px;
+    }
+    .accounts-table-title-text {
+        font-size: 24px;
     }
     .accounts-table th,
     .accounts-table td {
@@ -445,12 +510,12 @@
         font-size: 12px;
     }
     .view-accounts-button {
-        height: 20px;
+        height: 19px;
         width: 50px;
         font-size: 12px;
     }
     .delete-accounts-button {
-        height: 20px;
+        height: 19px;
         width: 50px;
         font-size: 12px;
     }

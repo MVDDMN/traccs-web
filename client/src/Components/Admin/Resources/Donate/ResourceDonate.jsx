@@ -9,6 +9,7 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 
 const ResourceDonate = () => {
     const [donations, setDonations] = useState([]);
+    const [filterStatus, setFilterStatus] = useState('Pending');
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -27,13 +28,13 @@ const ResourceDonate = () => {
         donationAmount: '',
         description: '',
         updateDescription: '',
-        status: '',
+        status: 'Unallocated', // Default status set to 'Unallocated'
         selectedBarangay: '',
         image: '',
     });
     const itemsPerPage = 9;
 
-    const [sortOrder, setSortOrder] = useState('newest'); // Added state for sorting
+    const [sortOrder, setSortOrder] = useState('newest');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -58,10 +59,10 @@ const ResourceDonate = () => {
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/donations`);
                 setDonations(response.data);
-                setIsLoading(false); // Data is loaded
+                setIsLoading(false);
             } catch (error) {
                 console.error("Error fetching donations:", error);
-                setIsLoading(false); // Data is still loaded
+                setIsLoading(false);
             }
         };
 
@@ -95,6 +96,10 @@ const ResourceDonate = () => {
     };
 
     const handleEditDonation = (donation) => {
+        if (donation.status === 'Allocated') {
+            handleViewDonation(donation);
+            return;
+        }
         setSelectedDonation(donation);
         setFormValues({
             firstName: donation.firstName,
@@ -127,44 +132,25 @@ const ResourceDonate = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate the updateDescription field
         if (!formValues.updateDescription || formValues.updateDescription.trim() === '') {
             alert("Please provide a status description.");
             return;
         }
 
-        // Store admin as responder
         const admin = userUsername;
 
-        // Define the maximum allowed image size in bytes (e.g., 10MB)
-        const maxImageSize = 10 * 1024 * 1024; // 10MB
-
-        // Check if the image size exceeds the maximum allowed size
-        if (formValues.image) {
-            const base64Length = formValues.image.length;
-            const padding = (formValues.image.charAt(base64Length - 2) === "=") ? 2 : ((formValues.image.charAt(base64Length - 1) === "=") ? 1 : 0);
-            const imageSize = (base64Length * 3 / 4) - padding;
-
-            if (imageSize > maxImageSize) {
-                alert("The image size is too large. Please upload an image smaller than 10MB.");
-                return;
-            }
-        }
-
         try {
-            setIsButtonLoading(true); // Set isButtonLoading to true when the form submission starts
+            setIsButtonLoading(true);
 
-            // Set status to "Recorded"
             const updatedFormValues = {
                 ...formValues,
-                status: 'Recorded',
+                status: formValues.status,
                 admin: admin,
             };
 
             await axios.put(`${apiBaseUrl}/api/donations/${selectedDonation._id}`, updatedFormValues);
             await logAdminAction('Edit', { donationId: selectedDonation._id, updatedData: updatedFormValues }, 'Updated donation details');
 
-            // Update the local state with the new status
             const updatedDonations = donations.map(donation =>
                 donation._id === selectedDonation._id ? { ...donation, ...updatedFormValues } : donation
             );
@@ -194,7 +180,7 @@ const ResourceDonate = () => {
                 donationAmount: selectedDonation.donationAmount,
                 description: selectedDonation.description,
                 selectedBarangay: selectedDonation.selectedBarangay,
-                admin: userUsername, // Store the admin who deleted it
+                admin: userUsername,
             });
 
             await axios.delete(`${apiBaseUrl}/api/donations/${selectedDonation._id}`);
@@ -202,10 +188,8 @@ const ResourceDonate = () => {
             const updatedDonations = donations.filter(donation => donation._id !== selectedDonation._id);
             setDonations(updatedDonations);
 
-            // Log the deletion
             await logAdminAction('Delete', { donationId: selectedDonation._id }, 'Deleted donation and archived it');
 
-            // Close the edit modal
             closeEditModal();
         } catch (error) {
             console.error("Error deleting and archiving donation:", error);
@@ -245,12 +229,10 @@ const ResourceDonate = () => {
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Get the resized image as base64, but without the data URL prefix
                     const resizedBase64 = canvas.toDataURL(file.type);
-                    const base64Data = resizedBase64.replace(/^data:image\/[a-z]+;base64,/, '');
+                    const base64Data = resizedBase64.replace(/^data:image\/[^;]+;base64,/, '');
                     console.log('Resized Base64 string size (bytes):', base64Data.length);
 
-                    // Set the image data without the prefix
                     setFormValues({ ...formValues, image: base64Data });
                 };
                 img.src = reader.result;
@@ -271,7 +253,6 @@ const ResourceDonate = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    // Sort donations before pagination
     const sortedDonations = [...donations].sort((a, b) => {
         const dateA = new Date(a.createdAt);
         const dateB = new Date(b.createdAt);
@@ -279,8 +260,9 @@ const ResourceDonate = () => {
         return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
 
-    const currentDonations = sortedDonations.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(donations.length / itemsPerPage);
+    const filteredDonations = sortedDonations.filter(donation => donation.status === filterStatus);
+    const currentDonations = filteredDonations.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredDonations.length / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -298,35 +280,50 @@ const ResourceDonate = () => {
         <div className="donations-content-box">
             <div className='donations-table-container'>
                 <div className='donations-table-box'>
-                    <div className='donations-table-title-box'>
-                        <div className='donations-table-title-content'>
-                            <a className='donations-table-title-text'>Donations</a>
-                            <a className='donations-table-description'>
-                                ⓘ
-                                <span className='tooltip-text'>This page contains all the donations made by the users, where you can view and update unrecorded donations to revoke or update it.</span>
-                            </a>
+
+                    <div className='donations-table-title-container'>
+
+                        <div className='donations-table-title-box'>
+                            <div className='donations-table-title-content'>
+                                <a className='donations-table-title-text'>Donations</a>
+                                <a className='donations-table-description'>
+                                    ⓘ
+                                    <span className='tooltip-text'>This page contains all the donations where you can view and update the donations.</span>
+                                </a>
+                            </div>
                         </div>
 
-                        <div className='donations-filter-box'>
-                            <label htmlFor="donations-filter">Sort by:</label>
-                            <select id="donations-filter" value={sortOrder} onChange={handleSortChange}>
-                                <option value="newest">Newest to Oldest</option>
-                                <option value="oldest">Oldest to Newest</option>
-                            </select>
+                        <div className='donations-filter-container'>
+                            <div className='donations-filter-box'>
+                                <label htmlFor="donations-filter">Sort by:</label>
+                                <select id="donations-filter" value={sortOrder} onChange={handleSortChange}>
+                                    <option value="newest">Newest to Oldest</option>
+                                    <option value="oldest">Oldest to Newest</option>
+                                </select>
+                            </div>
+                            <div className='donations-filter-box'>
+                                <label htmlFor="status-filter">Status:</label>
+                                <select id="status-filter" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Unallocated">Unallocated</option>
+                                    <option value="Allocated">Allocated</option>
+                                </select>
+                            </div>
                         </div>
+
                     </div>
+
                     {isLoading ? (
                         <div className='loading-message'>Loading table, please wait...</div>
                     ) : (
                         <table className='donations-table'>
-
                             <thead>
                                 <tr>
                                     <th>Donation ID</th>
                                     <th>Contact No.</th>
                                     <th>Email</th>
                                     <th>Donation Type</th>
-                                    <th>Donation Amount</th>
+                                    <th>Donation Amount/Quantity</th>
                                     <th>Date</th>
                                     <th>Status</th>
                                     <th>Actions</th>
@@ -350,10 +347,10 @@ const ResourceDonate = () => {
                                         <td>{donation.status}</td>
                                         <td>
                                             <div className='action-button-box'>
-                                                {donation.status !== 'Recorded' && (
+                                                {donation.status !== 'Allocated' && (
                                                     <button className='view-donations-button' onClick={() => handleEditDonation(donation)}>Update</button>
                                                 )}
-                                                {donation.status == 'Recorded' && (
+                                                {donation.status === 'Allocated' && (
                                                     <button className='view-donations-button' onClick={() => handleViewDonation(donation)}>View</button>
                                                 )}
                                             </div>
@@ -390,7 +387,7 @@ const ResourceDonate = () => {
                                     <div className='resource-tooltip-box'>
                                         <label className='resource-tooltip-sub-text'>
                                             This section contains all information about the selected donation.
-                                            All donations that have been updated are recorded within the system for reference.
+                                            All donations that have been allocated are recorded within the system for reference.
                                         </label>
                                     </div>
                                 </div>
@@ -487,7 +484,7 @@ const ResourceDonate = () => {
                                             {(selectedDonation.donationAmount &&
                                                 <div className='donations-text-box'>
                                                     <a className='donations-title-text'>
-                                                        Donation Amount:
+                                                        Donation Amount/Quantity:
                                                         <b className='donations-content-text'>{selectedDonation.donationAmount}</b>
                                                     </a>
                                                 </div>
@@ -564,7 +561,8 @@ const ResourceDonate = () => {
                                     <div className='resource-tooltip-box'>
                                         <label className='resource-tooltip-sub-text'>
                                             This section contains all information about the selected donation.
-                                            You can choose to "Update" or "Delete" a donation.
+                                            You can choose to "Update" or "Revoke" a donation.
+                                            You must choose "Unallocated" or Allocated to determine the status of the donation.
                                             A donation must be provided with an update description to be recorded.
                                             Any deleted donations will be considered as revoked and will retain only some parts of the information for privacy.
                                         </label>
@@ -656,20 +654,23 @@ const ResourceDonate = () => {
                                                 {(selectedDonation.donationAmount &&
                                                     <div className='donations-text-box'>
                                                         <a className='donations-title-text'>
-                                                            Donation Amount:
+                                                            Donation Amount/Quantity:
                                                             <b className='donations-content-text'>{selectedDonation.donationAmount}</b>
                                                         </a>
                                                     </div>
                                                 )}
 
-                                                {(selectedDonation.status &&
-                                                    <div className='donations-text-box'>
-                                                        <a className='donations-title-text'>
-                                                            Status:
-                                                            <b className='donations-content-text'>{selectedDonation.status}</b>
-                                                        </a>
-                                                    </div>
-                                                )}
+                                                <div className='donations-status-box'>
+                                                    <label>Status:</label>
+                                                    <select
+                                                        name="status"
+                                                        value={formValues.status}
+                                                        onChange={(e) => setFormValues({ ...formValues, status: e.target.value })}
+                                                    >
+                                                        <option value="Unallocated">Unallocated</option>
+                                                        <option value="Allocated">Allocated</option>
+                                                    </select>
+                                                </div>
 
                                                 <div className='donations-description-box'>
                                                     <a className='description-title-text'>Updates</a>
@@ -734,7 +735,7 @@ const ResourceDonate = () => {
                                                 className={`update-donation-button ${isButtonLoading ? 'loading' : ''}`}
                                                 disabled={isButtonLoading}
                                             >
-                                                {isButtonLoading ? 'Updating.' : 'Update Donation'}
+                                                {isButtonLoading ? 'Updating...' : 'Update Donation'}
                                             </button>
                                         </div>
 

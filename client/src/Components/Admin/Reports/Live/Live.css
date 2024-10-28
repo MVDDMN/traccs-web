@@ -196,6 +196,8 @@
 .report-table-description {
     color: gray;
     font-weight: 300;
+    position: relative; /* Make the parent element (icon) the reference point */
+    display: inline-block; /* To ensure proper alignment */
 }
 
 .report-table-description:hover {
@@ -215,21 +217,23 @@
     text-align: center;
     border-radius: 6px;
     padding: 10px;
-    position: relative;
-    z-index: 1;
-    bottom: 125%;
-    margin-left: 5px;
+    position: absolute;
+    z-index: 9999;
+    top: 52%;
+    left: 101%;
+    transform: translateY(-50%);
     opacity: 0;
     transition: opacity 0.3s;
     font-size: 12px;
+    white-space: nowrap;
 }
 
 .tooltip-text::after {
     content: "";
     position: absolute;
-    top: 40%;
-    left: -5px;
-    margin-left: -5px;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
     border-width: 5px;
     border-style: solid;
     border-color: transparent #555 transparent transparent;

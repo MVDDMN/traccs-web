@@ -27,18 +27,18 @@
     height: 610px;
 }
 
+.history-table-title-container {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
 .history-table-title-box {
     position: relative;
     display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.history-table-title-content {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
     align-items: center;
 }
 

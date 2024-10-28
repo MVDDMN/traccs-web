@@ -58,6 +58,15 @@
     height: 510px;
 }
 
+.resource-table-title-container {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
 .resource-table-title-box {
     position: relative;
     display: flex;
@@ -87,6 +96,28 @@
 .resource-table-description:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+.resource-filter-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.resource-filter-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.resource-filter-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
 }
 
 .resource-table {
@@ -265,7 +296,7 @@
 .resource-modal-content {
     display: inline-flex;
     flex-direction: column;
-    height: 70%;
+    height: auto;
     width: 800px;
     padding: 25px;
     background-color: white;
@@ -376,6 +407,14 @@
     width: auto;
 }
 
+.resource-description-container {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+
 .resource-description-box {
     display: inline-flex;
     flex-direction: column;
@@ -387,8 +426,16 @@
     height: 100px;
     width: auto;
     border-radius: 5px;
+    text-align: justify;
     padding: 10px;
     resize: none;
+}
+
+.resource-updates-box {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
 }
 
 .resource-description-hint-text {
@@ -517,7 +564,7 @@
         height: 30px;
     }
     .resource-modal-content {
-        height: 75%;
+        height: auto;
         width: 700px;
     }
 }
@@ -540,7 +587,7 @@
         height: 33px;
     }
     .resource-modal-content {
-        height: 85%;
+        height: auto;
         width: 700px;
     }
 }
@@ -568,7 +615,7 @@
         font-size: 11px;
     }
     .resource-modal-content {
-        height: 85%;
+        height: auto;
         width: 700px;
     }
     .resource-title-text {

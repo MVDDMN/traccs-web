@@ -68,15 +68,15 @@
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
-    justify-content: space-between;
 }
 
-.requestarchives-table-title-content {
-    display: flex;
+.requestarchives-table-title-container {
+    display: inline-flex;
     flex-direction: row;
-    width: 100%;
+    justify-content: space-between;
     align-items: center;
+    width: 100%;
+    height: auto;
 }
 
 .requestarchives-table-title-text {

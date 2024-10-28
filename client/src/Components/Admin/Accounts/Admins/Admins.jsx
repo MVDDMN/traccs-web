@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import searchIcon from '../../../Assets/search.png';
 import './Admins.css';
 import {
     validateName,
@@ -32,10 +33,13 @@ const Admins = () => {
     });
     const [selectedAdminId, setSelectedAdminId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const itemsPerPage = 9;
+    const itemsPerPage = 7;
     const [errors, setErrors] = useState({});
     const [userUsername, setUserUsername] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortOrder, setSortOrder] = useState('newest');
+    const [filterType, setFilterType] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -79,7 +83,6 @@ const Admins = () => {
         return () => clearInterval(interval);
     }, []);
 
-
     const validateForm = () => {
         const errors = {};
         errors.name = validateName(formData.name);
@@ -102,22 +105,63 @@ const Admins = () => {
         }));
     };
 
-    const logAdminAction = async (action, adminData, description) => {
-        const logEntry = {
-            username: userUsername,
-            action,
-            adminData,
-            type: 'Account Module',
-            description,
-            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
-        };
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
 
-        try {
-            await axios.post(`${apiBaseUrl}/api/logs`, logEntry);
-        } catch (error) {
-            console.error("Error logging admin action:", error);
+    const handleSortChange = (e) => {
+        setSortOrder(e.target.value);
+    };
+
+    const handleFilterChange = (e) => {
+        setFilterType(e.target.value);
+    };
+
+    const applySearchFilterSort = (adminsList) => {
+        let filteredAdmins = adminsList;
+
+        // Apply search filter
+        if (searchTerm) {
+            filteredAdmins = filteredAdmins.filter(admin =>
+                admin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                admin.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                admin.username.toLowerCase().includes(searchTerm.toLowerCase())
+            );
         }
+
+        // Apply type filter
+        if (filterType) {
+            filteredAdmins = filteredAdmins.filter(admin => admin.type === filterType);
+        }
+
+        // Apply sorting
+        if (sortOrder === 'newest') {
+            filteredAdmins = filteredAdmins.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } else if (sortOrder === 'oldest') {
+            filteredAdmins = filteredAdmins.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        }
+
+        return filteredAdmins;
+    };
+
+    const handleAddClick = () => {
+        setIsEditMode(false);
+        setIsModalOpen(true);
+    };
+
+    const handleEditClick = (admin) => {
+        setSelectedAdminId(admin._id);
+        setFormData({
+            name: admin.name,
+            email: admin.email,
+            username: admin.username,
+            password: '',
+            barangay: admin.barangay,
+            type: admin.type,
+            contact: admin.contact
+        });
+        setIsEditMode(true);
+        setIsModalOpen(true);
     };
 
     const handleAddEditAdmin = async () => {
@@ -141,10 +185,8 @@ const Admins = () => {
                 if (duplicateCheckPassed) {
                     if (isEditMode) {
                         await axios.put(`${apiBaseUrl}/api/administrators/${selectedAdminId}`, formData);
-                        await logAdminAction('Edit', { adminId: selectedAdminId, updatedData: formData }, 'Edited admin details');
                     } else {
                         await axios.post(`${apiBaseUrl}/api/administrators`, formData);
-                        await logAdminAction('Add', formData, 'Added new admin');
                     }
 
                     setIsModalOpen(false);
@@ -160,29 +202,6 @@ const Admins = () => {
         }
     };
 
-    const handleDeleteAdmin = async () => {
-        try {
-            await axios.delete(`${apiBaseUrl}/api/administrators/${selectedAdminId}`);
-            await logAdminAction('Delete', { adminId: selectedAdminId, updatedData: formData }, 'Deleted an Admin');
-        } catch (error) {
-            console.error("Error deleting admin:", error);
-        }
-        setShowDeleteModal(false);
-        setSelectedAdminId(null);
-    };
-
-    const handleEditClick = (admin) => {
-        setSelectedAdminId(admin._id);
-        setFormData({ name: admin.name, email: admin.email, username: admin.username, password: '', barangay: admin.barangay, type: admin.type, contact: admin.contact }); // Set contact for editing
-        setIsEditMode(true);
-        setIsModalOpen(true);
-    };
-
-    const handleAddClick = () => {
-        setIsEditMode(false);
-        setIsModalOpen(true);
-    };
-
     const openDeleteModal = (adminId) => {
         setSelectedAdminId(adminId);
         setShowDeleteModal(true);
@@ -196,11 +215,18 @@ const Admins = () => {
         setErrors({});
     };
 
-    // Pagination calculations
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentAdmins = admins.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(admins.length / itemsPerPage);
+    const handleDeleteAdmin = async () => {
+        try {
+            await axios.delete(`${apiBaseUrl}/api/administrators/${selectedAdminId}`);
+        } catch (error) {
+            console.error("Error deleting admin:", error);
+        }
+        setShowDeleteModal(false);
+        setSelectedAdminId(null);
+    };
+
+    const currentAdmins = applySearchFilterSort(admins).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.ceil(applySearchFilterSort(admins).length / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -218,16 +244,53 @@ const Admins = () => {
         <div className="admins-content-box">
             <div className='admins-button-box'>
                 <button className='add-admins-button' onClick={handleAddClick}>Add Admins</button>
+
+                <div className='admins-search-container'>
+                    <div className='admins-search-box'>
+                        <img
+                            src={searchIcon}
+                            alt='Search Icon'
+                            className='admins-search-icon'
+                        />
+                        <input
+                            type='text'
+                            placeholder='Search admins...'
+                            className='admins-search-input'
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
+                </div>
             </div>
 
             <div className='admins-table-container'>
                 <div className='admins-table-box'>
-                    <div className='admins-table-title-box'>
-                        <a className='admins-table-title-text'>Admin Accounts</a>
-                        <a className='admins-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>This page allows you to view, create, edit and delete all listed administrator account.</span>
-                        </a>
+                    <div className='admins-table-title-container'>
+                        <div className='admins-table-title-box'>
+                            <a className='admins-table-title-text'>Admin Accounts</a>
+                            <a className='admins-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>This page allows you to view, create, edit and delete all listed administrator accounts.</span>
+                            </a>
+                        </div>
+
+                        <div className='admins-filter-container'>
+                            <div className='admins-filter-box'>
+                                <label htmlFor="admins-sort">Sort by: </label>
+                                <select id="admins-sort" value={sortOrder} onChange={handleSortChange}>
+                                    <option value="newest">Newest to Oldest</option>
+                                    <option value="oldest">Oldest to Newest</option>
+                                </select>
+                            </div>
+                            <div className='admins-filter-box'>
+                                <label htmlFor="admins-filter">Filter by Type: </label>
+                                <select id="admins-filter" value={filterType} onChange={handleFilterChange}>
+                                    <option value="">All</option>
+                                    <option value="MDRRMO">MDRRMO</option>
+                                    <option value="Barangay">Barangay</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     {isLoading ? (
@@ -247,33 +310,31 @@ const Admins = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentAdmins
-                                    .filter(admin => admin.username !== 'root')
-                                    .map(admin => (
-                                        <tr key={admin._id}>
-                                            <td>{admin._id}</td>
-                                            <td>{admin.name}</td>
-                                            <td>{admin.email}</td>
-                                            <td>{admin.type}</td>
-                                            <td>{admin.barangay}</td>
-                                            <td>{admin.contact}</td>
-                                            <td>
-                                                {new Date(admin.createdAt).toLocaleDateString('en-US', {
-                                                    month: 'long',
-                                                    day: 'numeric',
-                                                    year: 'numeric',
-                                                })}
-                                            </td>
-                                            <td>
-                                                <div className='action-button-box'>
-                                                    <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Update</button>
-                                                    {userUsername !== admin.username && (
-                                                        <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                {currentAdmins.map(admin => (
+                                    <tr key={admin._id}>
+                                        <td>{admin._id}</td>
+                                        <td>{admin.name}</td>
+                                        <td>{admin.email}</td>
+                                        <td>{admin.type}</td>
+                                        <td>{admin.barangay}</td>
+                                        <td>{admin.contact}</td>
+                                        <td>
+                                            {new Date(admin.createdAt).toLocaleDateString('en-US', {
+                                                month: 'long',
+                                                day: 'numeric',
+                                                year: 'numeric',
+                                            })}
+                                        </td>
+                                        <td>
+                                            <div className='action-button-box'>
+                                                <button className='view-admins-button' onClick={() => handleEditClick(admin)}>Update</button>
+                                                {userUsername !== admin.username && (
+                                                    <button className='delete-admins-button' onClick={() => openDeleteModal(admin._id)}>Delete</button>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     )}

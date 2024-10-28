@@ -27,6 +27,15 @@
     height: 610px;
 }
 
+.donations-table-title-container {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
 .donations-table-title-box {
     position: relative;
     display: flex;
@@ -49,13 +58,21 @@
     animation: fadeInOut 5s infinite;
 }
 
+.donations-filter-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: auto;
+}
+
 .donations-filter-box {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
     gap: 5px;
-    width: 20em;
+    width: auto;
 }
 
 .donations-filter-box select {
@@ -456,6 +473,30 @@
     animation: dots 1s steps(5, end) infinite;
 }
 
+.donations-status-box {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.donations-status-box label {
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.donations-status-box select {
+    padding: 10px;
+    border: 2px solid gray;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    width: auto;
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
 /* Animation for the dots */
 @keyframes dots {
     0%, 20% {
@@ -509,6 +550,9 @@
         height: 32px;
         width: 75px;
     }
+    .donations-status-box select {
+        padding: 10px;
+    }
 }
 
 /* For screen sizes 1300px and below */
@@ -535,6 +579,9 @@
     }
     .full-image {
         width: 90%;
+    }
+    .donations-status-box select {
+        padding: 5px;
     }
 }
 

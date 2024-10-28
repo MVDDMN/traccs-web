@@ -20,6 +20,15 @@
     box-shadow: 0px 5px 5px 5px rgba(0, 0, 0, 0.25);
 }
 
+.analyticsrequests-table-title-container {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
 .analyticsrequests-table-title-box {
     position: relative;
     display: flex;

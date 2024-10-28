@@ -283,9 +283,9 @@ const Archive = () => {
 
             <div className='archive-table-container'>
                 <div className='archive-table-box'>
-                    <div className='archive-table-title-box'>
 
-                        <div className='archive-table-title-content'>
+                    <div className='archive-table-title-container'>
+                        <div className='archive-table-title-box'>
                             <a className='archive-table-title-text'>History Reports</a>
                             <a className='archive-table-description'>
                                 ⓘ
@@ -300,7 +300,6 @@ const Archive = () => {
                                 <option value="oldest">Oldest to Newest</option>
                             </select>
                         </div>
-
                     </div>
 
                     {isLoading ? (

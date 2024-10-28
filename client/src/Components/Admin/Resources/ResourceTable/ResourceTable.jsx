@@ -17,15 +17,20 @@ const ResourceTable = () => {
     const [userUsername, setUserUsername] = useState("");
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [resourceToDelete, setResourceToDelete] = useState(null);
+    const [sortOrder, setSortOrder] = useState("newest");
+    const [filterStatus, setFilterStatus] = useState("Available");
     const [isLoading, setIsLoading] = useState(true);
     const [formData, setFormData] = useState({
         itemname: '',
         barangay: '',
         type: '',
         quantity: 0,
-        description: ''
+        description: '',
+        resource_status: 'Available',
+        updates: ''
     });
     const [charCount, setCharCount] = useState(0);
+    const [updatesCharCount, setUpdatesCharCount] = useState(0);
     const [errorMessages, setErrorMessages] = useState([]);
     const itemsPerPage = 7;
 
@@ -64,7 +69,16 @@ const ResourceTable = () => {
     }, []);
 
     // Filter resources based on user barangay
-    const filteredResources = resources.filter(resource => resource.barangay === userBarangay);
+    const filteredResources = resources
+        .filter(resource => resource.resource_status === filterStatus)
+        .sort((a, b) => {
+            if (sortOrder === "newest") {
+                return new Date(b.updatedAt) - new Date(a.updatedAt);
+            } else {
+                return new Date(a.updatedAt) - new Date(b.updatedAt);
+            }
+        })
+        .filter(resource => resource.barangay === userBarangay);
 
     // Pagination calculations
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -93,8 +107,12 @@ const ResourceTable = () => {
             barangay: resource.barangay,
             type: resource.type,
             quantity: resource.quantity,
-            description: resource.description
+            description: resource.description,
+            resource_status: resource.resource_status,
+            updates: resource.updates
         });
+        setCharCount(resource.description.length); // Set initial character count
+        setUpdatesCharCount(resource.updates.length); // Set initial character count for updates
     };
 
     const openAddModal = () => {
@@ -103,10 +121,13 @@ const ResourceTable = () => {
         setFormData({
             itemname: '',
             barangay: '',
-            type: '',
+            type: 'Food',
             quantity: 0,
-            description: ''
+            description: '',
+            resource_status: 'Available'
         });
+        setCharCount(0); // Reset character count for new entry
+        setUpdatesCharCount(0); // Reset character count for updates
     };
 
     const closeModal = () => {
@@ -118,9 +139,12 @@ const ResourceTable = () => {
             barangay: '',
             type: '',
             quantity: 0,
-            description: ''
+            description: '',
+            resource_status: 'Available',
+            updates: ''
         });
         setCharCount(0);
+        setUpdatesCharCount(0);
         setErrorMessages([]);
     };
 
@@ -132,6 +156,11 @@ const ResourceTable = () => {
             setCharCount(value.length);
         }
 
+        // Update character count for updates
+        if (name === "updates") {
+            setUpdatesCharCount(value.length);
+        }
+
         setFormData({
             ...formData,
             [name]: value,
@@ -140,10 +169,14 @@ const ResourceTable = () => {
 
     const validateFormData = () => {
         const errors = [];
-        if (!formData.itemname.trim()) errors.push("• Item Name is required.");
-        if (!formData.type) errors.push("• Type is required.");
-        if (formData.quantity <= 0) errors.push("• Quantity must be greater than 0.");
-        if (!formData.description.trim()) errors.push("• Description is required.");
+        if (!formData.itemname.trim()) errors.push("\u2022 Item Name is required.");
+        if (formData.type === '') errors.push("\u2022 Type is required.");
+        if (formData.quantity <= 0) errors.push("\u2022 Quantity must be greater than 0.");
+        if (!formData.description.trim()) errors.push("\u2022 Description is required.");
+        // Require "updates" only when editing an existing resource
+        if (selectedResource && !formData.updates) {
+            errors.push("\u2022 Update description is required.");
+        }
         return errors;
     };
 
@@ -226,6 +259,14 @@ const ResourceTable = () => {
         }
     };
 
+    const handleSortChange = (event) => {
+        setSortOrder(event.target.value);
+    };
+
+    const handleFilterChange = (event) => {
+        setFilterStatus(event.target.value);
+    };
+
     return (
         <div className="resourcetable-content-box">
             <div className='resource-button-box'>
@@ -234,12 +275,35 @@ const ResourceTable = () => {
 
             <div className='resource-table-container'>
                 <div className='resource-table-box'>
-                    <div className='resource-table-title-box'>
-                        <a className='resource-table-title-text'>My Resources</a>
-                        <a className='resource-table-description'>
-                            ⓘ
-                            <span className='tooltip-text'>This page allows you to create, edit and view all listed resources within the barangay on the table.</span>
-                        </a>
+
+                    <div className='resource-table-title-container'>
+                        <div className='resource-table-title-box'>
+                            <a className='resource-table-title-text'>My Resources</a>
+                            <a className='resource-table-description'>
+                                ⓘ
+                                <span className='tooltip-text'>This page allows you to create, edit and view all listed resources within the barangay on the table.</span>
+                            </a>
+                        </div>
+
+                        <div className='resource-filter-container'>
+                            <div className='resource-filter-box'>
+                                <label htmlFor="resource-sort">Sort by: </label>
+                                <select id="resource-sort" value={sortOrder} onChange={handleSortChange}>
+                                    <option value="newest">Newest to Oldest</option>
+                                    <option value="oldest">Oldest to Newest</option>
+                                </select>
+                            </div>
+
+                            <div className='resource-filter-box'>
+                                <label htmlFor="resource-status">Status: </label>
+                                <select id="resource-status" value={filterStatus} onChange={handleFilterChange}>
+                                    <option value="Available">Available</option>
+                                    <option value="Used">Used</option>
+                                </select>
+                            </div>
+
+                        </div>
+
                     </div>
 
                     {isLoading ? (
@@ -252,6 +316,8 @@ const ResourceTable = () => {
                                     <th>Item Name</th>
                                     <th>Type</th>
                                     <th>Quantity</th>
+                                    <th>Status</th>
+                                    <th>Last Updated</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -262,15 +328,25 @@ const ResourceTable = () => {
                                         <td>{resource.itemname}</td>
                                         <td>{resource.type}</td>
                                         <td>{resource.quantity}</td>
+                                        <td>{resource.resource_status}</td>
+                                        <td>{new Date(resource.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
                                         <td>
                                             <div className='action-button-box'>
-                                                <button className='view-resource-button' onClick={() => openModal(resource)}>Update</button>
-                                                <button className='delete-resource-button' onClick={() => openDeleteModal(resource)}>Delete</button>
+                                                <button
+                                                    className='view-resource-button'
+                                                    onClick={() => openModal(resource)}
+                                                >
+                                                    {resource.resource_status === 'Used' ? 'View' : 'Update'}
+                                                </button>
+                                                {resource.resource_status === 'Available' && (
+                                                    <button className='delete-resource-button' onClick={() => openDeleteModal(resource)}>Delete</button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
+
                         </table>
                     )}
                 </div>
@@ -292,21 +368,17 @@ const ResourceTable = () => {
 
                             <div className='resource-title-box'>
                                 <a className='resource-title-box-text'>
-                                    Edit Resource Details
+                                    {selectedResource.resource_status === 'Used' ? 'View Resource Details' : 'Edit Resource Details'}
                                 </a>
 
                                 <div className='resource-tooltip'>
                                     <label className='resource-tooltip-icon'>ⓘ</label>
                                     <div className='resource-tooltip-box'>
                                         <label className='resource-tooltip-sub-text'>
-                                            This section contains all information about the selected resource to be updated.
-                                            You can choose to "Update Information" to update the resource.
-                                            If you select "Update Information" it will require all information to be filled.
-                                            After updating the resource, the changes will be present on the table.
+                                            This section contains all information about the selected resource. {selectedResource.resource_status === 'Used' ? 'You can only view the resource details.' : 'You can choose to "Update Information" to update the resource.'}
                                         </label>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div className='resource-details-container'>
@@ -326,6 +398,7 @@ const ResourceTable = () => {
                                                 value={formData.itemname}
                                                 onChange={handleInputChange}
                                                 className="resource-input"
+                                                disabled={selectedResource.resource_status === 'Used'}
                                             />
                                         </div>
                                     </div>
@@ -340,18 +413,17 @@ const ResourceTable = () => {
                                             <label className='resource-label'>Resource Type:</label>
                                             <select
                                                 name="type"
-                                                value={formData.type} // Set selected option to formData.type
+                                                value={formData.type}
                                                 onChange={handleInputChange}
                                                 className="resource-input"
+                                                disabled={selectedResource.resource_status === 'Used'}
                                             >
                                                 <option value="Food">Food</option>
-                                                <option value="Non-Food">Non-Food</option>
-                                                <option value="Beverage">Beverage</option>
-                                                <option value="Essentials">Essentials</option>
                                                 <option value="Medical">Medical</option>
                                                 <option value="Hygiene">Hygiene</option>
                                                 <option value="Shelter">Shelter</option>
                                                 <option value="Power">Power</option>
+                                                <option value="Water">Water</option>
                                                 <option value="Others">Others</option>
                                             </select>
                                         </div>
@@ -364,9 +436,25 @@ const ResourceTable = () => {
                                             value={formData.quantity}
                                             onChange={handleInputChange}
                                             className="resource-input"
+                                            disabled={selectedResource.resource_status === 'Used'}
                                         />
                                     </div>
                                     <div className='resource-text-box'>
+                                        <label>Status:</label>
+                                        <select
+                                            name="resource_status"
+                                            value={formData.resource_status}
+                                            onChange={handleInputChange}
+                                            className='resource-input'
+                                            disabled={selectedResource.resource_status === 'Used'}
+                                        >
+                                            <option value="Used">Used</option>
+                                            <option value="Available">Available</option>
+                                        </select>
+                                    </div>
+
+                                    <div className='resource-description-container'>
+
                                         <div className='resource-description-box'>
                                             <label>Description:</label>
                                             <textarea
@@ -374,11 +462,28 @@ const ResourceTable = () => {
                                                 value={formData.description}
                                                 onChange={handleInputChange}
                                                 className='resource-description-area'
-                                                maxLength={150}
+                                                maxLength={500}
+                                                disabled={selectedResource.resource_status === 'Used'}
                                             />
-                                            <p className='resource-description-hint-text'>{150 - charCount} characters remaining</p>
+                                            {selectedResource.resource_status !== 'Used' && <p className='resource-description-hint-text'>{500 - charCount} characters remaining</p>}
                                         </div>
+
+                                        <div className='resource-updates-box'>
+                                            <label>Updates:</label>
+                                            <textarea
+                                                name="updates"
+                                                value={formData.updates}
+                                                onChange={handleInputChange}
+                                                className='resource-description-area'
+                                                placeholder="Enter any updates here..."
+                                                maxLength={500}
+                                                disabled={selectedResource.resource_status === 'Used'}
+                                            />
+                                            {selectedResource.resource_status !== 'Used' && <p className='resource-description-hint-text'>{500 - updatesCharCount} characters remaining</p>}
+                                        </div>
+
                                     </div>
+
                                     {errorMessages.length > 0 && (
                                         <div className="resource-error-messages">
                                             {errorMessages.map((msg, index) => (
@@ -386,12 +491,13 @@ const ResourceTable = () => {
                                             ))}
                                         </div>
                                     )}
-
                                 </div>
                             </div>
-                            <div className='update-modal-button-box'>
-                                <button onClick={handleUpdateResource} className='update-modal-button'>Update Information</button>
-                            </div>
+                            {selectedResource.resource_status !== 'Used' && (
+                                <div className='update-modal-button-box'>
+                                    <button onClick={handleUpdateResource} className='update-modal-button'>Update Information</button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -446,15 +552,12 @@ const ResourceTable = () => {
                                                 onChange={handleInputChange}
                                                 className="resource-input"
                                             >
-                                                <option value="">Select Type</option>
                                                 <option value="Food">Food</option>
-                                                <option value="Non-Food">Non-Food</option>
-                                                <option value="Beverage">Beverage</option>
-                                                <option value="Essentials">Essentials</option>
                                                 <option value="Medical">Medical</option>
                                                 <option value="Hygiene">Hygiene</option>
                                                 <option value="Shelter">Shelter</option>
                                                 <option value="Power">Power</option>
+                                                <option value="Water">Water</option>
                                                 <option value="Others">Others</option>
                                             </select>
                                         </div>
@@ -477,9 +580,10 @@ const ResourceTable = () => {
                                                 value={formData.description}
                                                 onChange={handleInputChange}
                                                 className='resource-description-area'
-                                                maxLength={150}
+                                                placeholder="Enter any description here..."
+                                                maxLength={500}
                                             />
-                                            <p className='resource-description-hint-text'>{150 - charCount} characters remaining</p>
+                                            <p className='resource-description-hint-text'>{500 - charCount} characters remaining</p>
                                         </div>
                                     </div>
                                     {errorMessages.length > 0 && (

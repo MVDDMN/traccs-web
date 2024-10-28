@@ -16,9 +16,9 @@ router.get("/resources", async (req, res) => {
 
 // Resource Module - Add resources
 router.post("/resources", async (req, res) => {
-    const { itemname, type, quantity, description, username, barangay } = req.body;
+    const { itemname, type, quantity, description, username, barangay, resource_status, updates } = req.body;
     // Define valid resource types
-    const validTypes = ["Food", "Non-Food", "Medical", "Hygiene", "Shelter", "Beverage", "Others", "Power", "Essentials"];
+    const validTypes = ["Food", "Medical", "Hygiene", "Shelter", "Water", "Others", "Power"];
     try {
         // Validate resource type
         if (!validTypes.includes(type)) {
@@ -31,7 +31,9 @@ router.post("/resources", async (req, res) => {
             quantity,
             description,
             username,
-            barangay
+            barangay,
+            resource_status,
+            updates
         });
         // Save the new resource to the database
         await newResource.save();

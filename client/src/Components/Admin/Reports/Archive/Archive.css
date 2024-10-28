@@ -128,15 +128,15 @@
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
-    justify-content: space-between;
 }
 
-.archive-table-title-content {
-    display: flex;
+.archive-table-title-container {
+    display: inline-flex;
     flex-direction: row;
-    width: 100%;
+    justify-content: space-between;
     align-items: center;
+    width: 100%;
+    height: auto;
 }
 
 .archive-table-title-text {

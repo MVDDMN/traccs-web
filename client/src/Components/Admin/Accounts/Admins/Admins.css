@@ -25,7 +25,8 @@
     display: inline-flex;
     flex-direction: row;
     align-self: flex-end;
-    padding: 20px;
+    align-items: center;
+    padding: 10px;
     gap: 20px;
     height: 100%;
     width: auto;
@@ -51,11 +52,49 @@
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.5); 
 }
 
+.admins-search-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 10px;
+    gap: 5px;
+}
+
+.admins-search-box {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admins-search-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.admins-search-input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+}
+
 /*Resource Table*/
 .admins-table-box {
     display: inline-flex;
     flex-direction: column;
     height: 533px;
+}
+
+.admins-table-title-container {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
 }
 
 .admins-table-title-box {
@@ -89,6 +128,21 @@
     opacity: 1;
 }
 
+.admins-filter-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admins-filter-box select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
 .admins-table {
     background-color: #f0f0f0;
     overflow-y: auto;
@@ -99,10 +153,10 @@
 
 .admins-table th,
 .admins-table td {
-    padding: 6px;
+    padding: 9px;
     text-align: left;
     border-bottom: 2px solid #ddd;
-    height: 25px;
+    height: 35px;
 }
 
 .admins-table th {
@@ -409,12 +463,12 @@
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
     .admins-table-box {
-        height: 449px;
+        height: 450px;
     }
     .admins-table th,
     .admins-table td {
-        padding: 2px;
-        height: 30px;
+        padding: 4px;
+        height: 35px;
     }
     .admin-modal-content {
         width: 45%;
@@ -429,8 +483,8 @@
     }
     .admins-table th,
     .admins-table td {
-        padding: 2px;
-        height: 20px;
+        padding: 3px;
+        height: 28px;
         font-size: 12px;
     }
     .view-admins-button {
@@ -449,12 +503,15 @@
 /* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
     .admins-table-box {
-        height: 239px;
+        height: 240px;
+    }
+    .admins-table-title-text {
+        font-size: 24px;
     }
     .admins-table th,
     .admins-table td {
         padding: 1px;
-        height: 15px;
+        height: 20px;
         font-size: 12px;
     }
     .view-admins-button {

@@ -27,15 +27,18 @@ const AnalyticsReports = () => {
   return (
     <div className='analyticsreports-module-content'>
       <div className='analyticsreports-content-container'>
-        <div className='analyticsreports-table-title-box'>
-          <a className='analyticsreports-table-title-text'>Reports Analytics</a>
-          <a className='analyticsreports-table-description'>
-            ⓘ
-            <span className='tooltip-text'>
-              This page allows you to view all the historical report data recorded within the system
-              displaying their analytical charts and descriptive summarized data.
-            </span>
-          </a>
+
+        <div className='analyticsreports-table-title-container'>
+          <div className='analyticsreports-table-title-box'>
+            <a className='analyticsreports-table-title-text'>Reports Analytics</a>
+            <a className='analyticsreports-table-description'>
+              ⓘ
+              <span className='tooltip-text'>
+                This page allows you to view all the historical report data recorded within the system
+                displaying their analytical charts and descriptive summarized data.
+              </span>
+            </a>
+          </div>
         </div>
 
         <div className='analyticsreports-input-container'>

@@ -30,14 +30,16 @@ const AnalyticsRequests = () => {
         <div className='analyticsrequests-module-content'>
             <div className='analyticsrequests-content-container'>
 
-                <div className='analyticsrequests-table-title-box'>
-                    <a className='analyticsrequests-table-title-text'>Requests Analytics</a>
-                    <a className='analyticsrequests-table-description'>
-                        ⓘ
-                        <span className='tooltip-text'>
-                            This page allows you to view  all the historical request data recorded within the system displaying their analytical charts and descriptive summarized data.
-                        </span>
-                    </a>
+                <div className='analyticsrequests-table-title-container'>
+                    <div className='analyticsrequests-table-title-box'>
+                        <a className='analyticsrequests-table-title-text'>Requests Analytics</a>
+                        <a className='analyticsrequests-table-description'>
+                            ⓘ
+                            <span className='tooltip-text'>
+                                This page allows you to view  all the historical request data recorded within the system displaying their analytical charts and descriptive summarized data.
+                            </span>
+                        </a>
+                    </div>
                 </div>
 
                 <div className='analyticsrequests-input-container'>
@@ -78,7 +80,7 @@ const AnalyticsRequests = () => {
                         {selectedChart === 'TypeSummary' && <TypeSummary dateFrom={dateFrom} dateTo={dateTo} />}
                         {selectedChart === 'BarangaySummary' && <BarangaySummary dateFrom={dateFrom} dateTo={dateTo} />}
                         {selectedChart === 'PieSummary' && <PieSummary dateFrom={dateFrom} dateTo={dateTo} />}
-                        
+
                         {/* Descriptive summaries */}
                         {selectedChart === 'RequestsStats' && <DescriptiveRequestStats dateFrom={dateFrom} dateTo={dateTo} />}
                         {selectedChart === 'TypeSummary' && <DescriptiveTypeSummary dateFrom={dateFrom} dateTo={dateTo} />}
