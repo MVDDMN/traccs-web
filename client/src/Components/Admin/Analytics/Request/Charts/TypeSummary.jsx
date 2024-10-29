@@ -6,8 +6,8 @@ import './TypeSummary.css';
 
 // Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'
-    ? import.meta.env.VITE_PROD_API_BASE_URL
-    : import.meta.env.VITE_API_BASE_URL;
+  ? import.meta.env.VITE_PROD_API_BASE_URL
+  : import.meta.env.VITE_API_BASE_URL;
 
 const TypeSummary = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo as props
   const [chartData, setChartData] = useState({
@@ -92,14 +92,23 @@ const TypeSummary = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo a
       ) : noData ? (
         <p>No data available for the selected date range.</p>  // Display no data message
       ) : (
-        <Bar 
-          data={chartData} 
-          options={{ 
-            responsive: true, 
-            maintainAspectRatio: false 
-          }} 
+        <Bar
+          data={chartData}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                ticks: {
+                  stepSize: 1,
+                  callback: (value) => Number.isInteger(value) ? value : null  // Ensure only integers display
+                }
+              }
+            }
+          }}
           className="requests-type-canvas"
         />
+
       )}
     </div>
   );

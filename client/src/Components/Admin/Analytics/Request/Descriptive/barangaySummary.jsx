@@ -49,46 +49,38 @@ const BarangaySummary = ({ dateFrom, dateTo }) => {
         let reportDescription = `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, `;
 
         const totalRequests = data.reduce((sum, barangay) => sum + barangay.totalRequests, 0);
+        reportDescription += `a total of ${totalRequests} requests were recorded across barangays. `;
 
-        if (totalRequests > 100) {
-            reportDescription += `there was a high volume of requests with over ${totalRequests} total requests made across various barangays. `;
-        } else {
-            reportDescription += `the total number of requests made and completed is almost ${totalRequests} requests recorded during this period. `;
-        }
-
-        // Find the barangay with the most and least requests
+        // Identify the barangay with the highest and lowest requests
         const mostRequestedBarangay = data.reduce((prev, current) => (prev.totalRequests > current.totalRequests ? prev : current), {});
         const leastRequestedBarangay = data.reduce((prev, current) => (prev.totalRequests < current.totalRequests ? prev : current), {});
 
-        if (mostRequestedBarangay) {
-            reportDescription += `Where Barangay ${mostRequestedBarangay._id} had the highest number of requests, with a total of ${mostRequestedBarangay.totalRequests} requests. `;
-        }
+        reportDescription += `Barangay ${mostRequestedBarangay._id} recorded the highest number of requests (${mostRequestedBarangay.totalRequests}), while Barangay ${leastRequestedBarangay._id} had the lowest (${leastRequestedBarangay.totalRequests}). `;
 
-        if (leastRequestedBarangay && leastRequestedBarangay.totalRequests > 0) {
-            reportDescription += `On the other hand, Barangay ${leastRequestedBarangay._id} had the lowest number of requests, recording only ${leastRequestedBarangay.totalRequests} requests. `;
-        }
-
-        // Analyze gaps in request distribution
+        // Highlight any significant gaps in request volume
         const requestGapThreshold = 20;
         if (mostRequestedBarangay.totalRequests - leastRequestedBarangay.totalRequests > requestGapThreshold) {
-            reportDescription += `There was a significant gap in requests between Barangay ${mostRequestedBarangay._id} and Barangay ${leastRequestedBarangay._id}, indicating an unequal distribution of requests across the barangays. `;
+            reportDescription += `The request volume varied significantly between barangays, suggesting unequal demand levels across the area. `;
         }
 
-        // Check if certain barangays requested a lot of items
+        // Detail the barangay with the highest items requested
         const mostItemsRequestedBarangay = data.reduce((prev, current) => (prev.totalQuantity > current.totalQuantity ? prev : current), {});
-        if (mostItemsRequestedBarangay) {
-            reportDescription += `Barangay ${mostItemsRequestedBarangay._id} also requested the highest number of items, totaling ${mostItemsRequestedBarangay.totalQuantity} items. `;
-        }
+        reportDescription += `Barangay ${mostItemsRequestedBarangay._id} requested the highest number of items, totaling ${mostItemsRequestedBarangay.totalQuantity} items. `;
 
-        // Suggestive narrative outcomes based on the data trends
+        // Include type breakdown for each barangay
+        data.forEach((barangay) => {
+            reportDescription += `\nIn Barangay ${barangay._id}, the breakdown by request type includes: `;
+
+            barangay.requestTypes.forEach((typeDetail) => {
+                reportDescription += `${typeDetail.type} (${typeDetail.requestCount} requests); `;
+            });
+        });
+
+        // Recommendations based on overall volume
         if (totalRequests > 100) {
-            reportDescription += `Given the high volume of requests, it is recommended that additional resources be allocated to the barangays with the highest demand, such as Barangay ${mostRequestedBarangay._id}. Further analysis could help identify the specific types of items in high demand. `;
+            reportDescription += `The high request volume indicates a need for additional resources in barangays with greater demand, such as Barangay ${mostRequestedBarangay._id}. Further analysis is recommended to identify specific high-demand items. `;
         } else {
-            reportDescription += `Since the number of requests is relatively low, it may be a good opportunity to assess the current resource allocation and ensure that all barangays are adequately supplied. Special attention should be given to Barangay ${leastRequestedBarangay._id} to understand whether their low request volume is due to a lack of need or other factors. `;
-        }
-
-        if (mostRequestedBarangay.totalRequests - leastRequestedBarangay.totalRequests > requestGapThreshold) {
-            reportDescription += `The significant gap in requests between barangays suggests that further investigation is needed to understand why certain areas have higher needs. It may be necessary to conduct community outreach or targeted interventions in barangays with lower request volumes. `;
+            reportDescription += `With a moderate request volume, this period presents an opportunity to assess resource distribution to ensure all barangays are adequately supplied, especially those with lower request volumes like Barangay ${leastRequestedBarangay._id}. `;
         }
 
         setReportSummary(reportDescription || "No significant trends to report during this period.");

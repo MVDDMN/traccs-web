@@ -41,12 +41,12 @@ router.get('/analytics/summary', async (req, res) => {
     }
 });
 
-// Analytics Module - Summary of Request by Barangay
+// Analytics Module - Summary of Request by Barangay with Type Breakdown
 router.get('/analytics/barangay-summary', async (req, res) => {
     try {
         const { dateFrom, dateTo } = req.query;
         
-        // Build a query object to filter by date range
+        // Build a date filter query
         let dateQuery = {};
         if (dateFrom && dateTo) {
             dateQuery = {
@@ -57,20 +57,34 @@ router.get('/analytics/barangay-summary', async (req, res) => {
             };
         }
 
-        // Fetch the summary grouped by barangay, filtered by the date range
+        // Fetch the summary grouped by barangay and type
         const barangaySummary = await requestarchiveModel.aggregate([
             {
-                $match: dateQuery // Apply the date range filter
+                $match: dateQuery // Apply date range filter
             },
             {
                 $group: {
-                    _id: "$barangay",
+                    _id: { barangay: "$barangay", type: "$type" },
                     totalRequests: { $sum: 1 },
                     totalQuantity: { $sum: "$quantity" }
                 }
             },
             {
-                $sort: { totalRequests: -1 }
+                $group: {
+                    _id: "$_id.barangay",
+                    totalRequests: { $sum: "$totalRequests" },
+                    totalQuantity: { $sum: "$totalQuantity" },
+                    requestTypes: {
+                        $push: {
+                            type: "$_id.type",
+                            requestCount: "$totalRequests",
+                            quantityCount: "$totalQuantity"
+                        }
+                    }
+                }
+            },
+            {
+                $sort: { totalRequests: 1 } // Sort in ascending order by total requests
             }
         ]);
 

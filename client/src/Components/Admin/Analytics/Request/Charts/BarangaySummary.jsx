@@ -3,12 +3,11 @@ import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
 import './BarangaySummary.css';
 
-// Determine the base URL based on the environment
 const apiBaseUrl = import.meta.env.MODE === 'production'
-    ? import.meta.env.VITE_PROD_API_BASE_URL
-    : import.meta.env.VITE_API_BASE_URL;
+  ? import.meta.env.VITE_PROD_API_BASE_URL
+  : import.meta.env.VITE_API_BASE_URL;
 
-const BarangaySummary = ({ dateFrom, dateTo }) => { // Accept dateFrom and dateTo as props
+const BarangaySummary = ({ dateFrom, dateTo }) => {
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
@@ -29,18 +28,26 @@ const BarangaySummary = ({ dateFrom, dateTo }) => { // Accept dateFrom and dateT
     ],
   });
 
+  const [barangayData, setBarangayData] = useState([]);
+
   useEffect(() => {
     const fetchBarangaySummary = async () => {
       try {
         const response = await axios.get(`${apiBaseUrl}/api/analytics/barangay-summary`, {
-          params: { dateFrom, dateTo } // Pass the date range as query parameters
+          params: { dateFrom, dateTo }
         });
-        const data = response.data;
+        let data = response.data;
 
         if (data && data.length > 0) {
+          // Sort data in ascending order based on totalRequests
+          data = data.sort((a, b) => a.totalRequests - b.totalRequests);
+
+          // Extract labels and data for sorted barangays
           const barangays = data.map(item => item._id);
           const totalRequests = data.map(item => item.totalRequests);
           const totalQuantity = data.map(item => item.totalQuantity);
+
+          setBarangayData(data);
 
           setChartData({
             labels: barangays,
@@ -72,7 +79,7 @@ const BarangaySummary = ({ dateFrom, dateTo }) => { // Accept dateFrom and dateT
       }
     };
 
-    if (dateFrom && dateTo) { // Fetch data only when both dates are set
+    if (dateFrom && dateTo) {
       fetchBarangaySummary();
     }
   }, [dateFrom, dateTo]);
@@ -83,12 +90,61 @@ const BarangaySummary = ({ dateFrom, dateTo }) => { // Accept dateFrom and dateT
         <a className="barangay-summary-title">Request Summary by Barangay</a>
       </div>
       {chartData.labels.length > 0 ? (
-        <Bar 
-          data={chartData} 
-          options={{ 
-            responsive: true, 
-            maintainAspectRatio: false 
-          }} 
+        <Bar
+          data={chartData}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: Math.ceil(Math.max(...chartData.datasets[1].data) / 10),
+                  callback: (value) => Number.isInteger(value) ? value : null
+                }
+              },
+              x: {
+                grid: {
+                  display: false,
+                },
+                barPercentage: 0.6,
+                categoryPercentage: 0.8,
+              }
+            },
+            plugins: {
+              tooltip: {
+                padding: 10,
+                callbacks: {
+                  afterLabel: (context) => {
+                    const barangayName = context.label;
+                    const datasetLabel = context.dataset.label;
+
+                    // Find the barangay data for the hovered bar
+                    const barangay = barangayData.find(item => item._id === barangayName);
+
+                    if (barangay && barangay.requestTypes) {
+                      if (datasetLabel === 'Total Requests') {
+                        // Display breakdown of Total Requests
+                        const requestBreakdown = barangay.requestTypes.map(
+                          typeDetail => `${typeDetail.type}: ${typeDetail.requestCount}`
+                        );
+                        return `\nTotal Requests Breakdown:\n` + requestBreakdown.join('\n');
+                      } else if (datasetLabel === 'Items Requested') {
+                        // Display breakdown of Items Requested
+                        const quantityBreakdown = barangay.requestTypes.map(
+                          typeDetail => `${typeDetail.type}: ${typeDetail.quantityCount}`
+                        );
+                        return `\nItems Requested Breakdown:\n` + quantityBreakdown.join('\n');
+                      }
+                    }
+                    return '';
+                  }
+                }
+              }
+            },
+            barThickness: 30,
+            maxBarThickness: 40,
+          }}
           className='barangay-summary-canvas'
         />
       ) : (
