@@ -9,12 +9,12 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 const PieSummary = ({ dateFrom, dateTo }) => {
     const [reportSummary, setReportSummary] = useState("");
     const [loading, setLoading] = useState(true);
-    const [noData, setNoData] = useState(false);  // Track if no data is available
+    const [noData, setNoData] = useState(false);
 
     useEffect(() => {
         const fetchPieSummary = async () => {
             setLoading(true);
-            setNoData(false);  // Reset no data state
+            setNoData(false);
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/analytics/barangay-summary`, {
                     params: { dateFrom, dateTo }
@@ -22,9 +22,9 @@ const PieSummary = ({ dateFrom, dateTo }) => {
                 const data = response.data;
 
                 if (data && data.length > 0) {
-                    generateReportDescription(data, dateFrom, dateTo);  // Call the auto-generative report logic after data is fetched
+                    generateReportDescription(data, dateFrom, dateTo);
                 } else {
-                    setNoData(true);  // No data available for the selected date range
+                    setNoData(true);
                 }
             } catch (error) {
                 console.error('Error fetching the pie summary', error);
@@ -38,19 +38,16 @@ const PieSummary = ({ dateFrom, dateTo }) => {
         }
     }, [dateFrom, dateTo]);
 
-    // Function to format the date as "Month Day, Year"
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString('en-US', options);
     };
 
-    // Function to generate the unified report description based on the data
     const generateReportDescription = (data, dateFrom, dateTo) => {
         let reportDescription = `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, `;
 
         const totalRequests = data.reduce((sum, barangay) => sum + barangay.totalRequests, 0);
 
-        // Ensure we don't divide by zero
         if (totalRequests === 0) {
             setReportSummary("There are no requests to report for this period.");
             return;
@@ -65,6 +62,7 @@ const PieSummary = ({ dateFrom, dateTo }) => {
         // Calculate percentage for each barangay
         const barangayPercentages = data.map(barangay => ({
             _id: barangay._id,
+            totalRequests: barangay.totalRequests,
             percentage: (barangay.totalRequests / totalRequests * 100).toFixed(2)
         }));
 
@@ -74,12 +72,12 @@ const PieSummary = ({ dateFrom, dateTo }) => {
             return acc;
         }, {});
 
-        // Add narrative for each percentage group, with "and" or "while" for the last group
+        // Add narrative for each percentage group
         const percentageGroupEntries = Object.entries(percentageGroups);
         percentageGroupEntries.forEach((entry, index) => {
             const [percentage, barangays] = entry;
             const barangayList = barangays.join(", ");
-            
+
             if (index === percentageGroupEntries.length - 1 && percentageGroupEntries.length > 1) {
                 reportDescription += `and Barangay(s) ${barangayList} accounted for ${percentage}% of the total requests. `;
             } else if (index === percentageGroupEntries.length - 1) {
@@ -93,7 +91,7 @@ const PieSummary = ({ dateFrom, dateTo }) => {
         const mostRequestedPercentage = Math.max(...barangayPercentages.map(b => parseFloat(b.percentage)));
         const leastRequestedPercentage = Math.min(...barangayPercentages.map(b => parseFloat(b.percentage)));
         const leastRequestedBarangay = barangayPercentages.find(b => parseFloat(b.percentage) === leastRequestedPercentage);
-        const gapThreshold = 10;  // Adjust this value to reflect what a "significant gap" means
+        const gapThreshold = 10;
 
         if (mostRequestedPercentage - leastRequestedPercentage > gapThreshold) {
             reportDescription += `There was a significant gap in requests, with the highest percentage accounting for ${mostRequestedPercentage}% and the lowest for ${leastRequestedPercentage}%. `;
@@ -101,13 +99,22 @@ const PieSummary = ({ dateFrom, dateTo }) => {
 
         // Suggestive narrative outcomes based on the data trends
         if (totalRequests > 100) {
-            reportDescription += `Given the high number of requests, it may be necessary to allocate more resources to the barangays with higher demand. Further analysis can identify which specific items are in demand. `;
+            reportDescription += `Given the high number of requests, it is recommended to prioritize resource allocation to barangays with higher demand, as they are likely experiencing significant needs. Targeted support can help address these areas effectively. `;
         } else {
-            reportDescription += `With a lower number of requests, it would be beneficial to review the distribution of resources and ensure that barangays with fewer requests, such as Barangay ${leastRequestedBarangay._id}, are sufficiently supplied. `;
+            reportDescription += `With a lower number of requests, barangays with fewer requests, such as Barangay ${leastRequestedBarangay._id}, may be considered lower priority for immediate resource allocation. `;
         }
 
         if (mostRequestedPercentage - leastRequestedPercentage > gapThreshold) {
-            reportDescription += `The significant gap between the highest and lowest requested barangays suggests a need for further investigation into why certain areas have more needs than others. Community outreach may be required in areas with lower request volumes. `;
+            reportDescription += `The significant gap between the highest and lowest requested barangays suggests a need for further investigation into why certain areas have more needs than others.`;
+        }
+
+        // Identify barangays in need of supplies based on a high request threshold
+        const highDemandBarangays = barangayPercentages
+            .filter(b => parseFloat(b.percentage) > 20) // Consider >20% as high demand
+            .map(b => b._id);
+
+        if (highDemandBarangays.length > 0) {
+            reportDescription += ` The following barangays showed a particularly high demand and may require additional supplies: ${highDemandBarangays.join(", ")}. `;
         }
 
         setReportSummary(reportDescription || "There are no significant trends to report for this period.");
