@@ -51,63 +51,92 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
     const generateReportDescription = (data) => {
         let reportDescription = "";
 
+        // Define the total number of reports and date range
         const totalReports = data.reduce((sum, report) => sum + report.totalReports, 0);
+        reportDescription += `From ${formatDate(dateFrom)} to ${formatDate(dateTo)}, a total of ${totalReports} reports were recorded, highlighting various incidents and community needs. `;
 
-        reportDescription += `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, a total of ${totalReports} reports were submitted. `;
-
-        // Generate percentage breakdown for each report type
+        // Provide a percentage breakdown for each main report type and details on subcategories
         data.forEach(report => {
+            const typeLabel = report._id === 'Accident' ? 'vehicular incidents' : report._id.toLowerCase();
             const percentage = ((report.totalReports / totalReports) * 100).toFixed(2);
-            reportDescription += `${percentage}% of the reports were related to ${report._id.toLowerCase()} incidents. `;
+            reportDescription += `Approximately ${percentage}% of the reports were related to ${typeLabel}. `;
+
+            // Detailed subcategory breakdowns for each report type with interpretative insight
+            if (report._id === 'Fire' && report.fireTypeSummary) {
+                const fireDetails = Object.entries(report.fireTypeSummary)
+                    .map(([type, count]) => `${type.toLowerCase()}: ${count}`)
+                    .join(', ');
+                reportDescription += `Fire-related incidents included categories such as ${fireDetails}, indicating a need for tailored fire safety measures across various settings. `;
+            } else if (report._id === 'Accident' && report.collisionTypeSummary) {
+                const collisionDetails = Object.entries(report.collisionTypeSummary)
+                    .map(([type, count]) => `${type.toLowerCase()}: ${count}`)
+                    .join(', ');
+                reportDescription += `Vehicular incidents occurred under various circumstances, with types such as ${collisionDetails}. These figures underscore the importance of comprehensive road safety measures to address different types of vehicular incidents. `;
+            } else if (report._id === 'Medical' && report.medicalTypeSummary) {
+                const medicalDetails = Object.entries(report.medicalTypeSummary)
+                    .map(([type, count]) => `${type.toLowerCase()}: ${count}`)
+                    .join(', ');
+                reportDescription += `Medical emergencies included cases such as ${medicalDetails}, highlighting the need for preparedness in handling diverse health crises. `;
+            } else if (report._id === 'Hazard' && report.hazardTypeSummary) {
+                const hazardDetails = Object.entries(report.hazardTypeSummary)
+                    .map(([type, count]) => `${type.toLowerCase()}: ${count}`)
+                    .join(', ');
+                reportDescription += `Environmental hazards reported included ${hazardDetails}. This data calls for ongoing community vigilance and proactive hazard mitigation. `;
+            } else if (report._id === 'Assistance' && report.assistanceTypeSummary) {
+                const assistanceDetails = Object.entries(report.assistanceTypeSummary)
+                    .map(([type, count]) => `${type.toLowerCase()}: ${count}`)
+                    .join(', ');
+                reportDescription += `Assistance requests reflected diverse needs, such as ${assistanceDetails}. These findings suggest a reliance on community support networks during emergencies. `;
+            }
         });
 
-        // Determine the most common type of report and apply its narrative
+        // Identify the most common type and apply a specific narrative
         const mostCommonType = data.reduce((prev, current) => (prev.totalReports > current.totalReports) ? prev : current, {});
         if (mostCommonType) {
             const narratives = {
                 "Accident": [
-                    "The majority of reports involved vehicular accidents, indicating a strong need for enhanced road safety awareness and preventive measures.",
-                    "Vehicular accidents emerged as the most common type of incident, suggesting that road safety initiatives might be beneficial to reduce these occurrences."
+                    "Vehicular incidents were the most frequently reported, underscoring the need for increased road safety initiatives to prevent these occurrences.",
+                    "Vehicular incidents were notably common, pointing to the need for comprehensive road safety measures within the community."
                 ],
                 "Medical": [
-                    "A significant number of medical incidents were reported, highlighting the need for accessible healthcare services and community health education.",
-                    "Medical-related reports were prevalent, indicating an ongoing requirement for efficient healthcare response systems and increased medical aid availability."
+                    "A substantial portion of reports were related to medical incidents, highlighting the importance of accessible healthcare services and timely response systems.",
+                    "Medical-related reports were prevalent, suggesting that enhanced healthcare support and awareness could improve emergency response."
                 ],
                 "Fire": [
-                    "Fire-related incidents were frequently reported, emphasizing the importance of fire safety protocols and better community preparedness.",
-                    "Reports involving fire hazards were common, pointing to the necessity for widespread fire prevention measures and safety awareness campaigns."
+                    "Fire incidents were prominent, emphasizing the critical importance of fire prevention programs and community preparedness.",
+                    "The high number of fire-related reports indicates a need for ongoing fire safety education and preventive measures."
                 ],
                 "Police": [
-                    "Police-related incidents were notably low, which may indicate either effective crime deterrence or a need for improved public trust and engagement with law enforcement.",
-                    "The low frequency of police-related reports suggests either a relatively peaceful period or underreporting of such incidents, warranting further community outreach."
+                    "Police-related reports were relatively low, which may reflect effective crime deterrence or possibly underreporting. Improved community-police engagement may help address any reporting gaps.",
+                    "The lower frequency of police incidents could indicate a peaceful period, but may also suggest underreporting. Strengthening community trust in law enforcement might ensure comprehensive reporting."
                 ],
                 "Assistance": [
-                    "Reports related to assistance underscore the strong sense of community support, highlighting the importance of collaborative efforts during emergencies.",
-                    "Community assistance requests were notable, showcasing the reliance on communal support systems to address local needs effectively."
+                    "Requests for assistance were substantial, reflecting the community's reliance on support systems during emergencies.",
+                    "Community assistance needs were significant, underscoring the value of collaborative and responsive support mechanisms in times of crisis."
                 ],
                 "Hazard": [
-                    "Hazard reports were common, drawing attention to the importance of identifying and mitigating potential environmental risks.",
-                    "Environmental hazards were frequently reported, emphasizing the need for ongoing risk assessments and mitigation strategies in the community."
+                    "Hazard reports were prevalent, highlighting the importance of identifying and addressing potential environmental risks.",
+                    "The frequency of hazard reports calls for proactive risk assessments and environmental safety strategies."
                 ]
             };
 
-            const selectedNarrative = narratives[mostCommonType._id]?.[Math.floor(Math.random() * narratives[mostCommonType._id].length)] || "No significant trend emerged for any particular report type.";
+            const selectedNarrative = narratives[mostCommonType._id]?.[Math.floor(Math.random() * narratives[mostCommonType._id].length)] || "No dominant trend emerged among the report types.";
             reportDescription += `${selectedNarrative} `;
         }
 
-        // Suggestive ending narratives
+        // Add a forward-looking statement to suggest next steps based on the trends
         const suggestiveEndings = [
-            "Moving forward, addressing the identified trends and ensuring timely responses can enhance community safety and resilience during future incidents.",
-            "It is crucial to consider implementing proactive measures based on the trends observed in this report to improve community response efforts.",
-            "Given the data, barangays should prioritize strategies that mitigate the risks identified in the reports to foster a safer environment.",
-            "To further enhance community safety, increased collaboration and communication among responders is recommended, particularly concerning the identified report types."
+            "Moving forward, addressing these trends and enhancing response efforts can strengthen community safety and resilience.",
+            "To build a safer environment, proactive measures and community engagement should be prioritized based on these observations.",
+            "This report highlights areas where safety measures and community response can be improved for future incident preparedness.",
+            "Enhanced collaboration among responders, community leaders, and residents is recommended to address the identified needs and improve safety."
         ];
 
         // Randomly select a suggestive ending
         const randomEnding = suggestiveEndings[Math.floor(Math.random() * suggestiveEndings.length)];
         reportDescription += randomEnding;
 
-        setReportSummary(reportDescription || "There are no significant trends to report at the moment.");
+        setReportSummary(reportDescription || "There are no significant trends to report at this time.");
     };
 
     return (

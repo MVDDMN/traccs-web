@@ -23,7 +23,14 @@ const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
                 const data = response.data;
 
                 if (data && data.length > 0) {
-                    const transformedData = data.map(item => ({
+                    // Filter to only MDRRMO data
+                    const mdrrmoData = data.filter(item => item._id.responder === 'MDRRMO');
+                    if (mdrrmoData.length === 0) {
+                        setNoData(true);
+                        return;
+                    }
+
+                    const transformedData = mdrrmoData.map(item => ({
                         responder: item._id.responder,
                         year: item._id.year,
                         month: item._id.month,
@@ -48,114 +55,48 @@ const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
 
     const generateReportDescription = (data) => {
         let reportDescription = "";
-
-        const totalReports = data.length;
-
-        if (totalReports === 0) {
+    
+        if (data.length === 0) {
             setReportSummary("No data available for analysis.");
             return;
         }
-
-        const avgResponseTime = data.reduce((sum, report) => sum + report.averageResponseTime, 0) / totalReports;
+    
+        const avgResponseTime = data.reduce((sum, report) => sum + report.averageResponseTime, 0) / data.length;
         const avgMinutes = Math.floor(avgResponseTime / (1000 * 60));
         const avgSeconds = Math.floor((avgResponseTime % (1000 * 60)) / 1000);
-        reportDescription += `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, the general average response time across all barangays is ${avgMinutes} minutes and ${avgSeconds} seconds. `;
-
-        const fastestBarangay = data.reduce((prev, curr) => (curr.averageResponseTime < prev.averageResponseTime ? curr : prev), data[0]);
-        const slowestBarangay = data.reduce((prev, curr) => (curr.averageResponseTime > prev.averageResponseTime ? curr : prev), data[0]);
-
-        if (fastestBarangay) {
-            const fastestAvgMinutes = Math.floor(fastestBarangay.averageResponseTime / (1000 * 60));
-            const fastestAvgSeconds = Math.floor((fastestBarangay.averageResponseTime % (1000 * 60)) / 1000);
-            const percentageFastest = ((fastestBarangay.averageResponseTime / avgResponseTime) * 100).toFixed(2);
-            reportDescription += `The fastest average response time was from Barangay ${fastestBarangay.responder} at ${fastestAvgMinutes} minutes and ${fastestAvgSeconds} seconds, which is ${percentageFastest}% of the overall average. `;
-        }
-
-        if (slowestBarangay && slowestBarangay.responder !== fastestBarangay.responder) {
-            const slowestAvgMinutes = Math.floor(slowestBarangay.averageResponseTime / (1000 * 60));
-            const slowestAvgSeconds = Math.floor((slowestBarangay.averageResponseTime % (1000 * 60)) / 1000);
-            reportDescription += `Barangay ${slowestBarangay.responder} had the slowest response time, averaging ${slowestAvgMinutes} minutes and ${slowestAvgSeconds} seconds in ${getMonthName(slowestBarangay.month)}. `;
-        }
-
-        // Add more comparisons if data includes multiple months for responders
-        const respondersWithMultipleMonths = data.reduce((acc, curr) => {
-            if (!acc[curr.responder]) {
-                acc[curr.responder] = [];
-            }
-            acc[curr.responder].push(curr);
-            return acc;
-        }, {});
-
-        Object.keys(respondersWithMultipleMonths).forEach(responder => {
-            if (respondersWithMultipleMonths[responder].length > 1) {
-                respondersWithMultipleMonths[responder].sort((a, b) => a.month - b.month);
-                reportDescription += `Responder ${responder} has data for multiple months: `;
-                const responseTimes = respondersWithMultipleMonths[responder];
-
-                let fastestMonth = responseTimes[0];
-                let slowestMonth = responseTimes[0];
-
-                responseTimes.forEach(monthData => {
-                    if (monthData.averageResponseTime < fastestMonth.averageResponseTime) {
-                        fastestMonth = monthData;
-                    }
-                    if (monthData.averageResponseTime > slowestMonth.averageResponseTime) {
-                        slowestMonth = monthData;
-                    }
-                });
-
-                const avgMinutesFastest = Math.floor(fastestMonth.averageResponseTime / (1000 * 60));
-                const avgSecondsFastest = Math.floor((fastestMonth.averageResponseTime % (1000 * 60)) / 1000);
-                const avgMinutesSlowest = Math.floor(slowestMonth.averageResponseTime / (1000 * 60));
-                const avgSecondsSlowest = Math.floor((slowestMonth.averageResponseTime % (1000 * 60)) / 1000);
-                const percentageDifference = (((slowestMonth.averageResponseTime - fastestMonth.averageResponseTime) / fastestMonth.averageResponseTime) * 100).toFixed(2);
-
-                reportDescription += `For responder ${responder}, the fastest response time was in ${getMonthName(fastestMonth.month)} at ${avgMinutesFastest} minutes and ${avgSecondsFastest} seconds, while the slowest was in ${getMonthName(slowestMonth.month)} at ${avgMinutesSlowest} minutes and ${avgSecondsSlowest} seconds, indicating a ${percentageDifference}% difference. `;
-
-                if (percentageDifference > 20) {
-                    const increaseNarratives = [
-                        `This shows a significant increase in response time, suggesting potential challenges during ${getMonthName(slowestMonth.month)}. Addressing these challenges might help bring response times down.`,
-                        `The response time increased notably in ${getMonthName(slowestMonth.month)}, which could indicate operational issues or resource constraints. Focusing on these areas might lead to improvements.`,
-                        `The significant increase in response time during ${getMonthName(slowestMonth.month)} highlights potential disruptions. Reviewing operational procedures during this period could provide valuable insights for improvement.`
-                    ];
-                    reportDescription += increaseNarratives[Math.floor(Math.random() * increaseNarratives.length)] + " ";
-                } else if (percentageDifference < -20) {
-                    const decreaseNarratives = [
-                        `This significant decrease in response time highlights effective changes implemented in ${getMonthName(fastestMonth.month)}. Continuing these efforts could further enhance responsiveness.`,
-                        `A considerable decrease in response time during ${getMonthName(fastestMonth.month)} indicates positive operational changes. Maintaining these practices could help ensure continued efficiency.`,
-                        `The drop in response time during ${getMonthName(fastestMonth.month)} is indicative of successful interventions. Evaluating what worked well can help replicate these successes elsewhere.`
-                    ];
-                    reportDescription += decreaseNarratives[Math.floor(Math.random() * decreaseNarratives.length)] + " ";
+        reportDescription += `Between ${formatDate(dateFrom)} and ${formatDate(dateTo)}, MDRRMO's overall average response time was ${avgMinutes} minutes and ${avgSeconds} seconds. `;
+    
+        // Sort data by month for chronological comparison
+        const sortedData = data.sort((a, b) => a.month - b.month);
+    
+        // Month-over-month analysis
+        sortedData.forEach((currentMonthData, index) => {
+            const currentMonthName = getMonthName(currentMonthData.month);
+            const currentAvgTime = currentMonthData.averageResponseTime;
+            const currentMinutes = Math.floor(currentAvgTime / (1000 * 60));
+            const currentSeconds = Math.floor((currentAvgTime % (1000 * 60)) / 1000);
+    
+            reportDescription += `In ${currentMonthName}, the average response time was ${currentMinutes} minutes and ${currentSeconds} seconds. `;
+    
+            if (index > 0) {
+                const previousMonthData = sortedData[index - 1];
+                const previousMonthName = getMonthName(previousMonthData.month);
+                const previousAvgTime = previousMonthData.averageResponseTime;
+                const percentageChange = (((currentAvgTime - previousAvgTime) / previousAvgTime) * 100).toFixed(2);
+    
+                if (currentAvgTime < previousAvgTime) {
+                    reportDescription += `This marks a decrease of ${Math.abs(percentageChange)}% from ${previousMonthName}, indicating an improvement in response efficiency. `;
+                } else if (currentAvgTime > previousAvgTime) {
+                    reportDescription += `This is an increase of ${percentageChange}% from ${previousMonthName}, suggesting potential challenges or delays. Addressing factors that contributed to this increase could help in reducing response times. `;
                 } else {
-                    const moderateDifferenceNarratives = [
-                        `The difference between the fastest and slowest months is moderate, indicating consistent performance with minor variations. Monitoring ongoing factors could help maintain this stability.`,
-                        `The response times between the fastest and slowest months were relatively stable, suggesting good operational consistency. Keeping an eye on small fluctuations can help in preventing larger issues.`,
-                        `Moderate variation between the fastest and slowest response times indicates stable performance. Ensuring continuous monitoring can help sustain this consistency.`
-                    ];
-                    reportDescription += moderateDifferenceNarratives[Math.floor(Math.random() * moderateDifferenceNarratives.length)] + " ";
+                    reportDescription += `Response time remained consistent with the previous month (${previousMonthName}). `;
                 }
-
-                responseTimes.forEach(monthData => {
-                    const avgMinutes = Math.floor(monthData.averageResponseTime / (1000 * 60));
-                    const avgSeconds = Math.floor((monthData.averageResponseTime % (1000 * 60)) / 1000);
-                    reportDescription += `${getMonthName(monthData.month)}: ${avgMinutes} minutes and ${avgSeconds} seconds. `;
-                });
             }
         });
-
-        const suggestiveEndings = [
-            "To enhance response efforts, consider analyzing the factors contributing to the faster response times and applying those lessons to areas needing improvement.",
-            "Implementing targeted training for responders in barangays with slower response times could help reduce response delays.",
-            "Monitoring the effectiveness of response times over the next few months may provide insight into whether the improvements are effective.",
-            "Encouraging community involvement and reporting can help in identifying and resolving issues that lead to delayed response times."
-        ];
-
-        const randomEnding = suggestiveEndings[Math.floor(Math.random() * suggestiveEndings.length)];
-        reportDescription += randomEnding;
-
+    
         setReportSummary(reportDescription || "There were no significant trends in the data.");
     };
-
+    
     const getMonthName = (month) => {
         const monthNames = [
             "January", "February", "March", "April", "May", "June",
@@ -173,7 +114,7 @@ const ResponseTime = ({ dateFrom, dateTo, previousMonthData }) => {
         <div className='desc-responsetime-container'>
             <div className='desc-responsetime-title'>
                 <label className='desc-responsetime-title-text'>
-                    Report Descriptive Summary 
+                    MDRRMO Response Time Summary
                 </label>
             </div>
 

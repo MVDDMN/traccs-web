@@ -14,8 +14,8 @@ const monthNames = [
 
 const ResponseTime = ({ dateFrom, dateTo }) => {
     const [chartData, setChartData] = useState({
-        labels: [], // X-axis labels for responders
-        datasets: [] // Each barangay will be its own dataset
+        labels: [], // X-axis labels for months
+        datasets: [] // MDRRMO average response times
     });
     const [loading, setLoading] = useState(true);
     const [noData, setNoData] = useState(false);
@@ -31,44 +31,35 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
                 const data = response.data;
 
                 if (data && data.length > 0) {
-                    // Prepare labels and datasets
-                    const responders = data.map(item => item._id.responder);
-                    const averageResponseTimes = data.map(item => item.averageResponseTime / 1000); // Convert ms to seconds
-                    const months = data.map(item => monthNames[item._id.month - 1]); // Convert month number to month name
+                    // Filter data specifically for "mdrrmo"
+                    const mdrrmoData = data.filter(item => item._id.responder === 'MDRRMO');
 
-                    // Combine responders, averageResponseTimes, and month names into an array of objects
-                    const combinedData = responders.map((responder, index) => ({
-                        responder,
-                        averageResponseTime: averageResponseTimes[index],
-                        month: months[index], // Add month name for display
-                    }));
+                    if (mdrrmoData.length === 0) {
+                        setNoData(true); // No data if mdrrmo is not found
+                        return;
+                    }
 
-                    // Sort combined data in descending order based on averageResponseTime
-                    combinedData.sort((a, b) => b.averageResponseTime - a.averageResponseTime);
+                    // Prepare labels and dataset for MDRRMO
+                    const months = mdrrmoData.map(item => monthNames[item._id.month - 1]); // Convert month number to month name
+                    const averageResponseTimes = mdrrmoData.map(item => item.averageResponseTime / 1000); // Convert ms to seconds
 
-                    // Prepare sorted labels and datasets
-                    const sortedLabels = combinedData.map(item => `${item.responder} (${item.month})`); // Combine responder and month name
-                    const sortedAverageResponseTimes = combinedData.map(item => item.averageResponseTime);
-
-                    // Create a single dataset for the bar chart
-                    const datasets = [{
-                        label: 'Average Response Time',
-                        data: sortedAverageResponseTimes, // All data points for the responders
-                        backgroundColor: '#0E267C',
-                        borderColor: '#0E267C',
-                        borderWidth: 1,
-                    }];
-
+                    // Set chart data with MDRRMO data only
                     setChartData({
-                        labels: sortedLabels, // Set combined labels as X-axis labels
-                        datasets: datasets, // Set the dataset
+                        labels: months, // Use months as X-axis labels
+                        datasets: [{
+                            label: 'Average Response Time',
+                            data: averageResponseTimes,
+                            backgroundColor: '#0E267C',
+                            borderColor: '#0E267C',
+                            borderWidth: 1,
+                        }]
                     });
                 } else {
                     setNoData(true);
                 }
             } catch (error) {
                 console.error('Error fetching the response time summary', error);
-                setNoData(true); // Set no data to true if there's an error
+                setNoData(true);
             } finally {
                 setLoading(false);
             }
@@ -82,7 +73,7 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
     return (
         <div className="response-time-summary-container">
             <div className='response-time-title-box'>
-                <a className='response-time-title'>Average Time to Respond/Completion</a>
+                <a className='response-time-title'>MDRRMO Average Time to Respond/Completion</a>
             </div>
             
             <div className="response-time-chart-container">
@@ -100,7 +91,7 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
                                 x: {
                                     title: {
                                         display: true,
-                                        text: 'Responders (with Month)',
+                                        text: 'Month',
                                     },
                                 },
                                 y: {
@@ -121,10 +112,10 @@ const ResponseTime = ({ dateFrom, dateTo }) => {
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
-                                            const totalSeconds = context.dataset.data[context.dataIndex]; // Use context.dataIndex for the correct data point
+                                            const totalSeconds = context.dataset.data[context.dataIndex];
                                             const minutes = Math.floor(totalSeconds / 60);
                                             const seconds = Math.floor(totalSeconds % 60);
-                                            return `${context.dataset.label} - ${context.label}: ${minutes}m ${seconds}s`; // Format tooltip
+                                            return `${context.dataset.label}: ${minutes}m ${seconds}s`; // Format tooltip
                                         }
                                     }
                                 }

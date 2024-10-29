@@ -366,6 +366,16 @@
 }
 
 .donations-content-text {
+    color: #aeaeae;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    width: auto;
+}
+
+.donations-content-text-viewing {
     color: #000;
     background-color: #f8f8f8;
     border: 2px solid gray;
@@ -383,6 +393,7 @@
 }
 
 .donations-description-area {
+    color: #aeaeae;
     height: 5em;
     width: auto;
     border-radius: 5px;
@@ -391,7 +402,27 @@
     resize: none;
 }
 
-.donations-description-area::placeholder {
+.donations-description-area-viewing {
+    color: #000;
+    height: 5em;
+    width: auto;
+    border-radius: 5px;
+    padding: 10px;
+    overflow-y: auto;
+    resize: none;
+}
+
+.donations-updates-area {
+    color: #000;
+    height: 5em;
+    width: auto;
+    border-radius: 5px;
+    padding: 10px;
+    overflow-y: auto;
+    resize: none;
+}
+
+.donations-updates-area::placeholder {
     color: red;
     opacity: 0.5;
 }

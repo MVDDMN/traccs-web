@@ -71,60 +71,75 @@ const ReportTime = ({ dateFrom, dateTo }) => {
     // Function to generate unified report description based on trends and the new narrative
     const generateReportDescription = (data) => {
         let reportDescription = "";
-
+    
         const totalReports = data.data.reduce((sum, count) => sum + count, 0);
-
-        // Check if there were significant reports overall
+        const formattedDate = formatDate(dateFrom);
+    
+        // Initial statement with date and total number of reports
+        reportDescription += `On ${formattedDate}, there were a total of ${totalReports} incidents reported. `;
+    
         if (totalReports > 100) {
-            reportDescription += `There has been a high volume of reports, with over ${totalReports} incidents recorded across the selected date range. `;
+            reportDescription += `This indicates a high volume of activity within a single day, suggesting increased awareness and response capacity. `;
+        } else if (totalReports > 0) {
+            reportDescription += `The report volume appears moderate, offering insights into the day's community activities and needs. `;
         } else {
-            reportDescription += `A total of ${totalReports} incidents were recorded within the selected period. `;
+            reportDescription += `There were no significant reports recorded on this date, indicating a period of low activity or incident-free hours. `;
         }
-
-        // Find the most active hour and the least active hour
-        const mostActiveHour = data.data.reduce((prev, count, index) => (count > prev.count ? { count, hour: index } : prev), { count: 0 });
-        const leastActiveHour = data.data.reduce((prev, count, index) => (count < prev.count && count > 0 ? { count, hour: index } : prev), { count: Infinity });
-
-        // If the most active hour exists, show the most prevalent report type
-        if (mostActiveHour.count > 0) {
-            const breakdown = data.breakdownByHour[mostActiveHour.hour];  // Access the breakdown by hour
-            const highestType = Object.keys(breakdown).reduce((a, b) => breakdown[a] > breakdown[b] ? a : b);
-            reportDescription += `The prevalent time for reports was at ${formatHour12(mostActiveHour.hour)}, with '${highestType}' being the most common issue at ${breakdown[highestType]} occurrences. `;
+    
+        // Check if all non-zero counts are equal
+        const nonZeroCounts = data.data.filter(count => count > 0);
+        const allEqual = nonZeroCounts.every(count => count === nonZeroCounts[0]);
+    
+        if (allEqual && nonZeroCounts.length > 1) {
+            reportDescription += "Reports were evenly distributed across active hours, with each hour showing the same number of incidents. This pattern suggests a steady, predictable reporting rate throughout the day, possibly due to consistent monitoring or a lack of specific peak periods. ";
+        } else {
+            // Find the most active and least active hour if distribution is not even
+            const mostActiveHour = data.data.reduce((prev, count, index) => (count > prev.count ? { count, hour: index } : prev), { count: 0 });
+            const leastActiveHour = data.data.reduce((prev, count, index) => (count < prev.count && count > 0 ? { count, hour: index } : prev), { count: Infinity });
+    
+            // Narrative for the most active hour
+            if (mostActiveHour.count > 0) {
+                const prevalentHour = formatHour12(mostActiveHour.hour);
+                const breakdown = data.breakdownByHour[mostActiveHour.hour];
+                const highestType = Object.keys(breakdown).reduce((a, b) => (breakdown[a] > breakdown[b] ? a : b));
+                reportDescription += `The peak reporting time was at ${prevalentHour}, with '${highestType}' incidents being the most frequently reported, totaling ${breakdown[highestType]} occurrences. `;
+            }
+    
+            // Narrative for the least active hour
+            if (leastActiveHour.count > 0 && leastActiveHour.count !== Infinity) {
+                const lowActivityHour = formatHour12(leastActiveHour.hour);
+                reportDescription += `The time with the least activity was at ${lowActivityHour}, with only ${leastActiveHour.count} reports, suggesting this period might be optimal for maintenance or administrative activities. `;
+            }
         }
-
-        // Check for trends in peak hours
+    
+        // Check for distribution across different times of the day
         const morningReports = data.data.slice(6, 12).reduce((sum, count) => sum + count, 0);
         const afternoonReports = data.data.slice(12, 18).reduce((sum, count) => sum + count, 0);
         const eveningReports = data.data.slice(18, 24).reduce((sum, count) => sum + count, 0);
-
+    
         if (morningReports > afternoonReports && morningReports > eveningReports) {
-            reportDescription += "Most of the reports occurred in the morning, indicating higher activity during the early hours. ";
-        } else if (eveningReports > morningReports && eveningReports > afternoonReports) {
-            reportDescription += "Most of the reports occurred in the evening, indicating higher activity later in the day. ";
+            reportDescription += "The morning hours experienced the highest activity, suggesting a trend of increased incidents during early hours. ";
         } else if (afternoonReports > morningReports && afternoonReports > eveningReports) {
-            reportDescription += "Afternoon was the most active time period, with the highest number of reports during midday. ";
-        }
-
-        if (leastActiveHour.count > 0 && leastActiveHour.count !== Infinity) {
-            reportDescription += `The hour with the least reports was at ${formatHour12(leastActiveHour.hour)}, with only ${leastActiveHour.count} reports, suggesting this time could be utilized for maintenance activities. `;
+            reportDescription += "Most incidents were reported during the afternoon, pointing to heightened activity around midday. ";
+        } else if (eveningReports > morningReports && eveningReports > afternoonReports) {
+            reportDescription += "The evening hours showed the highest level of activity, indicating a trend of increased incidents later in the day. ";
         } else {
-            reportDescription += "Some hours had no reports, indicating periods of inactivity. ";
+            reportDescription += "Incident reports were relatively evenly distributed throughout the day, with no single period showing significantly higher activity. ";
         }
-
-        // Suggestive ending narratives
+    
+        // Concluding suggestions
         const suggestiveEndings = [
-            "To enhance response efforts, consider focusing resources during peak reporting hours identified in this analysis.",
-            "It may be beneficial to implement preventive measures during high activity times to mitigate incidents effectively.",
-            "To ensure community safety, ongoing monitoring and timely interventions during reported peak hours are essential.",
-            "Encouraging community awareness and education during identified peak times can further reduce incidents and improve safety."
+            "To enhance response efforts, consider allocating resources during identified peak hours.",
+            "It may be advantageous to focus preventive measures during high-activity periods to reduce incident frequency.",
+            "To improve community safety, ongoing monitoring and prompt interventions during peak hours are recommended.",
+            "Encouraging community awareness and education during peak times can help reduce incident occurrences and improve safety."
         ];
-
-        // Randomly select a suggestive ending
+    
         const randomEnding = suggestiveEndings[Math.floor(Math.random() * suggestiveEndings.length)];
         reportDescription += randomEnding;
-
+    
         setReportSummary(reportDescription || "There were no significant trends in the data.");
-    };
+    };        
 
     return (
         <div className='desc-reporttime-container'>

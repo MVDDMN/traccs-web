@@ -14,21 +14,27 @@ const reportsSchema = new mongoose.Schema({
     completion_date_time: { type: Date, index: true },
     images: [String],
     description: {
+        //Fire
         fire_type: String,
         severity: String,
         visible_flames: String,
         smoke: String,
-        crime_type: String,
+        //Police
         in_progress: String,
+        //Accident
         collision_type: String,
-        severity_of_accident: String,
         blocked_road: String,
         number_of_people_involved: String,
+        severity_of_accident: String,
+        //Medical
         medical_emergency_type: String,
         consciousness: String,
+        //hazard
         hazard_type: String,
+        //Assistance
         assistance_type: String,
         urgency_level: String,
+        //General
         additional_description: String,
         deny_description: String
     },

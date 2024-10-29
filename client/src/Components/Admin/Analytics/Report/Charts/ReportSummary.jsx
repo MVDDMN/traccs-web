@@ -21,26 +21,25 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
         ],
     });
     const [loading, setLoading] = useState(true);
-    const [noData, setNoData] = useState(false); // Track if no data is available
+    const [noData, setNoData] = useState(false);
+    const [fireTypeDetails, setFireTypeDetails] = useState('');
+    const [collisionTypeDetails, setCollisionTypeDetails] = useState('');
+    const [medicalTypeDetails, setMedicalTypeDetails] = useState('');
+    const [hazardTypeDetails, setHazardTypeDetails] = useState('');
+    const [assistanceTypeDetails, setAssistanceTypeDetails] = useState(''); // Assistance type breakdown
 
     useEffect(() => {
         const fetchReportSummary = async () => {
             setLoading(true);
-            setNoData(false); // Reset noData state
+            setNoData(false);
             try {
                 const response = await axios.get(`${apiBaseUrl}/api/analytics/report-summary`, {
-                    params: { dateFrom, dateTo } // Pass the date range as query parameters
+                    params: { dateFrom, dateTo }
                 });
                 const data = response.data.reportSummary;
-    
+
                 if (data && data.length > 0) {
-                    const types = data.map(item => item._id);
-                    const totalReports = data.map(item => item.totalReports);
-    
-                    // Predefined order for the legend
                     const legendOrder = ['Fire', 'Police', 'Accident', 'Hazard', 'Medical', 'Assistance'];
-    
-                    // Predefined colors
                     const colors = {
                         'Fire': '#E74C3C',
                         'Accident': '#3498DB',
@@ -49,35 +48,79 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                         'Assistance': '#1ABC9C',
                         'Hazard': '#E67E22',
                     };
-    
-                    // Sort types and totalReports by the legendOrder
-                    const sortedTypes = [];
-                    const sortedReports = [];
-                    const sortedColors = [];
-    
-                    legendOrder.forEach(type => {
-                        const index = types.indexOf(type);
-                        if (index !== -1) {
-                            sortedTypes.push(type);
-                            sortedReports.push(totalReports[index]);
-                            sortedColors.push(colors[type]);
+
+                    const mainTypes = [];
+                    const mainData = [];
+                    const mainColors = [];
+                    let fireDetails = '';
+                    let collisionDetails = '';
+                    let medicalDetails = '';
+                    let hazardDetails = '';
+                    let assistanceDetails = '';
+
+                    data.forEach(item => {
+                        if (item._id === 'Fire' && item.fireTypeSummary) {
+                            fireDetails = Object.entries(item.fireTypeSummary)
+                                .map(([fireType, count]) => `${fireType}: ${count}`)
+                                .join(', ');
+                            mainTypes.push('Fire');
+                            mainData.push(item.totalReports);
+                            mainColors.push(colors['Fire']);
+                        } else if (item._id === 'Accident' && item.collisionTypeSummary) {
+                            collisionDetails = Object.entries(item.collisionTypeSummary)
+                                .map(([collisionType, count]) => `${collisionType}: ${count}`)
+                                .join(', ');
+                            mainTypes.push('Accident');
+                            mainData.push(item.totalReports);
+                            mainColors.push(colors['Accident']);
+                        } else if (item._id === 'Medical' && item.medicalTypeSummary) {
+                            medicalDetails = Object.entries(item.medicalTypeSummary)
+                                .map(([medicalType, count]) => `${medicalType}: ${count}`)
+                                .join(', ');
+                            mainTypes.push('Medical');
+                            mainData.push(item.totalReports);
+                            mainColors.push(colors['Medical']);
+                        } else if (item._id === 'Hazard' && item.hazardTypeSummary) {
+                            hazardDetails = Object.entries(item.hazardTypeSummary)
+                                .map(([hazardType, count]) => `${hazardType}: ${count}`)
+                                .join(', ');
+                            mainTypes.push('Hazard');
+                            mainData.push(item.totalReports);
+                            mainColors.push(colors['Hazard']);
+                        } else if (item._id === 'Assistance' && item.assistanceTypeSummary) {
+                            assistanceDetails = Object.entries(item.assistanceTypeSummary)
+                                .map(([assistanceType, count]) => `${assistanceType}: ${count}`)
+                                .join(', ');
+                            mainTypes.push('Assistance');
+                            mainData.push(item.totalReports);
+                            mainColors.push(colors['Assistance']);
+                        } else {
+                            mainTypes.push(item._id);
+                            mainData.push(item.totalReports);
+                            mainColors.push(colors[item._id]);
                         }
                     });
-    
+
                     setChartData({
-                        labels: sortedTypes,
+                        labels: mainTypes,
                         datasets: [
                             {
                                 label: 'Total Reports',
-                                data: sortedReports,
-                                backgroundColor: sortedColors,
+                                data: mainData,
+                                backgroundColor: mainColors,
                                 borderColor: '#fff',
                                 borderWidth: 1,
                             }
                         ],
                     });
+
+                    setFireTypeDetails(fireDetails);
+                    setCollisionTypeDetails(collisionDetails);
+                    setMedicalTypeDetails(medicalDetails);
+                    setHazardTypeDetails(hazardDetails);
+                    setAssistanceTypeDetails(assistanceDetails);
                 } else {
-                    setNoData(true); // No data available for the selected date range
+                    setNoData(true);
                 }
             } catch (error) {
                 console.error('Error fetching the report summary', error);
@@ -85,7 +128,7 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                 setLoading(false);
             }
         };
-    
+
         if (dateFrom && dateTo) {
             fetchReportSummary();
         }
@@ -109,8 +152,28 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                         maintainAspectRatio: false,
                         plugins: {
                             tooltip: {
-                                // Remove mode as default 'nearest' works best for Pie charts
-                                intersect: false,
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.label || '';
+                                        let value = context.raw || 0;
+                                        if (label === 'Fire' && fireTypeDetails) {
+                                            return `${label}: ${value} (${fireTypeDetails})`;
+                                        }
+                                        if (label === 'Accident' && collisionTypeDetails) {
+                                            return `${label}: ${value} (${collisionTypeDetails})`;
+                                        }
+                                        if (label === 'Medical' && medicalTypeDetails) {
+                                            return `${label}: ${value} (${medicalTypeDetails})`;
+                                        }
+                                        if (label === 'Hazard' && hazardTypeDetails) {
+                                            return `${label}: ${value} (${hazardTypeDetails})`;
+                                        }
+                                        if (label === 'Assistance' && assistanceTypeDetails) {
+                                            return `${label}: ${value} (${assistanceTypeDetails})`;
+                                        }
+                                        return `${label}: ${value}`;
+                                    }
+                                }
                             },
                             legend: {
                                 position: 'top',

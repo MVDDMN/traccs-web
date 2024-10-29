@@ -101,13 +101,98 @@ router.get('/analytics/report-summary', async (req, res) => {
             {
                 $group: {
                     _id: "$type",
-                    totalReports: { $sum: 1 }
+                    totalReports: { $sum: 1 },
+                    fireTypeCounts: {
+                        $push: {
+                            $cond: [
+                                { $eq: ["$type", "Fire"] },
+                                "$description.fire_type",
+                                null
+                            ]
+                        }
+                    },
+                    collisionTypeCounts: {
+                        $push: {
+                            $cond: [
+                                { $eq: ["$type", "Accident"] },
+                                "$description.collision_type",
+                                null
+                            ]
+                        }
+                    },
+                    medicalTypeCounts: {
+                        $push: {
+                            $cond: [
+                                { $eq: ["$type", "Medical"] },
+                                "$description.medical_emergency_type",
+                                null
+                            ]
+                        }
+                    },
+                    hazardTypeCounts: {
+                        $push: {
+                            $cond: [
+                                { $eq: ["$type", "Hazard"] },
+                                "$description.hazard_type",
+                                null
+                            ]
+                        }
+                    },
+                    assistanceTypeCounts: {
+                        $push: {
+                            $cond: [
+                                { $eq: ["$type", "Assistance"] },
+                                "$description.assistance_type",
+                                null
+                            ]
+                        }
+                    }
                 }
             },
             {
                 $sort: { totalReports: -1 }
             }
         ]);
+
+        // Process subcategories for Fire, Accident, Medical, Hazard, and Assistance types
+        reportSummary.forEach(summary => {
+            if (summary._id === 'Fire') {
+                const fireTypeCounts = summary.fireTypeCounts.filter(type => type !== null);
+                summary.fireTypeSummary = fireTypeCounts.reduce((acc, type) => {
+                    acc[type] = (acc[type] || 0) + 1;
+                    return acc;
+                }, {});
+                delete summary.fireTypeCounts;
+            } else if (summary._id === 'Accident') {
+                const collisionTypeCounts = summary.collisionTypeCounts.filter(type => type !== null);
+                summary.collisionTypeSummary = collisionTypeCounts.reduce((acc, type) => {
+                    acc[type] = (acc[type] || 0) + 1;
+                    return acc;
+                }, {});
+                delete summary.collisionTypeCounts;
+            } else if (summary._id === 'Medical') {
+                const medicalTypeCounts = summary.medicalTypeCounts.filter(type => type !== null);
+                summary.medicalTypeSummary = medicalTypeCounts.reduce((acc, type) => {
+                    acc[type] = (acc[type] || 0) + 1;
+                    return acc;
+                }, {});
+                delete summary.medicalTypeCounts;
+            } else if (summary._id === 'Hazard') {
+                const hazardTypeCounts = summary.hazardTypeCounts.filter(type => type !== null);
+                summary.hazardTypeSummary = hazardTypeCounts.reduce((acc, type) => {
+                    acc[type] = (acc[type] || 0) + 1;
+                    return acc;
+                }, {});
+                delete summary.hazardTypeCounts;
+            } else if (summary._id === 'Assistance') {
+                const assistanceTypeCounts = summary.assistanceTypeCounts.filter(type => type !== null);
+                summary.assistanceTypeSummary = assistanceTypeCounts.reduce((acc, type) => {
+                    acc[type] = (acc[type] || 0) + 1;
+                    return acc;
+                }, {});
+                delete summary.assistanceTypeCounts;
+            }
+        });
 
         res.json({ reportSummary });
     } catch (err) {
