@@ -1,85 +1,109 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './About.css';
 
 const About = () => {
+    const [currentSection, setCurrentSection] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+
+    const sections = [
+        {
+            heading: 'Vision',
+            text: [
+                '"Bayang Nakangiti at Pinagpala, Ligtas, Handa, at Payapa."'
+            ]
+        },
+        {
+            heading: 'Mission',
+            text: [
+                'Iparamdam sa mga mamamayan ang maayos na pagbibigay ng mga batayang serbisyo publiko, nang may ngiti at sigasig;',
+                'Pasiglahin ang lokal na ekonomiya at bigyang suporta ang mga lokal na industriya na nagbibigay kabuhayan sa mga mamamayan nang hindi isinasaalang-alang ang kalikasan;',
+                'Pangalagaan ang kalikasan at palakasin ang kahandaan ng komunidad sa anumang sakuna.',
+                'Alalayan at bigyan kalakasan ang mga bulnerableng sektor sa ating bayan at gawing ligtas ang ating mga lansangan.',
+                'Palakasin ang bawat sektor ng lipunan upang sila mismo ang makatuwang ng ating pamahalaan sa paghubog ng mga polisiya at mga programang angkop sa kanilang mga pangangailangan;',
+                'Buksan ang kamalayan ng mga mamamayan sa kultura at pagkakakilanlan, tungo sa mas maalab na pagmamahal sa bayan.'
+            ]
+        },
+        {
+            heading: 'History',
+            text: [
+                'The Municipality of Taytay is a first class, densely populated municipality in the province of Rizal, Philippines. It is the "Woodworks and Garments Capital of the Philippines".',
+                'The National Competitiveness Council named Taytay as the "1st Most Competitive Municipality" in 2018. It was previously ranked as the 2nd Most Competitive Municipality in 2016 and the 3rd Richest Municipality in 2015.',
+                'Taytay can be reached from Metro Manila by C-6 Road and Ortigas Avenue, connecting it to neighboring cities like Pasig, Taguig, and Muntinlupa.'
+            ]
+        },
+        {
+            heading: 'Location',
+            text: [
+                'Taytay is 12 kilometres (7.5 mi) away from Pasig City, the former provincial seat of government of Rizal. It is accessible from various points in Metro Manila through multiple major roads.'
+            ]
+        }
+    ];
+
+    const handlePrev = () => {
+        setCurrentSection(currentSection === 0 ? sections.length - 1 : currentSection - 1);
+    };
+
+    const handleNext = () => {
+        setCurrentSection((currentSection + 1) % sections.length);
+    };
+
+    // Handle dragging
+    const handleMouseDown = (e) => {
+        setIsDragging(true);
+        setStartX(e.clientX);
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDragging) return;
+        const diff = startX - e.clientX;
+        if (diff > 50) {
+            handleNext();
+            setIsDragging(false);
+        } else if (diff < -50) {
+            handlePrev();
+            setIsDragging(false);
+        }
+    };
+
+    const handleMouseUp = () => setIsDragging(false);
 
     return (
-        <div className="about-container">
+        <div className="about-container" onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
+            <div className="about-title-bg">
+                <div className="about-content">
+                    <a className="about-title">ABOUT OUR MUNICIPALITY</a>
 
-            <div className='about-title-bg'>
+                    {/* Display the current section with sliding effect */}
+                    <div className="about-section">
+                        <b className="about-heading">{sections[currentSection].heading}</b>
+                        {sections[currentSection].text.map((paragraph, index) => (
+                            <p key={index} className="about-text">{paragraph}</p>
+                        ))}
+                    </div>
 
-                <div className='about-content'>
-                    
-                    <a className='about-title'>ABOUT TAYTAY RIZAL</a>
+                    {/* Left and Right Arrow Buttons */}
+                    <button className="arrow-button left-arrow" onClick={handlePrev}>
+                        ‹
+                    </button>
+                    <button className="arrow-button right-arrow" onClick={handleNext}>
+                        ›
+                    </button>
 
-                    <br></br>
-                    <b className='about-heading'>Vision</b>
-                    <a className='about-text'>"Bayang Nakangiti at Pinagpala, Ligtas, Handa, at Payapa."</a>
-
-                    <br></br>
-                    <b className='about-heading'>Mission</b>
-                    <a className='about-text'>Iparamdam sa mga mamamayan ang maayos na pagbibigay ng mga batayang serbisyo publiko, nang may ngiti at sigasig;</a>
-                    <a className='about-text'>Pasiglahin ang lokal na ekonomiya at bigyang suporta ang mga lokal na industriya na nagbibigay kabuhayan sa mga mamamayan nang hindi isinasaalang-alang ang kalikasan;</a>
-                    <a className='about-text'>Pangalagaan ang kalikasan at palakasin ang kahandaan ng komunidad sa anumang sakuna.</a>
-                    <a className='about-text'>Alalayan at bigyan kalakasan ang mga bulnerableng sektor sa ating bayan at gawing ligtas ang ating mga lansangan.</a>
-                    <a className='about-text'>Palakasin ang bawat sektor ng lipunan upang sila mismo ang makatuwang ng ating pamahalaan sa paghubog ng mga polisiya at mga programang angkop sa kanilang mga pangangailangan;</a>
-                    <a className='about-text'>Buksan ang kamalayan ng mga mamamayan sa kultura at pagkakakilanlan, tungo sa mas maalab na pagmamahal sa bayan.</a>
-                    
-                    <br></br>
-                    <b className='about-heading'>History</b>
-                    <a className='about-text'>
-                        The Municipality of Taytay is a first class, 
-                        densely populated municipality in the province of Rizal, Philippines. 
-                        The National Competitiveness Council has named Taytay as 
-                        the "1st Most Competitive Municipality (1st & 2nd Class)", 
-                        for year 2018, after Cainta. Conurbated with Metro Manila, 
-                        it is bounded by Cainta on the north, 
-                        Pasig City and Taguig City on the west, 
-                        Antipolo City in the East and Angono on the South. 
-                        It is the "Woodworks and Garments Capital of the Philippines". 
-                        While economically, demographically and politically qualified, 
-                        plans to convert it into a city was set aside, 
-                        pending social and administrative reforms in the municipality.
-                    </a>
-                    <a className='about-text'>
-                        The National Competitiveness Council 
-                        has named Taytay as the 2nd Most Competitive Municipality 
-                        (1st & 2nd Class) in 2016 from being 10th place in 2014 
-                        and being 3rd place in 2015.
-                    </a>
-
-                    <a className='about-text'>
-                        Taytay is one the municipalities in the Philippines that 
-                        has high financial capability with Php 622 million making 
-                        it the 3rd Richest Municipality in the Philippines in 2015.
-                        The municipality's population as of 2015 is 319,104 and is the 
-                        3rd Most Populous Municipality in the Philippines.
-                    </a>
-
-                    <a className='about-text'>
-                        Taytay can be reached from Metro Manila by C-6 Road passing from Parañaque, 
-                        Muntinlupa and Taguig on the south, Ortigas Avenue from Pasig City on the east, 
-                        and M.L. Quezon Avenue from Angono on the west.
-                    </a>
-
-                    <br></br>
-                    <b className='about-heading'>Location</b>
-                    <a className='about-text'>
-                        Taytay is 12 kilometres (7.5 mi) away from Pasig City, the former provincial seat of government 
-                        of Rizal. It is accessible from various points from Metro Manila through 
-                        the Ortigas Avenue Extension, Manila East Road, Felix Avenue (formerly Imelda Avenue), 
-                        A. Bonifacio Avenue, Manggahan Floodway, and Sumulong Highway.
-                    </a>
-                    
-
-
+                    {/* Slide Indicators */}
+                    <div className="slide-indicators">
+                        {sections.map((_, index) => (
+                            <span
+                                key={index}
+                                className={`indicator ${currentSection === index ? 'active' : ''}`}
+                                onClick={() => setCurrentSection(index)}
+                            ></span>
+                        ))}
+                    </div>
                 </div>
-
             </div>
-            
         </div>
     );
-
 };
 
 export default About;

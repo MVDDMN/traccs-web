@@ -603,19 +603,18 @@ const Dashboard = () => {
                                     aria-label={`Marker for ${report.type} report`}
                                     onKeyPress={(e) => {
                                         if (e.key === 'Enter') {
-                                            handleViewReport(entry); // Open the report details on Enter key press
+                                            handleViewReport(entry);
                                         }
                                     }}
                                 >
                                     <Tooltip direction="bottom" offset={[0, 10]}>
                                         Click to View {report.type} Report Details
-                                    </Tooltip> {/* Removed 'permanent' */}
+                                    </Tooltip>
                                     <Popup role="dialog" aria-labelledby={`report-details-${report._id}`}>
                                         <div>
-                                            <h3><b>Name:</b> {report.name}</h3>
-                                            <p><b>Type:</b> {report.type}</p>
+                                            <h3>{report.type} Report</h3>
+                                            <p> <b>Contact:</b> {report.phone}</p>
                                             <p><b>Status:</b> {report.status}</p>
-                                            <p><b>Location:</b> {report.location}</p>
                                             <p>
                                                 <b>Date and Time: </b>
                                                 {new Date(report.report_date_time).toLocaleString('en-US', {
@@ -656,7 +655,7 @@ const Dashboard = () => {
             {isDenyModalOpen && (
                 <div className="dashboard-deny-modal">
                     <div className="dashboard-deny-modal-content">
-                        <h3 className="dashboard-deny-modal-title">Provide a reason for denying the report</h3>
+                        <h3 className="dashboard-deny-modal-title">Provide a reason for declining the report</h3>
                         <textarea
                             value={denyDescription}
                             onChange={(e) => setDenyDescription(e.target.value)}
@@ -738,10 +737,7 @@ const Dashboard = () => {
                                         </div>
 
                                         <div className='dashboard-reports-text-box'>
-                                            <a className='dashboard-reports-title-text'>
-                                                Name:
-                                                <b className='dashboard-reports-content-text'>{selectedReport.name}</b>
-                                            </a>
+                                            
                                             {selectedReport.phone && (
                                                 <a className='dashboard-reports-title-text'>
                                                     Contact no.:
@@ -836,7 +832,7 @@ const Dashboard = () => {
                                             disabled={isSubmitting}
                                             title='Deny Button'
                                         >
-                                            {isSubmitting ? 'Processing...' : 'Deny'}
+                                            {isSubmitting ? 'Processing...' : 'Decline'}
                                         </button>
                                         <button
                                             onClick={isResponded ? archiveReport : respondToReport}

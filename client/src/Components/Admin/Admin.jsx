@@ -155,8 +155,7 @@ function Admin({ routes }) {
                   </div>
                 )}
               </button>
-              <a className='admin-title'>Welcome {userUsername}! |</a>
-              <a>Account: <b className='info-text'>{userBarangay}</b></a>
+              <a className='admin-title'>Welcome <b>{userUsername}</b> </a>
             </div>
             <div className='logout-admin-box'>
               <button className='logout-button' title="Logout" onClick={() => setShowModal(true)}>

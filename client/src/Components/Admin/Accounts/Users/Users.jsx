@@ -55,7 +55,10 @@ const Users = () => {
 
     // Apply sorting and filtering
     const filteredAndSortedUsers = users
-        .filter(user => user.fullName.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter(user =>
+            user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.phone.toLowerCase().includes(searchTerm.toLowerCase())
+        )
         .filter(user => user.status === filterStatus)
         .sort((a, b) => {
             if (sortOrder === 'newest') {
@@ -183,7 +186,7 @@ const Users = () => {
                             <thead>
                                 <tr>
                                     <th>User ID</th>
-                                    <th>Name</th>
+                                    <th>Contact</th>
                                     <th>E-mail</th>
                                     <th>Created At</th>
                                     <th>Status</th>
@@ -194,7 +197,7 @@ const Users = () => {
                                 {currentUsers.map(user => (
                                     <tr key={user._id}>
                                         <td>{user._id}</td>
-                                        <td>{user.fullName}</td>
+                                        <td>{user.phone}</td>
                                         <td>{user.email}</td>
                                         <td>
                                             {new Date
@@ -298,18 +301,6 @@ const Users = () => {
                                     <label className='users-image-title'>Valid ID Picture</label>
                                 </div>
 
-                            </div>
-
-                            <div className='users-text-box'>
-                                <div className='users-content-box'>
-                                    <label className='users-text'>Full Name:</label>
-                                    <p className='users-details-text'>{selectedUser.fullName}</p>
-                                </div>
-
-                                <div className='users-content-box'>
-                                    <label className='users-text'>Address:</label>
-                                    <p className='users-details-text'>{selectedUser.address}</p>
-                                </div>
                             </div>
 
                             <div className='users-text-box'>

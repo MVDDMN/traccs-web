@@ -74,8 +74,6 @@ const Live = () => {
     });
     const [selectedMonths, setSelectedMonths] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [monthDropdownOpen, setMonthDropdownOpen] = useState(false);
-    const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
 
     const years = Array.from(new Set(reports.map(report => new Date(report.report_date_time).getFullYear())));
 
@@ -218,41 +216,12 @@ const Live = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
-    const toggleMonthDropdown = () => {
-        setMonthDropdownOpen(!monthDropdownOpen);
-    };
-
-    const toggleYearDropdown = () => {
-        setYearDropdownOpen(!yearDropdownOpen);
-    };
-
     const handleCheckboxChange = (event) => {
         const { name, checked } = event.target;
         setSelectedTypes(prevState => ({
             ...prevState,
             [name]: checked
         }));
-    };
-
-    const handleMonthChange = (event) => {
-        const { value, checked } = event.target;
-        const monthFormatted = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(); // Ensure proper case
-
-        if (checked) {
-            setSelectedMonths([...selectedMonths, monthFormatted]);
-        } else {
-            setSelectedMonths(selectedMonths.filter(month => month !== monthFormatted));
-        }
-    };
-
-    const handleYearChange = (event) => {
-        const { value, checked } = event.target;
-
-        if (checked) {
-            setSelectedYears([...selectedYears, parseInt(value)]);
-        } else {
-            setSelectedYears(selectedYears.filter(year => year !== parseInt(value)));
-        }
     };
 
     const renderImage = (image) => {
@@ -289,43 +258,6 @@ const Live = () => {
                     )}
                 </div>
 
-                <div className="month-dropdown-box">
-                    <button onClick={toggleMonthDropdown} className="month-dropdown-button">Filter by Month</button>
-                    {monthDropdownOpen && (
-                        <div className="month-dropdown-content">
-                            {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map(month => (
-                                <label key={month}>
-                                    <input
-                                        type="checkbox"
-                                        value={month}
-                                        checked={selectedMonths.includes(month)}
-                                        onChange={handleMonthChange}
-                                    />
-                                    {month}
-                                </label>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <div className="year-dropdown-box">
-                    <button onClick={toggleYearDropdown} className="year-dropdown-button">Filter by Year</button>
-                    {yearDropdownOpen && (
-                        <div className="year-dropdown-content">
-                            {years.map(year => (
-                                <label key={year}>
-                                    <input
-                                        type="checkbox"
-                                        value={year}
-                                        checked={selectedYears.includes(year)}
-                                        onChange={handleYearChange}
-                                    />
-                                    {year}
-                                </label>
-                            ))}
-                        </div>
-                    )}
-                </div>
             </div>
 
             <div className='report-table-container'>
@@ -357,7 +289,7 @@ const Live = () => {
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
+                                    <th>Contact</th>
                                     <th>Type</th>
                                     <th>Date and Time</th>
                                     <th>Status</th>
@@ -368,7 +300,7 @@ const Live = () => {
                                 {currentReports.map(report => (
                                     <tr key={report._id}>
                                         <td>{report._id}</td>
-                                        <td>{report.name}</td>
+                                        <td>{report.phone}</td>
                                         <td>{report.type}</td>
                                         <td>
                                             {new Date(report.report_date_time).toLocaleString('en-US', {
@@ -415,7 +347,7 @@ const Live = () => {
             {isDenyModalOpen && (
                 <div className="live-deny-modal">
                     <div className="live-deny-modal-content">
-                        <h3 className="live-deny-modal-title">Provide a reason for denying the report</h3>
+                        <h3 className="live-deny-modal-title">Provide a reason for declining the report</h3>
                         <textarea
                             value={denyDescription}
                             onChange={(e) => setDenyDescription(e.target.value)}
@@ -487,10 +419,6 @@ const Live = () => {
                                             )}
                                         </div>
                                         <div className='live-reports-text-box'>
-                                            <a className='live-reports-title-text'>
-                                                Name:
-                                                <b className='live-reports-content-text'>{selectedReport.name}</b>
-                                            </a>
                                             {selectedReport.phone && (
                                                 <a className='live-reports-title-text'>
                                                     Contact no.:
@@ -605,7 +533,7 @@ const Live = () => {
                                             className='live-deny-modal-button'
                                             disabled={isSubmitting}
                                         >
-                                            {isSubmitting ? 'Processing...' : 'Deny'}
+                                            {isSubmitting ? 'Processing...' : 'Decline'}
                                         </button>
 
                                         <button
