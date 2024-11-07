@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Donate.css';
+import image1 from '../../Assets/bg-carousel/image1.jpg';
+import image2 from '../../Assets/bg-carousel/image2.jpg';
+import image3 from '../../Assets/bg-carousel/image3.jpg';
 
-const images = [
-    '/src/Components/Assets/bg-carousel/image1.jpg',
-    '/src/Components/Assets/bg-carousel/image2.jpg',
-    '/src/Components/Assets/bg-carousel/image3.jpg'
-];
+const images = [image1, image2, image3];
 
 const Donate = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);

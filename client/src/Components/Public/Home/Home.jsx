@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Home.css';
+import image1 from '../../Assets/bg-carousel/image1.jpg';
+import image2 from '../../Assets/bg-carousel/image2.jpg';
+import image3 from '../../Assets/bg-carousel/image3.jpg';
+
 
 const Home = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -9,19 +13,19 @@ const Home = () => {
     // Array of image paths and slide content
     const slides = [
         {
-            image: '/src/Components/Assets/bg-carousel/image1.jpg',
+            image: image1,
             title: 'Taytay, Rizal',
             description: 'Garments Capital of the Philippines'
         },
         {
-            image: '/src/Components/Assets/bg-carousel/image2.jpg',
+            image: image2,
             title: 'Discover Taytay!',
             description: 'Discover the charm of Taytay, Rizal, where modernity meets tradition. Explore our services and immerse yourself in the vastness of Taytay Tiangge.'
         },
         {
-            image: '/src/Components/Assets/bg-carousel/image3.jpg',
+            image: image3,
             title: 'Etymology',
-            description: 'The word TAYTAY has many origins. It is believed that the name came from words like tayutay, hintay-hintay, and itay-itay which arose when the village or barangay was doing trade with Chinese traders as did other lake towns around Laguna de Bay. Chinese sailing vessels would dock at Manila Bay to conduct trade with the thriving barangays of Maynilad and Tondo and go up the Pasig River to do more barter trade with lakeshore towns looping Laguna de Bay.The word TAYTAY has many origins. It is believed that the name came from words like tayutay, hintay-hintay, and itay-itay which arose when the village or barangay was doing trade with Chinese traders as did other lake towns around Laguna de Bay. Chinese sailing vessels would dock at Manila Bay to conduct trade with the thriving barangays of Maynilad and Tondo and go up the Pasig River to do more barter trade with lakeshore towns looping Laguna de Bay.'
+            description: 'The word TAYTAY has many origins...'
         }
     ];
 
