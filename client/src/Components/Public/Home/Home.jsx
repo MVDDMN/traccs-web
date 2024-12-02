@@ -34,26 +34,6 @@ const Home = () => {
         setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
     };
 
-    // Load Facebook SDK dynamically
-    useEffect(() => {
-        // Dynamically load the Facebook SDK script
-        const script = document.createElement('script');
-        script.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-
-        // When the script is loaded, initialize the Facebook SDK
-        script.onload = () => {
-            window.FB.XFBML.parse(); // Ensure that Facebook plugins are initialized
-        };
-
-        // Cleanup the script after the component unmounts
-        return () => {
-            document.body.removeChild(script);
-        };
-    }, []);
-
     return (
         <div className="home-container">
             <div className="carousel">
