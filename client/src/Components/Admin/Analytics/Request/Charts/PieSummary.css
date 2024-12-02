@@ -1,4 +1,4 @@
-.requests-pie-summary-container {
+.requests-line-summary-container {
     display: inline-flex;
     flex-direction: column;
     padding: 20px;
@@ -11,7 +11,7 @@
     overflow: hidden;
 }
 
-.requests-pie-title-box {
+.requests-line-title-box {
     display: inline-flex;
     flex-direction: column;
     width: 100%;
@@ -19,14 +19,14 @@
     padding: 5px;
 }
 
-.requests-pie-title {
+.requests-line-title {
     text-align: center;
     font-size: 24px;
     font-weight: bold;
     color: #333;
 }
 
-.requests-pie-chart-canvas {
+.requests-line-chart-canvas {
     width: auto;
     height: auto;
     max-height: 90%;
@@ -35,25 +35,25 @@
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
-    .requests-pie-summary-container {
+    .requests-line-summary-container {
         height: 400px;
     }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
-    .requests-pie-summary-container {
+    .requests-line-summary-container {
         height: 300px;
     }
 }
 
-/* For screen sizes 1800px and below */
+/* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
-    .requests-pie-summary-container {
+    .requests-line-summary-container {
         height: 220px;
         width: 40%;
     }
-    .requests-pie-title {
+    .requests-line-title {
         font-size: 16px;
     }
 }

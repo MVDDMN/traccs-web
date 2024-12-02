@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Pie } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';  // Importing Line chart instead of Pie
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import './ReportSummary.css';
+
+// Register required Chart.js components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
@@ -9,14 +21,17 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
 
 const ReportSummary = ({ dateFrom, dateTo }) => {
     const [chartData, setChartData] = useState({
-        labels: [],
+        labels: [], // Dates or categories for the x-axis
         datasets: [
             {
                 label: 'Total Reports',
-                data: [],
-                backgroundColor: [],
-                borderColor: '#fff',
-                borderWidth: 1,
+                data: [],  // Data to be plotted on the y-axis
+                borderColor: '#007bff',  // Line color
+                backgroundColor: 'rgba(0, 123, 255, 0.1)', // Line fill color
+                borderWidth: 2,
+                tension: 0.4,  // Smooth line curve
+                pointRadius: 5,  // Radius of points
+                pointHoverRadius: 7, // Hover radius
             }
         ],
     });
@@ -26,7 +41,7 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
     const [collisionTypeDetails, setCollisionTypeDetails] = useState('');
     const [medicalTypeDetails, setMedicalTypeDetails] = useState('');
     const [hazardTypeDetails, setHazardTypeDetails] = useState('');
-    const [assistanceTypeDetails, setAssistanceTypeDetails] = useState(''); // Assistance type breakdown
+    const [assistanceTypeDetails, setAssistanceTypeDetails] = useState('');
 
     useEffect(() => {
         const fetchReportSummary = async () => {
@@ -102,14 +117,17 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                     });
 
                     setChartData({
-                        labels: mainTypes,
+                        labels: mainTypes,  // X-axis labels (types of reports)
                         datasets: [
                             {
                                 label: 'Total Reports',
-                                data: mainData,
-                                backgroundColor: mainColors,
-                                borderColor: '#fff',
-                                borderWidth: 1,
+                                data: mainData,  // Y-axis data (total reports)
+                                borderColor: mainColors,  // Line color per type
+                                backgroundColor: 'rgba(0, 123, 255, 0.1)',  // Transparency for the area under the line
+                                borderWidth: 2,
+                                tension: 0.4,  // Smooth line
+                                pointRadius: 5,  // Points on the line
+                                pointHoverRadius: 7,  // Points on hover
                             }
                         ],
                     });
@@ -145,7 +163,7 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
             ) : noData ? (
                 <p>No data available for the selected date range.</p>
             ) : (
-                <Pie
+                <Line
                     data={chartData}
                     options={{
                         responsive: true,
@@ -179,8 +197,23 @@ const ReportSummary = ({ dateFrom, dateTo }) => {
                                 position: 'top',
                             },
                         },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Report Type',  // X-axis label
+                                },
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of Reports',  // Y-axis label
+                                },
+                                beginAtZero: true,  // Ensure the Y-axis starts at zero
+                            },
+                        },
                     }}
-                    className="report-summary-pie-chart-canvas"
+                    className="report-summary-line-chart-canvas"
                 />
             )}
         </div>

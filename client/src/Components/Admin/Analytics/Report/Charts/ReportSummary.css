@@ -6,6 +6,9 @@
     border-radius: 8px;
     background-color: #ffffff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .report-summary-title-box {
@@ -14,6 +17,7 @@
     width: 100%;
     justify-content: center;
     align-items: center;
+    margin-bottom: 15px; /* Space between title and chart */
 }
 
 .report-summary-title {
@@ -24,9 +28,10 @@
     color: #333;
 }
 
-.report-summary-pie-chart-canvas {
-    max-height: 420px;
+.report-summary-line-chart-canvas {
     width: 100%;
+    height: 100%;
+    max-height: 400px;
 }
 
 /* Media Queries for Responsiveness */
@@ -34,7 +39,7 @@
     .report-summary-container {
         height: 400px;
     }
-    .report-summary-pie-chart-canvas {
+    .report-summary-line-chart-canvas {
         max-height: 350px;
     }
 }
@@ -43,7 +48,7 @@
     .report-summary-container {
         height: 300px;
     }
-    .report-summary-pie-chart-canvas {
+    .report-summary-line-chart-canvas {
         max-height: 250px;
     }
 }
@@ -56,7 +61,7 @@
     .report-summary-title {
         font-size: 16px;
     }
-    .report-summary-pie-chart-canvas {
+    .report-summary-line-chart-canvas {
         max-height: 200px;
     }
 }
