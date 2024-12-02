@@ -145,14 +145,12 @@ const ReportFrequency = ({ dateFrom, dateTo }) => {
                                         display: true,
                                         text: 'Months',
                                     },
-                                    stacked: true,
                                 },
                                 y: {
                                     title: {
                                         display: true,
                                         text: 'Number of Reports',
                                     },
-                                    stacked: true,
                                     beginAtZero: true,
                                 },
                             },

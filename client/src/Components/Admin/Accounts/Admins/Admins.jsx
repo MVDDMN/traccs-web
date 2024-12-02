@@ -29,7 +29,7 @@ const Admins = () => {
         password: '',
         barangay: '',
         type: '',
-        contact: '+63' // Initialize contact with a valid default value
+        contact: '+63'
     });
     const [selectedAdminId, setSelectedAdminId] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -399,25 +399,6 @@ const Admins = () => {
                                                 onBlur={() => setErrors({ ...errors, email: validateEmail(formData.email) })}
                                             />
                                         </div>
-                                        <div className='admin-text-box'>
-                                            <label className='admin-label'>Contact Number:</label>
-                                            <div className="contact-input-group">
-                                                <span className="contact-prefix">+63</span>
-                                                <input
-                                                    type="tel"
-                                                    name="contact"
-                                                    className="admin-input"
-                                                    value={formData.contact ? formData.contact.replace(/^\+63/, '') : ''}
-                                                    onChange={(e) => {
-                                                        const newValue = e.target.value.replace(/^0+/, '');
-                                                        setFormData({ ...formData, contact: `+63${newValue}` });
-                                                    }}
-                                                    maxLength={10} // Limit to 10 digits
-                                                    placeholder="9xxxxxxxxx"
-                                                />
-                                            </div>
-                                        </div>
-
                                     </div>
                                     <div className='admin-content-cont'>
                                         <div className='admin-text-box'>
@@ -442,6 +423,26 @@ const Admins = () => {
                                                 className="admin-input"
                                                 onBlur={() => setErrors({ ...errors, password: validatePassword(formData.password) })}
                                             />
+                                        </div>
+                                    </div>
+
+                                    <div className='admin-content-cont'>
+                                        <div className='admin-text-box'>
+                                            <label className='admin-label'>Contact Number:</label>
+                                            <div className="contact-input-group">
+                                                <input
+                                                    type="tel"
+                                                    name="contact"
+                                                    className="contact-input"
+                                                    value={formData.contact ? formData.contact.replace(/^\+63/, '') : ''}
+                                                    onChange={(e) => {
+                                                        const newValue = e.target.value.replace(/^0+/, '');
+                                                        setFormData({ ...formData, contact: `+63${newValue}` });
+                                                    }}
+                                                    maxLength={10} // Limit to 10 digits
+                                                    placeholder="+639xxxxxxxxx"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 

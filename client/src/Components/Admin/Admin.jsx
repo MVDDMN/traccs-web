@@ -99,7 +99,7 @@ function Admin({ routes }) {
       await axios.post(`${apiBaseUrl}/api/logout`, {}, { withCredentials: true });
       sessionStorage.removeItem('userId');
       resetUserState();
-      navigate("/login");
+      navigate("/"); //Route to /login Legacy Login if problems exist.
     } catch (error) {
       console.error("Error logging out:", error);
     }

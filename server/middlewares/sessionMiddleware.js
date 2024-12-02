@@ -8,7 +8,7 @@ const sessionMiddleware = session({
     rolling: true,
     cookie: {
         secure: process.env.NODE_ENV === 'production', // Set cookie security based on environment
-        maxAge: 1800000, // 30 minutes
+        maxAge: 28800000, // 8 hours in milliseconds
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
         httpOnly: true,
     },

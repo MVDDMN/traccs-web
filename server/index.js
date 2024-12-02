@@ -17,6 +17,7 @@ const logsRoutes = require("./routes/logsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const accountRoutes = require("./routes/accountRoutes");
 const analyticRoutes = require("./routes/analyticRoutes");
+const otpRoutes = require("./routes/otpRoutes");
 
 const path = require('path');  // Import path module
 const app = express();
@@ -90,6 +91,7 @@ app.use("/api", logsRoutes);
 app.use("/api", notificationRoutes);
 app.use("/api", accountRoutes);
 app.use("/api", analyticRoutes);
+app.use("/api", otpRoutes);
 
 // Serve static files from the Vite build directory
 app.use(express.static(path.join(__dirname, 'dist')));

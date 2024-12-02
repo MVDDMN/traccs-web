@@ -1,42 +1,41 @@
+/* Home Page Container */
 .home-container {
     display: flex;
     flex-direction: column;
+    height: auto;
     width: 100%;
 }
 
+.carousel-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Carousel Styles */
 .carousel {
+    display: flex;
+    height: 62vh;
     width: 100%;
-    height: 90vh;
     position: relative;
     overflow: hidden;
 }
 
+/* Slide Transition */
 .carousel-track {
     display: flex;
-    transition: transform 0.5s ease-in-out; /* Smooth sliding animation */
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
     width: 100%;
 }
 
+/* Each Slide */
 .carousel-slide {
-    min-width: 100%; /* Each slide takes up the full width of the carousel */
+    min-width: 100%;
     height: 100%;
     position: relative;
 }
 
-/* Blurred and semi-opaque background */
-.carousel-blur {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    filter: blur(15px); 
-    opacity: 0.4; 
-    z-index: 1;
-}
-
+/* Dark Overlay */
 .carousel-overlay {
     position: absolute;
     top: 0;
@@ -47,14 +46,15 @@
     z-index: 2;
 }
 
+/* Slide Image */
 .carousel-image {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     z-index: 3;
 }
 
-/* Text overlay for title and description aligned to top left */
+/* Text Overlay */
 .carousel-text {
     position: absolute;
     top: 20px;
@@ -104,11 +104,40 @@
     background-color: #fff;
 }
 
+/* Arrow Buttons */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2em;
+    color: rgba(255, 255, 255, 0.6);
+    border: none;
+    cursor: pointer;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.carousel-arrow:hover {
+    color: rgba(255, 255, 255, 1);
+}
+
+.carousel-arrow.left {
+    left: 20px;
+}
+
+.carousel-arrow.right {
+    right: 20px;
+}
+
+/* Home Title Section */
 .home-title-bg {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 10px;
     background-color: #0c1f64;
 }
 
@@ -118,14 +147,13 @@
 
 .home-tagline {
     color: #FFF;
-    font-size: 3em;
+    font-size: 2em;
     font-weight: 700;
     line-height: normal;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-
     .carousel {
         height: 400px;
     }
@@ -145,13 +173,18 @@
     .carousel-title {
         font-size: 1.5em;
     }
-    
+
     .carousel-description {
         font-size: 0.6em;
     }
 
     .home-tagline {
         font-size: 12px;
-        padding: 10px;
+        padding: 5px;
+    }
+
+
+    .home-social-bg {
+        display: none;
     }
 }

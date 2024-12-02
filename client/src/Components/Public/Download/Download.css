@@ -22,7 +22,7 @@
 .download-box {
     display: inline-flex;
     flex-direction: row;
-    height: auto;
+    height: 68.5vh;
     width: auto;
 }
 
@@ -58,10 +58,10 @@
 }
 
 .download-img {
-    padding-top: 100px;
+    padding-top: 50px;
     display: inline-flex;
     flex-direction: column;
-    width: 700px;
+    width: 600px;
 }
 
 .download-btn {
@@ -90,32 +90,54 @@
 /* Media Queries for Responsiveness */
 /* For screen sizes 1800px and below */
 @media (max-width: 1800px) {
+    .download-img {
+        width: 500px;
+    }
 }
 
 /* For screen sizes 1600px and below */
 @media (max-width: 1600px) {
+    .download-img {
+        width: 450px;
+    }
 }
 
 /* For screen sizes 1300px and below */
 @media (max-width: 1300px) {
     .download-img {
-        height: 700px;
-        width: 600px;
+        width: 400px;
+    }
+    .download-info-box {
+        height: 50%;
+        padding: 50px;
+        gap: 50px;
+    }
+
+    .download-info {
+        font-size: 24px;
+    }
+    .download-btn {
+        width: 150px;
+        border: 2px solid #0E267C;
+        padding: 10px;
+        font-size: 10px;
+        gap:10px;
     }
 }
 
 @media (max-width: 768px) {
 
-    .download-info {
-        font-size: 10px;
+    .download-info-box {
+        height: 50%;
+        width: 80%;
     }
 
-    .download-info-box {
-        padding: 20px;
+    .download-info {
+        font-size: 9px;
     }
 
     .download-btn {
-        width: 150px;
+        width: 120px;
         border: 2px solid #0E267C;
         padding: 10px;
         font-size: 10px;
@@ -124,6 +146,6 @@
 
     .download-img {
         height: 100%;
-        width: 95%;
+        width: 100%;
     }
 }

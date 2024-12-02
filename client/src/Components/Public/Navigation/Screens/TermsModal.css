@@ -1,0 +1,87 @@
+/* TermsModal.css */
+
+/* Overlay background */
+.new-login-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal box container */
+.new-login-modal-box {
+    background-color: white;
+    padding: 30px;
+    width: 50%;
+    border-radius: 10px;
+    position: relative;
+    overflow-y: auto;
+    max-height: 80vh;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Title styles */
+.new-login-modal-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Heading 3 styles */
+.new-login-modal-heading {
+    font-size: 22px;
+    margin-top: 20px;
+    color: #444;
+}
+
+/* Paragraph text styles */
+.new-login-modal-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    text-align: justify;
+    /* Justify text for better readability */
+    margin-bottom: 15px;
+}
+
+/* Strong emphasis for important text */
+.new-login-modal-strong {
+    font-weight: bold;
+    color: #d9534f;
+}
+
+/* Scrollable content for longer terms */
+.new-login-modal-content {
+    max-height: 70vh;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.new-login-modal-btn-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+/* Close button for modal */
+.new-login-modal-close-btn {
+    background-color: #0E267C;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.new-login-modal-close-btn:hover {
+    background-color: #0A1B57;
+}

@@ -1,28 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './Donate.css';
-import image1 from '../../Assets/bg-carousel/image1.jpg';
-import image2 from '../../Assets/bg-carousel/image2.jpg';
-import image3 from '../../Assets/bg-carousel/image3.jpg';
-
-const images = [image1, image2, image3];
+import image1 from '../../Assets/bg-carousel/image2.jpg';
 
 const Donate = () => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-        }, 5000); // Change image every 5 seconds
-
-        return () => clearInterval(interval);
-    }, []);
-
     return (
         <div className="donate-container">
             <div
                 className="background-image"
-                style={{ backgroundImage: `url(${images[currentImageIndex]})` }}
+                style={{ backgroundImage: `url(${image1})` }}
             ></div>
             <div className="donate-content">
                 <div className="donate-content-container">

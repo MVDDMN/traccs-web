@@ -3,7 +3,6 @@ import './Footer.css';
 import logo1 from '../../Assets/logo1.png';
 import logo2 from '../../Assets/logo2.png';
 import logo3 from '../../Assets/logo3.png';
-import facebook from '../../Assets/facebook.png';
 
 const Footer = () => {
   return (
@@ -15,10 +14,6 @@ const Footer = () => {
             <img src={logo1} alt="Logo1"/>
             <img src={logo2} alt="Logo2"/>
             <img src={logo3} alt="Logo3"/>
-        </div>
-
-        <div className='public-footer-socmed'>
-            <img src={facebook} alt="Facebook"/><a href='https://www.facebook.com/TaytayCommandCenterMdrrmo' className='footer-link'>Facebook</a>
         </div>
 
         <div className='public-footer-copyright'>

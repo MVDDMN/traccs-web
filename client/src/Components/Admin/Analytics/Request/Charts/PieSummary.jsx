@@ -8,37 +8,15 @@ const apiBaseUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_PROD_API_BASE_URL
     : import.meta.env.VITE_API_BASE_URL;
 
-const PieSummary = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo as props
+const PieSummary = ({ dateFrom, dateTo }) => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
             {
                 label: 'Total Requests',
                 data: [],
-                backgroundColor: [
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 205, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                    'rgba(255, 159, 64, 0.6)',
-                ],
-                borderColor: [
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 205, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                ],
+                backgroundColor: [],
+                borderColor: [],
                 borderWidth: 1,
             },
         ],
@@ -60,36 +38,28 @@ const PieSummary = ({ dateFrom, dateTo }) => {  // Accept dateFrom and dateTo as
                     const barangays = data.map(item => item._id);
                     const totalRequests = data.map(item => item.totalRequests);
 
+                    // Define custom colors for each Barangay with color names in comments
+                    const barangayColors = {
+                        'MDRRMO': 'rgba(75, 192, 192, 0.6)', // Teal
+                        'Dolores': 'rgba(153, 102, 255, 0.6)', // Purple
+                        'Muzon': 'rgba(255, 159, 64, 0.6)', // Orange
+                        'San Isidro': 'rgba(54, 162, 235, 0.6)', // Blue
+                        'San Juan': 'rgba(255, 99, 132, 0.6)', // Red
+                        'Santa Ana': 'rgba(255, 205, 86, 0.6)', // Yellow
+                    };
+
+                    // Generate the background colors and border colors for each barangay
+                    const backgroundColor = barangays.map(barangay => barangayColors[barangay] || 'rgba(169, 169, 169, 0.6)');
+                    const borderColor = barangays.map(barangay => barangayColors[barangay] || 'rgba(169, 169, 169, 1)');
+
                     setChartData({
                         labels: barangays,
                         datasets: [
                             {
                                 label: 'Total Requests',
                                 data: totalRequests,
-                                backgroundColor: [
-                                    'rgba(75, 192, 192, 0.6)',
-                                    'rgba(153, 102, 255, 0.6)',
-                                    'rgba(255, 159, 64, 0.6)',
-                                    'rgba(54, 162, 235, 0.6)',
-                                    'rgba(255, 99, 132, 0.6)',
-                                    'rgba(153, 102, 255, 0.6)',
-                                    'rgba(255, 205, 86, 0.6)',
-                                    'rgba(75, 192, 192, 0.6)',
-                                    'rgba(153, 102, 255, 0.6)',
-                                    'rgba(255, 159, 64, 0.6)',
-                                ],
-                                borderColor: [
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 205, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)',
-                                ],
+                                backgroundColor: backgroundColor,
+                                borderColor: borderColor,
                                 borderWidth: 1,
                             },
                         ],

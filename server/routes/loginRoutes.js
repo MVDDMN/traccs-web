@@ -187,7 +187,7 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
-// Login Module - Login
+// Login Module - Login Legacy
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -209,6 +209,55 @@ router.post("/login", async (req, res) => {
     }
 });
 
+// Login Module - Login New
+router.post("/login-new", async (req, res) => {
+    const { phoneNumber, password, barangay } = req.body; // Accept phone number, password, and barangay
+
+    try {
+        // Check if the user exists using 'contact' (phoneNumber)
+        const user = await adminModel.findOne({ contact: phoneNumber });
+
+        if (user) {
+            // Check if the barangay matches (Optional step depending on your use case)
+            if (user.barangay !== barangay) {
+                return res.status(401).json("Incorrect barangay for this phone number.");
+            }
+
+            // Validate the password
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+
+            if (isPasswordValid) {
+                // Check if user status is "new"
+                if (user.status === "new") {
+                    // Return response with message and status indicating that password change is required
+                    return res.status(200).json({
+                        message: "Success",
+                        userId: user._id, // Send user ID to frontend
+                        status: "new", // Indicate that the status is "new" and password change is required
+                    });
+                } else {
+                    // If the status is not "new", proceed as usual
+                    req.session.user = user; // Set the user session
+                    return res.status(200).json({
+                        message: "Success",
+                        userId: user._id, // Send user ID on success
+                        status: "existing", // Indicate the status is "existing"
+                    });
+                }
+            } else {
+                // Invalid password
+                return res.status(401).json("Invalid phone number or password");
+            }
+        } else {
+            // User not found
+            return res.status(401).json("Invalid phone number or password");
+        }
+    } catch (err) {
+        console.error("Login error:", err);
+        res.status(500).json("Internal server error");
+    }
+});
+
 // Login Module - Fetch user data
 router.get("/user/:userId", async (req, res) => {
     const userId = req.params.userId;
@@ -221,7 +270,9 @@ router.get("/user/:userId", async (req, res) => {
             name: user.name,
             barangay: user.barangay,
             type: user.type,
-            username: user.username
+            username: user.username,
+            email: user.email,
+            contact: user.contact
         });
     } catch (err) {
         console.error("Error fetching user data:", err);

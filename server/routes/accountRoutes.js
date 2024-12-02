@@ -64,7 +64,8 @@ router.post('/administrators', async (req, res) => {
             password: hashedPassword,
             barangay,
             type,
-            contact // Save contact
+            contact,
+            status: "new"
         });
 
         await newAdmin.save();
@@ -96,7 +97,10 @@ router.put('/administrators/:id', async (req, res) => {
         admin.username = username || admin.username;
         admin.barangay = barangay || admin.barangay;
         admin.type = type || admin.type;
-        admin.contact = contact || admin.contact; // Correct the typo
+        admin.contact = contact || admin.contact;
+        
+        // Set the status to "new"
+        admin.status = "new";
 
         const updatedAdmin = await admin.save();
 

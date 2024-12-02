@@ -9,7 +9,9 @@ const Contact = () => {
     return (
         <div className="contact-container">
             <div className='contact-title-bg'>
+
                 <div className='contact-content'>
+
                     <div className='contact-details'>
                         <div className='contact-title-text'>
                             <a>Contact Us</a>
@@ -48,7 +50,17 @@ const Contact = () => {
                         </iframe>
                     </div>
                 </div>
+
+                <div className='contact-other-content'>
+
+                    <div className='conctact-other-container'>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
     );
 };

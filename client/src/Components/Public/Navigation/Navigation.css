@@ -76,27 +76,29 @@
 }
 
 /* Button styles */
-.public-download-btn,
-.public-login-btn {
+.public-download-btn {
     display: inline-block;
     padding: 10px 20px;
     border-radius: 5px;
     text-decoration: none;
     border: 2px solid #0E267C;
-}
-
-.public-download-btn {
     background-color: #fff;
     color: #0E267C;
 }
 
-.public-download-btn:hover {
-    background-color: #0A1B57;
+.public-login-btn {
+    display: inline-block;
+    padding: 13px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    border: 2px solid #0E267C;
+    background-color: #0E267C;
     color: #fff;
+    cursor: pointer;
 }
 
-.public-login-btn {
-    background-color: #0E267C;
+.public-download-btn:hover {
+    background-color: #0A1B57;
     color: #fff;
 }
 
@@ -140,6 +142,23 @@
     display: flex;
 }
 
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .public-nav-list {
+        padding: 20px;
+        gap: 5px;
+    }
+    .public-nav-text {
+        font-size: 12px;
+        width: 65px;
+    }
+    
+    .public-active-link {
+        font-size: 12px;
+        width: 65px;
+    }
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
     .public-nav-list {
@@ -174,7 +193,8 @@
 
     .public-button-cont.open {
         visibility: visible;
-        max-height: 500px; /* Adjust as needed */
+        max-height: 500px;
+        /* Adjust as needed */
         transition: max-height 0.3s ease-in, visibility 0.3s ease-in;
         border: none;
     }
@@ -209,7 +229,7 @@
         transition: 0.1s ease-in-out;
         background-color: #f0f0f0;
     }
-    
+
     .public-nav-text {
         text-align: left;
     }

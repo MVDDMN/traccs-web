@@ -1,10 +1,12 @@
+// Navigation.js
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Navigation.css';
+import LoginModal from './Screens/LoginModal.jsx'; // Import the LoginModal
 
 const Navigation = () => {
-
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false); // State for modal visibility
 
   const toggleDrawer = () => {
     setDrawerOpen(prevState => !prevState);
@@ -16,13 +18,21 @@ const Navigation = () => {
     }
   };
 
+  const openLoginModal = () => {
+    setLoginModalOpen(true); // Open the login modal
+  };
+
+  const closeLoginModal = () => {
+    setLoginModalOpen(false); // Close the login modal
+  };
+
   useEffect(() => {
     window.addEventListener('scroll', closeDrawerOnScroll);
     return () => {
       window.removeEventListener('scroll', closeDrawerOnScroll);
     };
   }, [drawerOpen]);
-  
+
   return (
     <div className="public-nav-cont">
       <div className="public-nav-list">
@@ -42,7 +52,7 @@ const Navigation = () => {
 
           <div className='public-button-sect2'>
             <NavLink to="/download" className="public-download-btn">Download TRACCS</NavLink>
-            <NavLink to="/loading" className="public-login-btn">Login</NavLink>
+            <button className="public-login-btn" onClick={openLoginModal}>Login</button> {/* Trigger modal */}
           </div>
         </div>
       </div>
@@ -57,8 +67,11 @@ const Navigation = () => {
           <a>S</a><b>ystem</b>
         </div>
       </div>
+
+      {/* Render the LoginModal and pass the visibility state */}
+      <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
     </div>
   );
-}
+};
 
 export default Navigation;

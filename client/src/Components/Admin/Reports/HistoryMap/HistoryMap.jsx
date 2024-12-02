@@ -371,7 +371,7 @@ const HistoryMap = () => {
                             >
                                 <Popup role="dialog" aria-labelledby="marker-popup">
                                     <div>
-                                        <h3>{entry.name}</h3>
+                                        <h3>{entry.type} Report</h3>
                                         <p><b>Type:</b> {entry.type}</p>
                                         <p><b>Status:</b> {entry.status}</p>
                                         <p><b>Location:</b> {entry.location}</p>
@@ -463,10 +463,6 @@ const HistoryMap = () => {
                                             </a>
                                         </div>
                                         <div className='historymap-reports-text-box'>
-                                            <a className='historymap-reports-title-text'>
-                                                Name:
-                                                <b className='historymap-reports-content-text'>{selectedHistory.name}</b>
-                                            </a>
                                             {selectedHistory.phone && (
                                                 <a className='historymap-reports-title-text'>
                                                     Contact no.:

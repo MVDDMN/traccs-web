@@ -309,7 +309,7 @@ const Archive = () => {
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
+                                    <th>Contact</th>
                                     <th>Type</th>
                                     <th>Date and Time</th>
                                     <th>Status</th>
@@ -320,7 +320,7 @@ const Archive = () => {
                                 {currentArchives.map(archive => (
                                     <tr key={archive._id}>
                                         <td>{archive._id}</td>
-                                        <td>{archive.name}</td>
+                                        <td>{archive.phone}</td>
                                         <td>{archive.type}</td>
                                         <td>{new Date(archive.report_date_time).toLocaleString('en-US', {
                                             year: 'numeric',
@@ -409,10 +409,6 @@ const Archive = () => {
                                             </a>
                                         </div>
                                         <div className='archive-reports-text-box'>
-                                            <a className='archive-reports-title-text'>
-                                                Name:
-                                                <b className='archive-reports-content-text'>{selectedArchive.name}</b>
-                                            </a>
                                             {selectedArchive.phone && (
                                                 <a className='archive-reports-title-text'>
                                                     Contact No.:

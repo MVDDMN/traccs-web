@@ -7,23 +7,26 @@
 
 .contact-title-bg {
     background-color: #091647;
-    height: 100vh;
+    height: 68.5vh;
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 30px;
 }
 
 .contact-content {
     display: flex;
+    flex-direction: row;
     gap: 30px;
-    width: 100%;
-    height: 70%;
-    max-width: 1400px;
+    width: 80%;
+    height: 90%;
     align-items: stretch;
 }
 
 .contact-details {
+    width: 40%;
     flex: 1;
     padding: 30px;
     background-color: #fff;
@@ -70,6 +73,18 @@
     width: 100%;
     height: 100%;
     border-radius: 10px;
+}
+
+/* For screen sizes 1300px and below */
+@media (max-width: 1300px) {
+    .contact-item {
+        font-size: 18px;
+    }
+    
+    .contact-item img {
+        width: 35px;
+        height: 35px;
+    }
 }
 
 /* Responsive adjustments */

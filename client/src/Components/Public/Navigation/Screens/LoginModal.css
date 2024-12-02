@@ -1,0 +1,356 @@
+/* LoginModal.css */
+.login-modal-overlay {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.login-modal-box {
+    display: flex;
+    flex-direction: row;
+    height: 80%;
+    width: 80%;
+}
+
+.login-modal {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 20px 20px 0;
+    height: auto;
+    width: 50%;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.login-modal-sign-box {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+}
+
+.login-modal-sign {
+    font-size: 18px;
+}
+
+.login-modal-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    gap: 20px;
+}
+
+.login-modal-input-container {
+    display: flex;
+    flex-direction: row;
+    height: 8%;
+    width: auto;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 10px;
+    gap: 5px;
+}
+
+.login-modal-input-box {
+    height: auto;
+    width: 100%;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+}
+
+.login-modal-button {
+    height: 10%;
+    width: 100%;
+    padding: 20px;
+    background-color: #0E267C;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-modal-button:hover {
+    background-color: #0A1B57;
+}
+
+.login-modal-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.login-modal-button.loading {
+    pointer-events: none;
+    padding: 20px;
+}
+
+.spinner {
+    display: flex;
+    flex-direction: column;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #ffffff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.login-modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.login-modal-close-btn:hover {
+    color: black;
+    font-weight: bold;
+}
+
+.login-modal-logos-container {
+    display: flex;
+    flex-direction: row;
+    height: 20%;
+    width: 100%;
+    justify-content: center;
+}
+
+.login-modal-icons {
+    height: 100%;
+    width: 20%;
+}
+
+.login-modal-show-password:hover {
+    filter: brightness(0.2);
+}
+
+/* Left Section with Wave Effect */
+.login-modal-left-box {
+    position: relative;
+    width: 50%;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    border-radius: 20px 0 0 20px;
+}
+
+.login-modal-left-box::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 20%;
+    background: #0E267C;
+    border-radius: 0 0 100% 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.login-modal-left-box::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 25%;
+    background: #0E267C;
+    border-radius: 90% 0 0 0;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.login-modal-left-box::before {
+    top: 0; 
+    left: 0;
+    right: 0;
+}
+
+.login-modal-left-box::after {
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.login-modal-title-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+}
+
+.login-modal-title-text {
+    color: #0E267C;
+    text-align: center;
+    font-size: 64px;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.login-modal-title-acronym {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: normal;
+}
+
+/* Keyframes for sliding down (when error shows) */
+@keyframes slideUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Keyframes for sliding up (when error hides) */
+@keyframes slideDownOut {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+}
+
+/* Error message container */
+.login-modal-error {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    z-index: 1100;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.5s ease-in-out;
+}
+
+/* Fade-out animation (when error hides) */
+.login-modal-error.fade-out {
+    animation: slideDownOut 0.5s ease-in-out forwards;
+}
+
+/* Close button styling */
+.login-modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.login-modal-close-btn:hover {
+    color: gray;
+}
+
+/*Forgot Password*/
+.login-modal-options-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 20%;
+    width: 100%;
+}
+
+.login-modal-terms-box {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #0E267C;
+    background-color: #0E267C;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.login-modal-terms-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.login-modal-terms-btn:hover {
+    text-decoration: underline;
+}
+
+.login-modal-forgot-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    width: auto;
+    color: black;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.login-modal-forgot-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: red;
+    transition: width 0.3s ease;
+}
+
+.login-modal-forgot-btn:hover {
+    color: red;
+}
+
+.login-modal-forgot-btn:hover::after {
+    width: 100%;
+}
+
+/*Login Modal Dropdown*/
+.login-modal-dropdown {
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: none;
+    border: none;
+}

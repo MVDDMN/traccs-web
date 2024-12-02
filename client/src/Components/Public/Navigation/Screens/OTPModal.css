@@ -1,0 +1,106 @@
+/* Modal Overlay */
+.otp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999; /* Ensures it's above other content */
+}
+
+/* Modal Content */
+.otp-modal {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.otp-modal-button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Button Styling */
+.otp-modal-button {
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #0E267C;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.otp-modal-button:hover {
+    background-color: #0A1B57;
+}
+
+.otp-modal-button:disabled {
+    background-color: #0A1B57;
+    cursor: not-allowed;
+}
+
+/* Input Styling */
+.otp-modal-input {
+    width: 80%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    align-self: center;
+}
+
+/* Message Styling */
+.otp-modal-message {
+    color: #f44336; /* Red for errors */
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.otp-modal-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    gap: 10px;
+}
+
+.otp-modal-input-container {
+    display: flex;
+    flex-direction: row;
+    height: 10%;
+    width: auto;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 10px;
+    gap: 5px;
+}
+
+.otp-modal-pass-input {
+    height: auto;
+    width: 100%;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+}
+
+.otp-modal-password-error {
+    color: #f44336;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.otp-modal-show-password:hover {
+    filter: brightness(0.2);
+}

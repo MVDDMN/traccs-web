@@ -11,7 +11,7 @@ export default defineConfig({
   server: {
     headers: {
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-      'Content-Security-Policy': "default-src 'self'; img-src 'self' data: https://a.basemaps.cartocdn.com https://b.basemaps.cartocdn.com https://c.basemaps.cartocdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:3001 https://traccs-web.onrender.com; frame-src 'self' https://www.google.com; frame-ancestors 'none';",
+      'Content-Security-Policy': "default-src 'self'; img-src 'self' data: https://a.basemaps.cartocdn.com https://b.basemaps.cartocdn.com https://c.basemaps.cartocdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://connect.facebook.net; connect-src 'self' http://localhost:3001 https://traccs-web.onrender.com; frame-src 'self' https://www.google.com https://www.facebook.com https://web.facebook.com; frame-ancestors 'none';",
       'X-Frame-Options': 'ALLOW-FROM https://www.google.com',
       'Referrer-Policy': 'no-referrer',
       'Permissions-Policy': 'geolocation=(self)',

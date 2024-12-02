@@ -6,7 +6,7 @@
     height: auto;
     width: auto;
     background-color: #0E267C;
-    padding: 20px;
+    padding: 10px;
 }
 
 .public-footer-cont{
@@ -15,26 +15,23 @@
     justify-content: center;
     align-items: center;
     width: auto;
-    padding: 10px;
 }
 
 .public-footer-logos{
     display: inline-flex;
     flex-direction: row;
-    gap: 20px;
-    padding-bottom: 10px;
+    gap: 10px;
 }
 
 .public-footer-logos img{
-    height: 100px;
-    width: 100px;
+    height: 75px;
+    width: 75px;
 }
 
 .public-footer-socmed{
     display: inline-flex;
     flex-direction: row;
     justify-content: center;
-    padding-bottom: 10px;
 }
 
 .public-footer-socmed img{
@@ -55,7 +52,7 @@
 .footer-link:hover {
     color: #ffffff;
     font-style: normal;
-    font-weight: bolder;
+    text-decoration: underline;
     line-height: 150%;
     margin-left: 10px;
 }

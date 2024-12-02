@@ -293,7 +293,7 @@
 .admin-content-cont {
     display: inline-flex;
     flex-direction: row;
-    justify-content: space-between;
+    width: 100%;
     gap: 5px;
 }
 
@@ -304,6 +304,7 @@
 }
 
 .admin-label {
+    align-self: center;
     padding: 5px;
     color: #000;
 }
@@ -320,7 +321,19 @@
 
 .contact-input-group {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    align-self: center;
+    width: 50%;
+}
+
+.contact-input {
+    color: #000;
+    background-color: #f8f8f8;
+    border: 2px solid gray;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
     width: 100%;
 }
 
@@ -329,7 +342,7 @@
     font-size: 16px;
     font-weight: bold;
     color: #000;
-    margin-right: 5px;
+    margin-right: 1px;
     
 }
 

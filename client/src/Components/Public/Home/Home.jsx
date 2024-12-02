@@ -4,11 +4,8 @@ import image1 from '../../Assets/bg-carousel/image1.jpg';
 import image2 from '../../Assets/bg-carousel/image2.jpg';
 import image3 from '../../Assets/bg-carousel/image3.jpg';
 
-
 const Home = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
 
     // Array of image paths and slide content
     const slides = [
@@ -24,47 +21,42 @@ const Home = () => {
         },
         {
             image: image3,
-            title: 'Etymology',
-            description: 'The word TAYTAY has many origins...'
+            title: 'Vision',
+            description: 'Taytay: Bayang Nakangiti at Pinagpala, Ligtas, Handa, at Payapa.'
         }
     ];
 
+    const handlePrevSlide = () => {
+        setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
+    };
+
+    const handleNextSlide = () => {
+        setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+    };
+
+    // Load Facebook SDK dynamically
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-        }, 10000);
-        return () => clearInterval(interval);
-    }, [slides.length]);
+        // Dynamically load the Facebook SDK script
+        const script = document.createElement('script');
+        script.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
 
-    const handleMouseDown = (e) => {
-        setIsDragging(true);
-        setStartX(e.clientX);
-    };
+        // When the script is loaded, initialize the Facebook SDK
+        script.onload = () => {
+            window.FB.XFBML.parse(); // Ensure that Facebook plugins are initialized
+        };
 
-    const handleMouseMove = (e) => {
-        if (!isDragging) return;
-        const diff = startX - e.clientX;
-
-        if (diff > 50) {
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-            setIsDragging(false);
-        } else if (diff < -50) {
-            setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
-            setIsDragging(false);
-        }
-    };
-
-    const handleMouseUp = () => setIsDragging(false);
+        // Cleanup the script after the component unmounts
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
 
     return (
         <div className="home-container">
-            <div
-                className="carousel"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-            >
+            <div className="carousel">
                 <div className="carousel-track" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
                     {slides.map((slide, index) => (
                         <div key={index} className="carousel-slide">
@@ -88,6 +80,13 @@ const Home = () => {
                         ></span>
                     ))}
                 </div>
+
+                <div className="carousel-arrow left" onClick={handlePrevSlide}>
+                    &lt;
+                </div>
+                <div className="carousel-arrow right" onClick={handleNextSlide}>
+                    &gt;
+                </div>
             </div>
 
             <div className="home-title-bg">
@@ -95,7 +94,7 @@ const Home = () => {
                     <a className="home-tagline">"Taytay: Bayang Nakangiti at Pinagpala, Ligtas, Handa, at Payapa."</a>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
