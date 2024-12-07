@@ -137,7 +137,6 @@ const LoginModal = ({ isOpen, onClose }) => {
         setBarangay(e.target.value); // Update the barangay state when the user selects a value
     };
 
-
     const openForgotPasswordModal = () => {
         setIsForgotModalOpen(true);  // Open Forgot Modal
     };
