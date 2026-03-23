@@ -175,13 +175,13 @@ VITE_PROD_API_BASE_URL=https://your-backend-url.onrender.com
 
 ---
 
-📌 Notes
+## 📌 Notes
 - Ensure .env files are not committed (.gitignore)
 - Double-check environment variables before deployment.
 - Monitor logs in Render dashboard for debugging.
 
 ---
 
-👨‍💻 Author
-Developed by [Karl Angelo P. Dela Cruz][alias/Yorinu]
-Aspiring Full-Stack Developer
+## 👨‍💻 Author
+- Developed by [Karl Angelo P. Dela Cruz][alias/Yorinu]
+- Aspiring Full-Stack Developer
