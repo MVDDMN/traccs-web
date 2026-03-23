@@ -52,19 +52,30 @@ PROD_BASE_URL=http://localhost:3001
 PROD_ALT_URL=http://localhost:5173
 SESSION_SECRET=your_secret_key
 ```
-- **Run Backend**
+**Run Backend**
 ```bash
 npm start
 ```
+- Backend runs at:
+http://localhost:3001
 
-- **Run Frontend**
+## 3. Frontend Setup
+- Navigate to Client
+```bash
+cd client
+npm install
+```
+- Create .env file
+VITE_PROD_API_BASE_URL=http://localhost:3001
+
+**Run Frontend**
 ```bash
 npm run dev
 ```
 - Frontend runs at:
 http://localhost:5173
 
-- 4. **Frontend Configuration (Vite / Render)**
+## 4. Frontend Configuration (Vite / Render)
 - Redirects and Rewrites
 /* - /index.html - Rewrite
 
@@ -85,7 +96,7 @@ X-Frame-Options: ALLOW-FROM https://www.google.com
 Referrer-Policy: no-referrer
 Permissions-Policy: geolocation=(self)
 
-- 5. **Deployment (Render)**
+## 5. Deployment (Render)
 - Frontend Static Site
 > Root Directory: client
 Build Command:
@@ -105,7 +116,7 @@ Start Command:
 node index.js
 ```
 
-- 6. **Environment Variables)**
+## 6. Environment Variables)
 - Backend (Render)
 GMAIL_USER=
 GMAIL_PASS=
@@ -119,13 +130,13 @@ SESSION_SECRET=
 - Frontend (Render)
 VITE_PROD_API_BASE_URL=https://your-backend-url.onrender.com
 
-- 6. **Production Notes**
+## 7. Production Notes
 - Configure CORS in backend to allow frontend domain
 - Update CSP (connect-src) with your backend URL
 - Ensure all endpoints use HTTPS
 - Use Gmail App Passwords instead of your main password
 
-- **7. Testing Checklist**
+## 8. Testing Checklist
 - Authentication (SMS / Login)
 - Real-time Notifications
 - Geolocation (GPS)
