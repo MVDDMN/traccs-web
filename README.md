@@ -57,7 +57,7 @@ SESSION_SECRET=your_secret_key
 npm start
 ```
 - Backend runs at:
-http://localhost:3001
+> http://localhost:3001
 
 ## 3. Frontend Setup
 - Navigate to Client
@@ -66,35 +66,35 @@ cd client
 npm install
 ```
 - Create .env file
-VITE_PROD_API_BASE_URL=http://localhost:3001
+> VITE_PROD_API_BASE_URL=http://localhost:3001
 
 **Run Frontend**
 ```bash
 npm run dev
 ```
 - Frontend runs at:
-http://localhost:5173
+> http://localhost:5173
 
 ## 4. Frontend Configuration (Vite / Render)
 - Redirects and Rewrites
-/* - /index.html - Rewrite
+> /* - /index.html - Rewrite
 
 - Security Headers
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+> Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-Content-Security-Policy:
-default-src 'self';
-img-src 'self' data: https://a.basemaps.cartocdn.com https://b.basemaps.cartocdn.com https://c.basemaps.cartocdn.com;
-style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-font-src 'self' https://fonts.gstatic.com;
-script-src 'self' 'unsafe-inline';
-connect-src 'self' https://traccs-web-backend-c9a1.onrender.com;
-frame-src 'self' https://www.google.com;
-frame-ancestors 'self';
+> Content-Security-Policy:
+> default-src 'self';
+> img-src 'self' data: https://a.basemaps.cartocdn.com https://b.basemaps.cartocdn.com https://c.basemaps.cartocdn.com;
+> style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+> font-src 'self' https://fonts.gstatic.com;
+> script-src 'self' 'unsafe-inline';
+> connect-src 'self' https://traccs-web-backend-c9a1.onrender.com;
+> frame-src 'self' https://www.google.com;
+> frame-ancestors 'self';
 
-X-Frame-Options: ALLOW-FROM https://www.google.com
-Referrer-Policy: no-referrer
-Permissions-Policy: geolocation=(self)
+> X-Frame-Options: ALLOW-FROM https://www.google.com
+> Referrer-Policy: no-referrer
+> Permissions-Policy: geolocation=(self)
 
 ## 5. Deployment (Render)
 - Frontend Static Site
@@ -118,17 +118,17 @@ node index.js
 
 ## 6. Environment Variables)
 - Backend (Render)
-GMAIL_USER=
-GMAIL_PASS=
-MONGO_URI=
-NODE_ENV=production
-PORT=3001
-PROD_BASE_URL=
-PROD_ALT_URL=
-SESSION_SECRET=
+> GMAIL_USER=
+> GMAIL_PASS=
+> MONGO_URI=
+> NODE_ENV=production
+> PORT=3001
+> PROD_BASE_URL=
+> PROD_ALT_URL=
+> SESSION_SECRET=
 
 - Frontend (Render)
-VITE_PROD_API_BASE_URL=https://your-backend-url.onrender.com
+> VITE_PROD_API_BASE_URL=https://your-backend-url.onrender.com
 
 ## 7. Production Notes
 - Configure CORS in backend to allow frontend domain
@@ -149,5 +149,5 @@ VITE_PROD_API_BASE_URL=https://your-backend-url.onrender.com
 - Monitor logs in Render dashboard for debugging.
 
 👨‍💻 Author
-Developed by [Karl Angelo P. Dela Cruz/Yorinu]
+Developed by [Karl Angelo P. Dela Cruz][alias/Yorinu]
 Aspiring Full-Stack Developer
