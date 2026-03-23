@@ -21,9 +21,11 @@ Built with the **MERN Stack (MongoDB, Express, React + Vite, Node.js)** and depl
 ---
 
 ## Project Structure
+```bash
 traccs/
 ├── client/ # Frontend (Vite + React)
 └── server/ # Backend (Node.js + Express)
+```
 
 ---
 
@@ -33,6 +35,8 @@ traccs/
 git clone <your-repo-url>
 cd traccs
 ```
+
+---
 
 ## 2. Backend Setup
 - **Navigate To Server**
@@ -61,6 +65,8 @@ npm start
 http://localhost:3001
 ```
 
+---
+
 ## 3. Frontend Setup
 - Navigate to Client
 ```bash
@@ -80,6 +86,8 @@ npm run dev
 ```bash
 http://localhost:5173
 ```
+
+---
 
 ## 4. Frontend Configuration (Vite / Render)
 - Redirects and Rewrites
@@ -104,17 +112,19 @@ Referrer-Policy: no-referrer
 Permissions-Policy: geolocation=(self)
 ```
 
+---
+
 ## 5. Deployment (Render)
-- Frontend Static Site
-> Root Directory: client
-Build Command:
+**Frontend Static Site**
+- Root Directory: client
+- Build Command:
 ```bash
 npm run build
 ```
-> Publish Directory: dist
+- Publish Directory: dist
 
-- Backend (Web Service)
-> Root Directory: server
+**Backend (Web Service)**
+- Root Directory: server
 Build Command:
 ```bash
 npm install
@@ -123,6 +133,8 @@ Start Command:
 ```bash
 node index.js
 ```
+
+---
 
 ## 6. Environment Variables)
 - Backend (Render)
@@ -142,11 +154,15 @@ SESSION_SECRET=
 VITE_PROD_API_BASE_URL=https://your-backend-url.onrender.com
 ```
 
+---
+
 ## 7. Production Notes
 - Configure CORS in backend to allow frontend domain
 - Update CSP (connect-src) with your backend URL
 - Ensure all endpoints use HTTPS
 - Use Gmail App Passwords instead of your main password
+
+---
 
 ## 8. Testing Checklist
 - Authentication (SMS / Login)
@@ -155,10 +171,14 @@ VITE_PROD_API_BASE_URL=https://your-backend-url.onrender.com
 - Dashboard & Graphs
 - API Connectivity
 
+---
+
 📌 Notes
 - Ensure .env files are not committed (.gitignore)
 - Double-check environment variables before deployment.
 - Monitor logs in Render dashboard for debugging.
+
+---
 
 👨‍💻 Author
 Developed by [Karl Angelo P. Dela Cruz][alias/Yorinu]
